@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "NPLFLF"
+#define name "B"
 
 template <class t> bool maxi(t &x, t const &y)
 {
@@ -35,29 +35,37 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 1000;
+    int const lim = 1e5;
+    int const oo = 1e9;
 
     int n = Rand(1, lim);
-    vector<int> ids;
+
+    set<int> ids;
 
     cout << n << '\n';
-    FOR(haha, 1, n)
+    FOR(i, 1, n)
     {
-        int type = Rand(1, 3);
-        if (type == 3 && ids.empty()) type = 1;
-       
-        cout << type << ' ';
+        int t = Rand(1, 3);
+        if (t == 2 && ids.empty()) t = 1;
 
-        if (type == 1)
+        cout << t << ' ';
+
+        if (t == 1)
         {
-            int len = Rand(1, 15);
-            while (len--) cout << (char)Rand('a', 'd');
-            ids.push_back(haha);
+            cout << Rand(-oo, oo) << ' ' << Rand(-oo, oo) << '\n';
+            ids.insert(i);
         }
-        else if (type == 2) cout << Rand(1, min(n, 36)) << ' ' << Rand(1, 10);
-        else cout << ids[Rand(0, sz(ids) - 1)];
+        else if (t == 2)
+        {
+            int haha = Rand(1, *ids.rbegin());
+            auto it = ids.lower_bound(haha);
 
-        cout << '\n';
+            assert(it != ids.end());
+            cout << *it << '\n';
+
+            ids.erase(it);
+        }
+        else cout << Rand(-oo, oo) << '\n';
     }
 }
 

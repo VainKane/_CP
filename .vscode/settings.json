@@ -92,7 +92,7 @@
         "**/*.bin": true,
         "**/*.e:": true, 
         "**/.cph": true, 
-        "**/.vscode": false,  
+        "**/.vscode": true,
     },
     "C_Cpp.errorSquiggles": "disabled",
 

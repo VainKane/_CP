@@ -25,11 +25,6 @@ template <class t> bool mini(t &x, t const &y)
 struct Edge
 {
     int u, v, w;
-
-    void Input()
-    {
-        cin >> u >> v >> w;
-    }
 };
 
 int const N = 1509;
@@ -54,6 +49,8 @@ vector<int> topo;
 int deg[N];
 
 int f[N], g[N];
+
+bool used[M];
 int res[M];
 
 void Dijkstra(int s)
@@ -85,7 +82,7 @@ void Dijkstra(int s)
 void BFS()
 {
     queue<int> q;
-    FOR(u, 1, n) if (!deg[u]) q.push(u), f[u] = 1;
+    FOR(u, 1, n) if (!deg[u]) q.push(u);
 
     while (!q.empty())
     {
@@ -110,13 +107,17 @@ int main()
     cin >> n >> m;
     FOR(i, 1, m)
     {
-        edges[i].Input();
-        adj[edges[i].u].push_back(i);
+        int u, v, w;
+        cin >> u >> v >> w;
+
+        adj[u].push_back(i);
+        edges[i] = {u, v, w};
     }
 
-    FOR(s, 1, m)
+    FOR(s, 1, n)
     {
-        FOR(u, 1, n) dagAdj[u].clear(), deg[u] = 0;
+        FOR(u, 1, n) dagAdj[u].clear(), deg[u] = f[u] = g[u] = 0;
+        memset(used, false, sizeof used);
         topo.clear();
 
         Dijkstra(s);
@@ -124,17 +125,22 @@ int main()
         FOR(i, 1, m)
         {
             int u = edges[i].u, v = edges[i].v;
-            if (d[u] + edges[i].w == d[v]) dagAdj[u].push_back(i), deg[v]++;
+            if (d[u] + edges[i].w == d[v])
+            {
+                dagAdj[u].push_back(i);
+                deg[v]++;
+                g[u]++;
+                used[i] = true;
+            }
         }
 
         BFS();
-
-        FOR(u, 1, n) g[u] = dagAdj[u].empty();
+        f[s] = 1;
 
         for (auto &u : topo) for (auto &id : dagAdj[u])
         {
             int v = edges[id].v;
-            Add(f[v], f[u] + 1);
+            Add(f[v], f[u]);
         }
 
         FORD(i, sz(topo) - 1, 0)
@@ -144,12 +150,11 @@ int main()
             for (auto &id : dagAdj[u])
             {
                 int v = edges[id].v;
-                Add(g[u], g[v] + 1);
+                Add(g[u], g[v]);
             }
         }
 
-        for (auto &u : topo) for (auto &id : dagAdj[u])
-            res[id] = (res[id] + 1LL * f[u] * g[edges[id].v]) % MOD;
+        FOR(i, 1, m) if (used[i]) res[i] = (res[i] + 1LL * f[edges[i].u] * (g[edges[i].v] + 1)) % MOD;
     }
 
     FOR(i, 1, m) cout << res[i] << '\n';
