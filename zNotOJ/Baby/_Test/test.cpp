@@ -41,14 +41,19 @@ int Fibo(int n)
 int Count(int x)
 {
     int cnt = 0;
-    FOR(i, 2, x) if (x % i == 0) cnt++;
+    FOR(i, 2, sqrt(x)) if (x % i == 0)
+    {
+        cnt++;
+        cnt += i * i != x;
+    }
+    
     return cnt;
 }
 
 int main()
 {
     int res = 0;
-    FOR(i, 2, 1e4) maxi(res, Count(i));
+    FOR(i, 2, 1e6) maxi(res, Count(i));
     cout << res << '\n';
     // GCD(1e18, 4352345234231234);
     // cout << cnt;

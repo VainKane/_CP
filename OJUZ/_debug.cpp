@@ -11,35 +11,34 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "CEOI14_carnival"
+#define name "CEOI09_harbingers"
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 mt19937_64 rd(time(0));
 int const ntest = 1e4;
 
-long long Rand(long long l, long long r)
+ll Rand(ll l, ll r)
 {
-    return l + rd() * 1ll * rd() % (r - l + 1);
+    return l + rd() * 1LL * rd() % (r - l + 1);
 }
 
 void GenTest()
 {
     ofstream cout(name".inp");
 
-    int n = 150;
-    int c = 50;
+    int const lim = 1e5;
+    int const oo = 1e9;
+
+    int n = Rand(1, lim);
 
     cout << n << '\n';
-    FOR(i, 1, n) cout << Rand(1, c) << ' ';
+    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << ' ' << Rand(1, 1e4) << '\n';
+    FOR(i, 2, n) cout << Rand(1, oo) << ' ' << Rand(1, oo) << '\n';
 }
 
 int main()
@@ -47,7 +46,16 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system(name".exe");
+        system(name".exe <"name".inp> "name".out");
+        system(name"_brute.exe <"name".inp> "name".ans");
+
+        if (system("fc "name".out "name".ans") != 0)
+        {
+            cout << "Test: " << i << " WRONG!\n";
+            return 0;
+        }
+
+        cout << "Test: " << i << " CORRECT!\n";
     }
 
     return 0;

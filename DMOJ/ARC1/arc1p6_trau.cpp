@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for (int i = (a), _b = (b); i <= _b; i++)
+#define FORD(i, b, a) for (int i = (b), _a = (a); i >= _a; i--)
+#define REP(i, n) for (int i = 0, _n = (n); i < _n; i++)
+#define BIT(i, x) (((x) >> (i)) & 1)
+#define MK(i) (1LL << (i))
+#define all(v) v.begin(), v.end()
+#define sz(v) ((int)v.size())
+#define F first
+#define S second
+
+template <class t> bool maxi(t &x, t const &y)
+{
+    return x < y ? x = y, 1 : 0;
+}
+
+template <class t> bool mini(t &x, t const &y)
+{
+    return x > y ? x = y, 1 : 0;
+}
+
+int const N = 1e5 + 5;
+long long const oo = 1e18;
+
+int n, m, q, x, y;
+
+int a[N];
+vector<int> adj[N];
+
+long long d[N], dx[N], dy[N];
+
+void Dijkstra(int s, long long d[])
+{
+    memset(d, 0x3f, (n + 1) * sizeof(long long));
+    d[s] = a[s];
+
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> pq;
+    pq.push({d[s], s});
+
+    while (!pq.empty())
+    {
+        int u = pq.top().S;
+        long long du = pq.top().F;
+        pq.pop();
+
+        if (du > d[u]) continue;
+        for (auto &v : adj[u]) if (mini(d[v], d[u] + a[v])) pq.push({d[v], v});
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    cin >> n >> m >> x >> y >> q;
+    FOR(i, 1, n) cin >> a[i];
+    FOR(i, 1, m)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    Dijkstra(x, dx);
+    Dijkstra(y, dy);
+
+    while (q--)
+    {
+        int u; cin >> u;
+        Dijkstra(u, d);
+
+        long long res = oo;
+        FOR(v, 1, n) mini(res, dx[v] + dy[v] + d[v] - 2 * a[v]);
+        cout << res << '\n';
+    }
+
+    return 0;
+}

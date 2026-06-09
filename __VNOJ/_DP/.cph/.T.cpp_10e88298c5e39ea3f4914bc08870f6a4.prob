@@ -1,0 +1,1 @@
+{"name":"Local: T","url":"d:\\Dev\\_CP\\__VNOJ\\_DP\\T.cpp","tests":[{"id":1780114390626,"input":"4\n<><","output":"5"},{"id":1780114392562,"input":"5\n<<<<","output":"1"},{"id":1780114399665,"input":"20\n>>>><>>><>><>>><<>>","output":"217136290"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__VNOJ\\_DP\\T.cpp","group":"local","local":true}

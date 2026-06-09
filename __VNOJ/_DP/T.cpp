@@ -3,12 +3,27 @@
 using namespace std;
 
 #define FOR(i, a, b) for (int i = (a), _b = (b); i <= _b; i++)
+#define FORD(i, b, a) for (int i = (b), _a = (a); i >= _a; i--)
+#define REP(i, n) for (int i = 0, _n = (n); i < _n; i++)
+#define BIT(i, x) (((x) >> (i)) & 1)
+#define MK(i) (1LL << (i))
+#define all(v) v.begin(), v.end()
+#define sz(v) ((int)v.size())
+#define F first
+#define S second
+
+template <class t> bool maxi(t &x, t const &y)
+{
+    return x < y ? x = y, 1 : 0;
+}
+
+template <class t> bool mini(t &x, t const &y)
+{
+    return x > y ? x = y, 1 : 0;
+}
 
 int const N = 3009;
 int const MOD = 1e9 + 7;
-
-int n;
-int dp[N][N];
 
 void Add(int &x, int const &y)
 {
@@ -16,23 +31,26 @@ void Add(int &x, int const &y)
     if (x >= MOD) x -= MOD;
 }
 
+int n;
+int dp[N][N];
+
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    dp[1][1] = 1;
-
     cin >> n;
+
+    dp[1][1] = 1;
     FOR(i, 2, n)
     {
         char ch; cin >> ch;
         FOR(j, 1, i)
         {
-            if (ch == '<') Add(dp[i][j], dp[i - 1][j - 1]);
+            if (ch == '<') dp[i][j] = dp[i - 1][j - 1];
             else dp[i][j] = (dp[i - 1][i - 1] - dp[i - 1][j - 1] + MOD) % MOD;
+            Add(dp[i][j], dp[i][j - 1]);
         }
-        FOR(j, 1, i) Add(dp[i][j], dp[i][j - 1]);
     }
 
     cout << dp[n][n];

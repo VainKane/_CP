@@ -11,24 +11,20 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "vnuoi22_delete"
+#define name "bedao_m16_query"
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 mt19937_64 rd(time(0));
 int const ntest = 1e4;
 
-long long Rand(long long l, long long r)
+ll Rand(ll l, ll r)
 {
-    return l + rd() * 1ll * rd() % (r - l + 1);
+    return l + rd() * 1LL * rd() % (r - l + 1);
 }
 
 void GenTest()
@@ -36,16 +32,24 @@ void GenTest()
     ofstream cout(name".inp");
 
     int const lim = 20;
-    int const oo = 10;
+    int const oo = MK(30) - 1;
 
     int n = Rand(1, lim);
-    int m = Rand(n - 1, lim);
-    int k = Rand(1, lim);
+    int q = Rand(1, lim);
 
-    cout << n << ' ' << m << ' ' << k << '\n';
-    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << ' ' << Rand(1, oo) << '\n';
-    FOR(i, 1, m - n + 1) cout << Rand(1, n) << ' ' << Rand(1, n) << ' ' << Rand(1, oo) << '\n';
-    FOR(i, 1, k) cout << Rand(1, n) << ' ' << Rand(1, oo) << '\n';
+    cout << n << ' ' << q << '\n';
+    FOR(i, 1, n) cout << Rand(0, oo) << ' ';
+    cout << '\n';
+    while (q--)
+    {
+        int type = Rand(1, 3);
+        int l = Rand(1, n);
+        int r = Rand(l, n);
+
+        cout << type << ' ' << l << ' ' << r << ' ';
+        if (type != 3) cout << Rand(1, oo);
+        cout << '\n';
+    }
 }
 
 int main()
@@ -54,7 +58,7 @@ int main()
     {
         GenTest();
         system(name".exe <"name".inp> "name".out");
-        system(name"_trau.exe <"name".inp> "name".ans");
+        system(name"_brute.exe <"name".inp> "name".ans");
 
         if (system("fc "name".out "name".ans") != 0)
         {

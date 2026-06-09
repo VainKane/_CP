@@ -24,16 +24,7 @@ template <class t> bool mini(t &x, t const &y)
 
 int const N = 109;
 
-int m, n, x, y, dx, dy;
-bool visitedC[N], visitedR[N];
-
-bool Check()
-{
-    bool okR = true, okC = true;
-    FOR(i, 1, m) okR &= visitedR[i];
-    FOR(i, 1, n) okC &= visitedC[i];
-    return okR || okC;
-}
+int m, n, x, y;
 
 int main()
 {
@@ -44,26 +35,11 @@ int main()
     while (t--)
     {
         cin >> m >> n >> x >> y;
+        int res = min(2 * m - x - 1, 2 * n - y - 1);
+        if (x == 1) mini(res, m - 1);
+        if (y == 1) mini(res, n - 1);
 
-        memset(visitedC, false, sizeof visitedC);
-        memset(visitedR, false, sizeof visitedR);
-
-        dx = dy = 1;
-
-        visitedC[y] = visitedR[x] = true;
-        int cnt = 0;
-
-        while (!Check())
-        {
-            if (x + dx < 1 || x + dx > m) dx = -dx;
-            if (y + dy < 1 || y + dy > n) dy = -dy;
-
-            x += dx, y += dy;
-            visitedR[x] = true, visitedC[y] = true;
-            cnt++;
-        }
-
-        cout << cnt << '\n';
+        cout << res << '\n';
     }
 
     return 0;
