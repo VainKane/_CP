@@ -11,16 +11,13 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e6 + 5;
 long long const oo = 1e9 + 9;
@@ -43,8 +40,7 @@ struct Segment
 
 struct ConvexHullTrick
 {
-    vector<Segment> seg;
-    int id = 0;
+    deque<Segment> seg;
 
     void Add(long long a, long long b)
     {
@@ -61,9 +57,8 @@ struct ConvexHullTrick
     long long Get(int x)
     {
         if (seg.empty()) return 0;
-        for (mini(id, sz(seg) - 1); id < sz(seg) && seg[id].x <= x; id++);
-        id--;
-        return x * seg[id].a + seg[id].b;
+        while (sz(seg) >= 2 && seg[0].a * x + seg[0].b <= seg[1].a * x + seg[1].b) seg.pop_front();
+        return x * seg.front().a + seg.front().b;
     }
 } cht;
 
@@ -73,10 +68,7 @@ int x[N], y[N];
 long long a[N];
 int id[N];
 
-bool cmp(int i, int j)
-{
-    return x[i] < x[j];
-}
+bool cmp(int i, int j) { return x[i] < x[j]; }
 
 int main()
 {

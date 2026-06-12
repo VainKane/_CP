@@ -1,0 +1,1 @@
+{"name":"Local: t20_brute","url":"d:\\Dev\\_CP\\_CVPOI\\PIEandCHT\\t20_brute.cpp","tests":[{"id":1781169108696,"input":"5\n4 3 1 3 4","output":"1 0 1 0 1"},{"id":1781169116607,"input":"2\n3 7","output":"0 0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CVPOI\\PIEandCHT\\t20_brute.cpp","group":"local","local":true}

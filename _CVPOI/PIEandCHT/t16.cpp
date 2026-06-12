@@ -11,47 +11,90 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
 int const Q = 3e5 + 5;
-long long const oo = 1e18;
+ll const oo = 6e18;
 
 struct Segment
 {
-    long long x, a, b;
+    ll a, b;
     int id;
 
-    long long Val()
-    {
-        return x * a + b;
-    }
+    Segment(ll _a = 0, ll _b = oo, int _id = -1) { a = _a, b = _b, id = _id; }
+    ll operator ()(int x) { return x * a + b; }
 };
 
-struct ConvexHullTrick
+struct LichaoTree
 {
+    vector<Segment> t;
+    vector<int> vals;
+    int n;
 
+    LichaoTree(vector<int> _vals = {})
+    {
+        vals = _vals;
+        n = sz(vals);
+        t.assign(4 * n, Segment());
+    }
+
+    void Add(int v, int l, int r, Segment seg)
+    {
+        if (l == r)
+        {
+            if (seg(vals[l - 1]) < t[v](vals[l - 1])) t[v] = seg;
+            return;
+        }
+
+        int mid = (l + r) >> 1;
+        if (seg.a < t[v].a) swap(seg, t[v]);
+
+        if (t[v](vals[mid - 1]) < seg(vals[mid - 1])) Add(v << 1, l, mid, seg);
+        else
+        {
+            swap(t[v], seg);
+            Add(v << 1 | 1, mid + 1, r, seg);
+        }
+    }
+
+    Segment Get(int v, int l, int r, int pos)
+    {
+        if (l == r) return t[v];
+
+        int mid = (l + r) >> 1;
+        auto seg = pos <= mid ? Get(v << 1, l, mid, pos) : Get(v << 1 | 1, mid + 1, r, pos);
+        return seg(vals[pos - 1]) < t[v](vals[pos - 1]) ? seg : t[v];
+    }
+
+    void Add(Segment seg) { Add(1, 1, n, seg); }
+    Segment Get(int pos) { return Get(1, 1, n, pos); }
 };
 
 int n, q;
-int v[N], t[N], id[N];
 
-pair<int, int> qr[Q];
-long long res[Q];
+int t[N], v[N];
+ii qr[Q];
 
-bool cmp(int i, int j)
+int id[N], res[Q];
+
+vector<int> vals;
+LichaoTree lct;
+
+void Compress()
 {
-    return t[i] < t[j];
+    FOR(i, 1, q) vals.push_back(qr[i].F);
+    FOR(i, 1, q) qr[i].F = lower_bound(all(vals), qr[i].F) - vals.begin() + 1;
+    lct = LichaoTree(vals);
 }
+
+bool cmp(int i, int j) { return t[i] < t[j]; }
 
 int main()
 {
@@ -62,16 +105,21 @@ int main()
     FOR(i, 1, n) cin >> t[id[i] = i] >> v[i], v[i] = abs(v[i]);
     FOR(i, 1, q) cin >> qr[i].F, qr[i].S = i;
 
-    sort(id + 1, id + n + 1, cmp);
     sort(qr + 1, qr + q + 1);
+    sort(id + 1, id + n + 1, cmp);
 
+    Compress();
+
+    int idx = 1;
     FOR(i, 1, q)
     {
-        int ti = qr[i].F;
+        for (; idx <= n && t[id[idx]] <= vals[qr[i].F - 1]; idx++)
+        {
+            int k = id[idx];
+            lct.Add({v[k], -1LL * v[k] * t[k], k});
+        }
 
-        long long mi = oo;
-        FOR(j, 1, n) if (t[j] <= ti) if (mini(mi, 1LL * (ti - t[j]) * v[j])) res[qr[i].S] = j;
-        if (mi == oo) res[qr[i].S] = -1;
+        res[qr[i].S] = lct.Get(qr[i].F).id;
     }
 
     FOR(i, 1, q) cout << res[i] << ' ';

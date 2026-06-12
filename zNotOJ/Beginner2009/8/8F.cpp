@@ -3,6 +3,21 @@
 using namespace std;
 
 #define FOR(i, a, b) for (int i = (a), _b = (b); i <= _b; i++)
+#define FORD(i, b, a) for (int i = (b), _a = (a); i >= _a; i--)
+#define REP(i, n) for (int i = 0, _n = (n); i < _n; i++)
+#define BIT(i, x) (((x) >> (i)) & 1)
+#define MK(i) (1LL << (i))
+#define all(v) v.begin(), v.end()
+#define sz(v) ((int)v.size())
+#define F first
+#define S second
+#define name ""
+
+using ll = long long;
+using ii = pair<int, int>;
+
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
 double const eps = 1e-7;
@@ -35,7 +50,6 @@ bool Check(double k)
     }
 
     height += h * k;
-
     return (height <= maxH);
 }
 
@@ -49,16 +63,21 @@ int main()
 
     double l = 0;
     double r = 1e9;
+    double res = l;
 
     while (r - l > eps)
     {
         double mid = (l + r) / 2;
 
-        if (Check(mid)) l = mid;
+        if (Check(mid))
+        {
+            res = mid;
+            l = mid;
+        }
         else r = mid;
     }
 
-    cout << fixed << setprecision(6) << (l + r) / 2;
+    cout << fixed << setprecision(6) << res;
 
     return 0;
 }

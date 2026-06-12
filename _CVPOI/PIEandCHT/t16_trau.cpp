@@ -11,23 +11,20 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
-int const Q = 3e5 + 5;
-long long const oo = 4e18;
+int const os = 1e9 + 9;
+ll const oo = 6e18;
 
 int n, q;
-int v[N], t[N];
+int t[N], v[N];
 
 int main()
 {
@@ -35,16 +32,31 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> q;
-    FOR(i, 1, n) cin >> t[i] >> v[i], v[i] = abs(v[i]);
-
+    FOR(i, 1, n) cin >> t[i] >> v[i], v[i] = abs(v[i]), assert(v[i]);
+    
     while (q--)
     {
-        int ti; cin >> ti;
-        long long mi = oo;
+        int tt; cin >> tt;
 
-        int res = -1;
-        FOR(j, 1, n) if (t[j] <= ti && mini(mi, 1LL * (ti - t[j]) * v[j])) res = j;
-        cout << res << ' ';
+        pair<ll, int> res = {oo, -1};
+        FOR(i, 1, n) if (t[i] <= tt)
+        {
+            ll dist = 1LL * (tt - t[i]) * v[i];
+            if (res.F == dist && v[i] > v[res.S]) res.S = i;
+            else mini(res, {dist, i});
+        }
+
+        if (res.S != -1)
+        {
+            assert(res.S >= 1 && res.S <= n);
+            assert(res.F >= 0);
+
+            ll dist = 1LL * (tt - t[res.S]) * v[res.S];
+            FOR(i, 1, n) if (t[i] <= tt) assert(1LL * (tt - t[i]) * v[i] >= dist);
+        }
+        else assert(*min_element(t + 1, t + n + 1) > tt);
+
+        cout << res.S << ' ';
     }
 
     return 0;

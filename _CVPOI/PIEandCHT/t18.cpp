@@ -20,10 +20,7 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2e5 + 5;
-double const oo = 1e9 + 9;
-int const BK = 2; //447
-int const GR = N / BK;
-int bkId[N], bkL[GR], bkR[GR];
+int const oo = 1e9 + 9;
 
 int GCD(int a, int b)
 {
@@ -36,81 +33,75 @@ int GCD(int a, int b)
 
 struct Segment
 {
-    double x, a, b;
+    double a, b;
     int id;
 
-    bool operator < (Segment const other) const
-    {
-        return x < other.x;
-    }
-
-    double Val()
-    {
-        return x * a + b;
-    }
+    Segment(double _a = oo, double _b = oo, int _id = 0) { a = _a, b = _b, id = _id; }
+    double operator ()(int x) const { return x * a + b; }
 };
 
-struct ConvexHullTrick
+struct LichaoTree
 {
-    vector<Segment> seg;
-    int id = 0;
+    vector<Segment> t;
+    vector<int> vals;
+    int n;
 
-    void Reset()
+    LichaoTree(vector<int> _vals = {})
     {
-        seg.clear();
-        id = 0;
+        vals = _vals;
+        n = sz(vals);
+        t.assign(4 * n, Segment());
     }
 
-    void Add(double a, double b, int id)
+    void Add(int v, int l, int r, Segment seg)
     {
-        while (!seg.empty() && seg.back().Val() >= seg.back().x * a + b) seg.pop_back();
-
-        if (seg.empty()) seg.push_back({-oo, a, b, id});
-        else if (seg.back().a != a)
+        if (l == r)
         {
-            double x = (b - seg.back().b) / (seg.back().a - a);
-            maxi(x, -oo); mini(x, oo);
-            seg.push_back({x, a, b, id});
+            if (seg(vals[l - 1]) < t[v](vals[l - 1])) t[v] = seg;
+            return;
+        }
+    
+        int mid = (l + r) >> 1;
+        if (seg.a < t[v].a) swap(seg, t[v]);
+
+        if (t[v](vals[mid - 1]) < seg(vals[mid - 1])) Add(v << 1, l, mid, seg);
+        else
+        {
+            swap(t[v], seg);
+            Add(v << 1 | 1, mid + 1, r, seg);
         }
     }
 
-    pair<double, int> Get(int x)
+    Segment Get(int v, int l, int r, int pos)
     {
-        if (seg.empty()) return {oo, 0};
-        for (mini(id, sz(seg) - 1); id < sz(seg) && seg[id].x <= x; id++); id--;
-        return {x * seg[id].a + seg[id].b, seg[id].id};
+        if (l == r) return t[v];
+        int mid = (l + r) >> 1;
+
+        auto seg = pos <= mid ? Get(v << 1, l, mid, pos) : Get(v << 1 | 1, mid + 1, r, pos);
+        return seg(vals[pos - 1]) < t[v](vals[pos - 1]) ? seg : t[v];
     }
+
+    void Add(Segment seg) { Add(1, 1, n, seg); }
+    Segment Get(int pos) { return Get(1, 1, n, pos); }
+    void Reset() { t.assign(4 * n, Segment()); }
 };
 
 int n;
-
 int x[N], e[N];
+
+LichaoTree lct;
+Segment res[N];
+
 vector<int> vals;
-
-ConvexHullTrick cht;
-ii b[N];
-
-pair<double, int> res[N];
-
-void Init()
-{
-    FOR(i, 1, n)
-    {
-        int id = bkId[i] = (i - 1) / BK + 1;
-        if (!bkL[id]) bkL[id] = i;
-        bkR[id] = i;
-    }
-    
-    bkL[bkId[n] + 1] = oo;
-}
 
 void Compress()
 {
-    FOR(i, 1, n) vals.push_back(e[i]);
+    FOR(i, 1, n) vals.push_back(x[i]);
     sort(all(vals));
     vals.erase(unique(all(vals)), vals.end());
 
-    FOR(i, 1, n) e[i] = lower_bound(all(vals), e[i]) - vals.begin() + 1;
+    FOR(i, 1, n) x[i] = lower_bound(all(vals), x[i]) - vals.begin() + 1;
+    lct = LichaoTree(vals);
 }
 
 int main()
@@ -122,55 +113,32 @@ int main()
     FOR(i, 1, n) cin >> x[i] >> e[i];
 
     Compress();
-    Init();
 
-    FOR(i, 1, n) res[i] = b[i] = {oo, 0};
-
-    FOR(id, 1, bkId[n])
+    FOR(i, 1, n)
     {
-        FOR(i, 1, bkR[id - 1]) mini(b[e[i]], {-x[i], i});
-        FOR(i, 1, sz(vals)) if (b[i].S)
-        {
-            int e = vals[i - 1];
-            cht.Add(1.0 / e, 1.0 * b[i].F / e, b[i].S);
-        }
-
-        FOR(i, bkL[id], bkR[id])
-        {
-            mini(res[i], cht.Get(x[i]));
-            FOR(j, bkL[id], i - 1) mini(res[i], {(1.0 * x[i] - x[j]) / vals[e[j] - 1], j});
-        }
-
-        FOR(i, 1, bkR[id - 1]) b[e[i]] = {oo, 0};
-        cht.Reset();
+        auto seg = lct.Get(x[i]);
+        int pos = vals[x[i] - 1];
+        if (seg(pos) < res[i](pos)) res[i] = seg;
+        lct.Add({1.0 / e[i], -1.0 * pos / e[i], i});
     }
 
-    FORD(id, bkId[n], 1)
+    lct.Reset();
+
+    FORD(i, n, 1)
     {
-        FOR(i, bkL[id + 1], n) mini(b[e[i]], {x[i], i});
-        FOR(i, 1, sz(vals)) if (b[i].S)
-        {
-            int e = vals[i - 1];
-            cht.Add(1.0 / e, 1.0 * b[i].F / e, b[i].S);
-        }
-
-        FOR(i, bkL[id], bkR[id])
-        {
-            mini(res[i], cht.Get(-x[i]));
-            FOR(j, i + 1, bkR[id]) mini(res[i], {(1.0 * x[j] - x[i]) / vals[e[j] - 1], j});
-        }
-
-        FOR(i, bkL[id + 1], n) b[e[i]] = {oo, 0};
-        cht.Reset();
+        auto seg = lct.Get(x[i]);
+        int pos = vals[x[i] - 1];
+        if (seg(pos) < res[i](pos)) res[i] = seg;
+        lct.Add({-1.0 / e[i], 1.0 * pos / e[i], i});
     }
 
     FOR(i, 1, n)
     {
-        int p = vals[e[res[i].S] - 1];
-        int q = abs(x[i] - x[res[i].S]);
-        int gcd = GCD(p, q);
+        int id = res[i].id;
+        int q = abs(vals[x[id] - 1] - vals[x[i] - 1]);
+        int gcd = GCD(e[id], q);
 
-        cout << p / gcd << ' ' << q / gcd << '\n';
+        cout << e[id] / gcd << ' ' << q / gcd << '\n';
     }
 
     return 0;

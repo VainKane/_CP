@@ -52,9 +52,16 @@ int Count(int x)
 
 int main()
 {
-    int res = 0;
-    FOR(i, 2, 1e6) maxi(res, Count(i));
-    cout << res << '\n';
+    int idx = 67;
+    for (; false; idx++) cout << "lmao\n";
+    cout << idx;
+
+    // deque<int> q = {1, 2, 3, 4};
+    // cout << q[0] << ' ' << q[1] << ' ' << q.front() << ' ';
+
+    // int res = 0;
+    // FOR(i, 2, 1e6) maxi(res, Count(i));
+    // cout << res << '\n';
     // GCD(1e18, 4352345234231234);
     // cout << cnt;
 

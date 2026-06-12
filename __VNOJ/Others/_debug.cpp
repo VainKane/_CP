@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "bedao_m16_query"
+#define name "nkleaves"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -31,25 +31,13 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 20;
-    int const oo = MK(30) - 1;
+    int const lim = 5000;
+    int const oo = 1000;
+    
+    int n = Rand(2, lim);
+    cout << n << ' ' << Rand(1, min(10, n - 1)) << '\n';
 
-    int n = Rand(1, lim);
-    int q = Rand(1, lim);
-
-    cout << n << ' ' << q << '\n';
-    FOR(i, 1, n) cout << Rand(0, oo) << ' ';
-    cout << '\n';
-    while (q--)
-    {
-        int type = Rand(1, 3);
-        int l = Rand(1, n);
-        int r = Rand(l, n);
-
-        cout << type << ' ' << l << ' ' << r << ' ';
-        if (type != 3) cout << Rand(1, oo);
-        cout << '\n';
-    }
+    FOR(i, 1, n) cout << Rand(1, oo) << ' ';
 }
 
 int main()
