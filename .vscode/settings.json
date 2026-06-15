@@ -93,7 +93,14 @@
         "**/*.e:": true, 
         "**/.cph": true, 
         "**/.vscode": true,
+        "**/bin": true,
+        ".*": true,
     },
+
+    "code-runner.executorMap": {
+        "cpp": "cd $dir && g++ $fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o bin/$fileNameWithoutExt && $dirbin/$fileNameWithoutExt",
+    },
+
     "C_Cpp.errorSquiggles": "disabled",
 
     "editor.fontFamily": "Fira Code, monospace",
