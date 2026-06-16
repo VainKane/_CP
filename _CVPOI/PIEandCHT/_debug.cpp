@@ -29,7 +29,7 @@ ll Rand(ll l, ll r)
 
 void GenTest()
 {
-    ofstream cout("Text/"name".inp");
+    ofstream cout(name".inp");
 
     int const lim = 1000;
     int const oo = 1e6;
@@ -49,10 +49,10 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system("bin/./"name" <Text/"name".inp> Text/"name".out");
-        system("bin/./"name"_brute <Text/"name".inp> Text/"name".ans");
+        system(name".exe <"name".inp> "name".out");
+        system(name"_brute.exe <"name".inp> "name".ans");
 
-        if (system("diff Text/"name".out Text/"name".ans") != 0)
+        if (system("fc "name".out "name".ans") != 0)
         {
             cout << "Test: " << i << " WRONG!\n";
             return 0;

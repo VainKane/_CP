@@ -93,12 +93,13 @@
         "**/*.e:": true, 
         "**/.cph": true, 
         "**/.vscode": true,
-        "**/bin": true,
+        // "**/bin": true,
         ".*": true,
     },
 
+    "code-runner.runInTerminal": true,
     "code-runner.executorMap": {
-        "cpp": "cd $dir && g++ $fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o bin/$fileNameWithoutExt && $dirbin/$fileNameWithoutExt",
+        "cpp": "cd $dir && mkdir -Force bin > $null && cd bin && g++ ..\\$fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
     },
 
     "C_Cpp.errorSquiggles": "disabled",
@@ -106,7 +107,7 @@
     "editor.fontFamily": "Fira Code, monospace",
     "terminal.integrated.fontFamily": "Fira Code",
     "editor.fontVariations": false,
-    "editor.fontWeight": "460",
+    "editor.fontWeight": "normal",
     "cph-ng.cache.cleanOnStartup": false,
     "cph-ng.cphCapable.enabled": true,
 }
