@@ -1,1 +1,0 @@
-{"name":"Local: 11367","url":"d:\\Dev\\_Scripts\\UVAOnlineJudge\\11367.cpp","tests":[{"id":1766241473295,"input":"5 5\n10 10 20 12 13\n0 1 9\n0 2 8\n1 2 1\n1 3 11\n2 3 7\n2\n10 0 3\n20 1 4","output":"170\nimpossible"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\UVAOnlineJudge\\11367.cpp","group":"local","local":true}

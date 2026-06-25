@@ -1,1 +1,0 @@
-{"name":"Local: B1","url":"d:\\Dev\\_CP\\_LQDOJ\\MTTN26(SC)\\B1.cpp","tests":[{"id":1775878642617,"input":"1 11 1\n6 \n10 ","output":"0 0"},{"id":1775880795630,"input":"6 120 250\n1 2 3 8 10 13\n2 4 5 9 11 14","output":"6 10298\n1 2 3 4 5 6"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_LQDOJ\\MTTN26(SC)\\B1.cpp","group":"local","local":true}

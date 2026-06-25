@@ -1,1 +1,0 @@
-{"name":"Local: xor","url":"d:\\Dev\\_CP\\__VNOJ\\THT\\2021SL\\xor.cpp","tests":[{"id":1774666612814,"input":"4 0 7 2\n1 4 6 5","output":"20\n1"},{"id":1774666622963,"input":"1 0 536870911 1\n0","output":"536870911\n1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__VNOJ\\THT\\2021SL\\xor.cpp","group":"local","local":true}

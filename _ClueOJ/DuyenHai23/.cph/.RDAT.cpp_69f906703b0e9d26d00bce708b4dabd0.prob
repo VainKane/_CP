@@ -1,1 +1,0 @@
-{"name":"Local: RDAT","url":"d:\\Dev\\_CP\\ClueOJ\\DuyenHai2023\\RDAT.cpp","tests":[{"id":1774313624852,"input":"5 2\n5 2 3 1 3\n1 5\n4 5","output":"8\n4"},{"id":1774315335328,"input":"8 1\n9 7 7 7 6 3 9 7 \n1 7","output":"18"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\ClueOJ\\DuyenHai2023\\RDAT.cpp","group":"local","local":true}

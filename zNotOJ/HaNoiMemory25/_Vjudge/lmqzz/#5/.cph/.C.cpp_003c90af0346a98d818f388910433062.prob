@@ -1,1 +1,0 @@
-{"name":"Local: C","url":"d:\\Dev\\_Scripts\\_Vjudge\\lmqzz\\#5\\C.cpp","tests":[{"id":1765802626726,"input":"4\n4 2 3 4\n1 2\n2 3\n3 4","output":"106"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\_Vjudge\\lmqzz\\#5\\C.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: A_trau","url":"d:\\Dev\\_Scripts\\_YugiHacker\\Contest6\\A_trau.cpp","tests":[{"id":1762223976951,"input":"5\n2 4 1 3 6\n2 3\n1 3\n2 3\n1 3\n1 1","output":"8"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\_YugiHacker\\Contest6\\A_trau.cpp","group":"local","local":true}

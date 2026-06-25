@@ -1,1 +1,0 @@
-{"name":"Local: querysum2","url":"d:\\Dev\\_CP\\LQDOJ\\Others\\querysum2.cpp","tests":[{"id":1776696519468,"input":"5 4\n1 4 6 2 3\n2 1 4\n1 2 5 3\n1 3 4 5\n2 3 5","output":"13\n30"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\LQDOJ\\Others\\querysum2.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: 1760B","url":"d:\\Dev\\_CP\\__Codeforces\\1760\\1760B.cpp","tests":[{"id":1774404140060,"input":"5\n1\na\n4\ndown\n10\ncodeforces\n3\nbcf\n5\nzzzzz","output":"1\n23\n19\n6\n26"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__Codeforces\\1760\\1760B.cpp","group":"local","local":true}

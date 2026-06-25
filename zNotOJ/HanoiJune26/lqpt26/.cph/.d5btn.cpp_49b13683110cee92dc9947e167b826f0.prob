@@ -1,1 +1,0 @@
-{"name":"Local: d5btn","url":"/home/vain_kane/Data/Dev/_CP/zNotOJ/HanoiJune26/lqpt26/d5btn.cpp","tests":[{"id":1782227033400,"input":"2 1\n[?","output":"1"},{"id":1782231854468,"input":"4 2\n????","output":"9"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/vain_kane/Data/Dev/_CP/zNotOJ/HanoiJune26/lqpt26/d5btn.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: 492D","url":"d:\\Dev\\_Scripts\\__Codeforces\\492\\492D.cpp","tests":[{"id":1767432460973,"input":"4 3 2\n1\n2\n3\n4","output":"Vanya\nVova\nVanya\nBoth"},{"id":1767432469696,"input":"2 1 1\n1\n2","output":"Both\nBoth"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\__Codeforces\\492\\492D.cpp","group":"local","local":true}

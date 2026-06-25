@@ -1,1 +1,0 @@
-{"name":"Local: KOL15C","url":"d:\\Dev\\_CP\\_CodeChef\\KOL15C.cpp","tests":[{"id":1772786539821,"input":"7 4\n1 3\n7 7\n7 3\n2 2","output":"0 1 2 2 1 2 2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CodeChef\\KOL15C.cpp","group":"local","local":true}

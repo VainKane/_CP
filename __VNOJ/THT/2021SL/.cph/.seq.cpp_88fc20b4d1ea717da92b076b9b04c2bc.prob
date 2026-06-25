@@ -1,1 +1,0 @@
-{"name":"Local: seq","url":"d:\\Dev\\_CP\\__VNOJ\\THT\\2021SL\\seq.cpp","tests":[{"id":1774669146616,"input":"2\n5 3\n9 1","output":"8\n9"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__VNOJ\\THT\\2021SL\\seq.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: E","url":"d:\\Dev\\_Scripts\\_Vjudge\\Training28102025\\E.cpp","tests":[{"id":1761794854927,"input":"5\n1 2\n1 3\n4 2\n5 2","output":"8\n4\n2\n4\n4"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\_Vjudge\\Training28102025\\E.cpp","group":"local","local":true}

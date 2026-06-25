@@ -1,1 +1,0 @@
-{"name":"Local: 888E","url":"d:\\Dev\\_CP\\__Codeforces\\888\\888E.cpp","tests":[{"id":1777856086152,"input":"4 4\n5 2 4 1","output":"3"},{"id":1777856088882,"input":"3 20\n199 41 299","output":"19"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__Codeforces\\888\\888E.cpp","group":"local","local":true}

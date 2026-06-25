@@ -1,1 +1,0 @@
-{"name":"Local: t8","url":"d:\\Dev\\_CP\\_CVPOI\\DS\\t8.cpp","tests":[{"id":1776308265312,"input":"4\nVOVO\nVVOI\nOVOO\n3\nIVOV\n1 4 O\n2 2 V\n2 4 I","output":"Yes\nNo\nYes\nYes"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CVPOI\\DS\\t8.cpp","group":"local","local":true}

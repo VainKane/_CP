@@ -1,1 +1,0 @@
-{"name":"Local: E","url":"d:\\Dev\\_Scripts\\_CVPOJ\\E.cpp","tests":[{"id":1772422658645,"input":"4 3 4\n1 2 4 3\n1 2\n2 3\n4 2","output":"12"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\_CVPOJ\\E.cpp","group":"local","local":true}

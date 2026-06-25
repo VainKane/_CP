@@ -1,1 +1,0 @@
-{"name":"Local: ROBOT","url":"d:\\Dev\\_CP\\ClueOJ\\DuyenHai25\\ROBOT.cpp","tests":[{"id":1776483330625,"input":"2 2 2\n0 0\n1 0\n0 1\n1 1","output":"UL"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\ClueOJ\\DuyenHai25\\ROBOT.cpp","group":"local","local":true}

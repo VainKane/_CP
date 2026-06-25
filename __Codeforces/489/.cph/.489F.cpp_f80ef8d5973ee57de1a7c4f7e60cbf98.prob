@@ -1,1 +1,0 @@
-{"name":"Local: 489F","url":"d:\\Dev\\_Scripts\\__Codeforces\\489\\489F.cpp","tests":[{"id":1767149996130,"input":"3 1 1000\n011","output":"2"},{"id":1767150000749,"input":"4 4 100500\n0110\n1010\n0101\n1001","output":"1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\__Codeforces\\489\\489F.cpp","group":"local","local":true}

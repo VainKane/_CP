@@ -1,1 +1,0 @@
-{"name":"Local: 1280D","url":"d:\\Dev\\_CP\\__Codeforces\\1280\\1280D.cpp","tests":[{"id":1778205368937,"input":"2\n4 3\n10 160 70 50\n70 111 111 0\n1 2\n2 3\n3 4\n2 1\n143 420\n214 349\n2 1","output":"2\n0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__Codeforces\\1280\\1280D.cpp","group":"local","local":true}

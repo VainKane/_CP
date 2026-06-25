@@ -1,1 +1,0 @@
-{"name":"Local: HKDATA_TRAU","url":"d:\\Dev\\_CP\\ClueOJ\\DuyenHai2023\\HKDATA_TRAU.cpp","tests":[{"id":1775361946605,"input":"5 2\n1 -1 2 1 1\n2 2 -2\n2 4 -2","output":"4\n4"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\ClueOJ\\DuyenHai2023\\HKDATA_TRAU.cpp","group":"local","local":true}

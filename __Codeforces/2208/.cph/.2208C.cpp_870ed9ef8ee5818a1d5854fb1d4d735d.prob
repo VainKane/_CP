@@ -1,1 +1,0 @@
-{"name":"Local: 2208C","url":"d:\\Dev\\_CP\\__Codeforces\\2208\\2208C.cpp","tests":[{"id":1773506109924,"input":"2\n2\n10 0\n20 5\n3\n10 5\n10 80\n20 5","output":"30.0000000000\n29.0000000000"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__Codeforces\\2208\\2208C.cpp","group":"local","local":true}

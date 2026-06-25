@@ -1,1 +1,0 @@
-{"name":"Local: NPLFLF","url":"d:\\Dev\\_CP\\_CodeChef\\NPLFLF.cpp","tests":[{"id":1779290365042,"input":"9\n1 aba\n1 accba\n2 2 2\n2 2 3\n1 aaaa\n1 ababa\n2 3 2\n3 1\n2 3 2","output":"YES\nNO\nYES\nNO"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CodeChef\\NPLFLF.cpp","group":"local","local":true}

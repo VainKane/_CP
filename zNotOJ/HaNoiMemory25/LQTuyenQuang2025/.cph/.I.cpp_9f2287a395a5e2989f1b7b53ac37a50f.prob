@@ -1,1 +1,0 @@
-{"name":"Local: I","url":"d:\\Dev\\_Scripts\\LQTuyenQuang2025\\I.cpp","tests":[{"id":1761726609033,"input":"4\n1 4\n7 7\n6 9\n8 10\n6\n2 10 3 5 7 6","output":"-1"},{"id":1761727231124,"input":"1\n2 3\n1\n1","output":"-1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\LQTuyenQuang2025\\I.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: R","url":"d:\\Dev\\_Scripts\\LQTuyenQuang2025\\R.cpp","tests":[{"id":1761898034436,"input":"4 2\n3 2 4 5","output":"8"},{"id":1761898501705,"input":"10 3\n122711652 0 1 2 4 8 16 32 64 128","output":"122711652"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\LQTuyenQuang2025\\R.cpp","group":"local","local":true}

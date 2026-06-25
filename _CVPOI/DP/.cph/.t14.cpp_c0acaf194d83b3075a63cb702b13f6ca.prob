@@ -1,1 +1,0 @@
-{"name":"Local: t14","url":"d:\\Dev\\_CP\\_CVPOI\\DP\\t14.cpp","tests":[{"id":1776336563095,"input":"123 321","output":"153"},{"id":1776337998024,"input":"1 100","output":"90"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CVPOI\\DP\\t14.cpp","group":"local","local":true}

@@ -88,19 +88,19 @@
         "**/CVS": true,
         // "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        // "**/*.exe": true,
+        "**/*.exe": true,
         // "**/*.bin": true,
         // "**/.cph": true, 
         // "**/.vscode": true,
         // "**/bin": true,
         "**/.*": true,
-        "**/*.*": false,
+        // "**/*.*": false,
     },
 
     "code-runner.runInTerminal": true,
     "code-runner.executorMap": {
-        // "cpp": "cd $dir && mkdir -Force bin > $null && cd bin && g++ ..\\$fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
-        "cpp": "cd $dir && mkdir -p bin && cd bin && g++ ../$fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o $fileNameWithoutExt && ./$fileNameWithoutExt; echo",
+        "cpp": "cd $dir && mkdir -Force bin > $null && cd bin && g++ ..\\$fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        // "cpp": "cd $dir && mkdir -p bin && cd bin && g++ ../$fileName --std=c++14 -pipe -O2 -s -static -lm -x -Wall -Wextra -DLOCALONLY -o $fileNameWithoutExt && ./$fileNameWithoutExt; echo",
     },
 
     "C_Cpp.errorSquiggles": "disabled",

@@ -1,1 +1,0 @@
-{"name":"Local: A","url":"d:\\Dev\\_CP\\THT\\DRAFT25_2\\A.cpp","tests":[{"id":1778127239737,"input":"2\n5 6","output":"2"},{"id":1778127248811,"input":"2\n5 10","output":"1"},{"id":1778127255521,"input":"5\n1 2 3 4 5","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\THT\\DRAFT25_2\\A.cpp","group":"local","local":true}

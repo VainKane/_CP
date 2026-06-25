@@ -1,1 +1,0 @@
-{"name":"Local: dhbb23_rescue","url":"d:\\Dev\\_CP\\CLUEOJ\\DuyenHai2023\\dhbb23_rescue.cpp","tests":[{"id":1773712191772,"input":"4 4 1 1\n1 2 1\n2 3 2\n3 4 3\n4 2 1","output":"0 1 2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\CLUEOJ\\DuyenHai2023\\dhbb23_rescue.cpp","group":"local","local":true}

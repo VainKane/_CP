@@ -1,1 +1,0 @@
-{"name":"Local: 406024J","url":"d:\\Dev\\_CP\\VJudge\\Gym-406204\\406024J.cpp","tests":[{"id":1778249908996,"input":"6 8\n6 1 10\n3 1 5\n5 6 5\n4 6 8\n2 6 5\n2 5 1\n3 4 13\n2 3 10","output":"0 1\n15 2\n5 1\n18 2\n15 1\n10 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\VJudge\\Gym-406204\\406024J.cpp","group":"local","local":true}

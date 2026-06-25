@@ -1,1 +1,0 @@
-{"name":"Local: 1195","url":"d:\\Dev\\_CP\\__CSES\\Graph\\1195.cpp","tests":[{"id":1773977336502,"input":"3 4\n1 2 3\n2 3 1\n1 3 7\n2 1 5","output":"2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__CSES\\Graph\\1195.cpp","group":"local","local":true}

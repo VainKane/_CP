@@ -1,1 +1,0 @@
-{"name":"Local: nkleaves","url":"d:\\Dev\\_CP\\__VNOJ\\Others\\nkleaves.cpp","tests":[{"id":1781179916924,"input":"5 2\n1\n2\n3\n4\n5","output":"13"},{"id":1781185866606,"input":"3 2\n5 9 10","output":"9"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__VNOJ\\Others\\nkleaves.cpp","group":"local","local":true}

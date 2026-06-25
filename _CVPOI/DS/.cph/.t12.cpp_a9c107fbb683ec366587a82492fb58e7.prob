@@ -1,1 +1,0 @@
-{"name":"Local: t12","url":"d:\\Dev\\_CP\\_CVPOI\\DS\\t12.cpp","tests":[{"id":1776313107282,"input":"1 5\nE 2\nN 2\nW 4\nS 4\nE 4","output":"17"},{"id":1776313140151,"input":"3 4\nW 2\nN 1\nW 1\nN 2","output":"27"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CVPOI\\DS\\t12.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: E","url":"d:\\Dev\\_CP\\_CVPOI\\DS\\E.cpp","tests":[{"id":1774795266422,"input":"5 3\n1 2 3 4 5\n7\n1 2 7\n3 1 5\n3 2 2\n2 2 2\n3 2 2\n2 1 5\n3 1 5","output":"20\n7\n0\n22"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CVPOI\\DS\\E.cpp","group":"local","local":true}

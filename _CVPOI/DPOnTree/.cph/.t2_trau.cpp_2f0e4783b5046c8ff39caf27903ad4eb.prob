@@ -1,1 +1,0 @@
-{"name":"Local: t2_trau","url":"d:\\Dev\\_CP\\_CVPOI\\DPOnTree\\t2_trau.cpp","tests":[{"id":1777991796179,"input":"6\n1 2\n1 3\n1 4\n4 5\n4 6","output":"4 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\_CVPOI\\DPOnTree\\t2_trau.cpp","group":"local","local":true}

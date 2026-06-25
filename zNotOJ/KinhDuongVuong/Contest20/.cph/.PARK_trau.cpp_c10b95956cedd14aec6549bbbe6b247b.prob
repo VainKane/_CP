@@ -1,1 +1,0 @@
-{"name":"Local: PARK_trau","url":"d:\\Dev\\_Scripts\\_KinhDuongVuong\\Contest20\\PARK_trau.cpp","tests":[{"id":1765596523787,"input":"1\n3 3 0 120\n1 2 1\n2 3 1\n1 3 2","output":"2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\_KinhDuongVuong\\Contest20\\PARK_trau.cpp","group":"local","local":true}

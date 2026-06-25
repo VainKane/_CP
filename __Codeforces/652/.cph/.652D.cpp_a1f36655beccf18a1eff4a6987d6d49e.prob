@@ -1,1 +1,0 @@
-{"name":"Local: 652D","url":"d:\\Dev\\_Scripts\\__Codeforces\\652\\652D.cpp","tests":[{"id":1762563517036,"input":"4\n1 8\n2 3\n4 7\n5 6","output":"3\n0\n1\n0"},{"id":1762563971508,"input":"3\n3 4\n1 5\n2 6","output":"0\n1\n1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\__Codeforces\\652\\652D.cpp","group":"local","local":true}

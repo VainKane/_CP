@@ -1,1 +1,0 @@
-{"name":"Local: mbipalin","url":"d:\\Dev\\_CP\\__VNOJ\\Others\\mbipalin.cpp","tests":[{"id":1777818296206,"input":"6 123","output":"71"},{"id":1777818299312,"input":"2 10","output":"9"},{"id":1777818305024,"input":"6 12345","output":"1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_CP\\__VNOJ\\Others\\mbipalin.cpp","group":"local","local":true}

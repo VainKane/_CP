@@ -1,1 +1,0 @@
-{"name":"Local: ROAD","url":"d:\\Dev\\_Scripts\\_KinhDuongVuong\\Contest11\\ROAD.cpp","tests":[{"id":1762938441675,"input":"6\n1 2 3\n2 3 4\n3 4 5\n4 5 6\n5 6 7","output":"0\n31\n18\n22\n0\n53"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\_KinhDuongVuong\\Contest11\\ROAD.cpp","group":"local","local":true}

@@ -1,1 +1,0 @@
-{"name":"Local: fc082_treecolor","url":"d:\\Dev\\_Scripts\\__VNOJ\\Others\\fc082_treecolor.cpp","tests":[{"id":1765962416356,"input":"6\n1 3\n2 1\n2 4\n5 6\n5 2\n2 3 1 2 3 3","output":"3\n2\n1\n1\n1\n1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\__VNOJ\\Others\\fc082_treecolor.cpp","group":"local","local":true}

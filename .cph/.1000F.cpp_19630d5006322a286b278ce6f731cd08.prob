@@ -1,1 +1,0 @@
-{"name":"Local: 1000F","url":"d:\\Dev\\_Scripts\\__Codeforces\\1000\\1000F.cpp","tests":[{"id":1764766867868,"input":"6\n1 1 2 3 2 4\n2\n2 6\n1 2","output":"4\n0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Dev\\_Scripts\\__Codeforces\\1000\\1000F.cpp","group":"local","local":true}
