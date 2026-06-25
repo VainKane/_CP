@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t13"
+#define name "G"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -20,28 +20,24 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 mt19937_64 rd(time(0));
-int const ntest = 1e4;
+ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
-ll Rand(ll l, ll r)
-{
-    return l + rd() * 1LL * rd() % (r - l + 1);
-}
+int const ntest = 1e4;
 
 void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 1000;
-    int const oo = 1e6;
-
+    int const lim = 3000;
+    int const oo = 1e9;
+    
     int n = Rand(1, lim);
-    int q = Rand(1, n);
-    int a = Rand(1, oo);
+    int k = Rand(1, oo);
 
-    cout << n << ' ' << q << ' ' << a << '\n';
+    cout << n << ' ' << k << '\n';
     FOR(i, 1, n) cout << Rand(1, oo) << ' ';
     cout << '\n';
-    while (q--) cout << Rand(1, n) << ' ';
+    FOR(i, 1, n) cout << "LR"[Rand(0, 1)];
 }
 
 int main()

@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t4"
+#define name "hanoihn6"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -24,21 +24,48 @@ ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const ntest = 1e4;
 
+int n;
+
 void GenTest()
 {
     ofstream cout(name".inp");
+    int const lim = 8;
+    n = Rand(1, lim);
+    cout << n;
+}
 
-    int const lim = 5000;
+void Judge()
+{
+    ifstream cin(name".out");
+    vector<int> v[4];
+    FORD(i, n, 1) v[0].push_back(i);
 
-    int n = Rand(1, lim);
-    int s = 1e6 - n;
-
-    cout << n << '\n';
-    FOR(i, 1, n)
+    int t; cin >> t;
+    FOR(haha, 1, t)
     {
-        int x = Rand(0, min(s, (int)Rand(10, 7000)));
-        s -= x;
-        cout << x + 1 << ' ';
+        char x, y;
+        cin >> x >> y;
+        x -= 'A', y -= 'A';
+
+        if (sz(v[y]) && v[y].back() < v[x].back())
+        {
+            cout << "Move: " << haha << " is illegal!\n";
+            exit(0);
+        }
+        else v[y].push_back(v[x].back()), v[x].pop_back();
+    }
+
+    if (sz(v[3]) != n)
+    {
+        cout << "Not enough: " << sz(v[3]);
+        exit(0);
+    }
+
+    FOR(i, 1, n - 1) if (v[3][i] != v[3][i - 1] - 1)
+    {
+        cout << "Not sorted yet, the seq is:\n";
+        FORD(j, n - 1, 0) cout << v[3][j] << ' ';
+        exit(0); 
     }
 }
 
@@ -48,13 +75,7 @@ int main()
     {
         GenTest();
         system("./"name" <"name".inp> "name".out");
-        system("./"name"_brute <"name".inp> "name".ans");
-
-        if (system("diff "name".out "name".ans") != 0)
-        {
-            cout << "Test: " << i << " WRONG!\n";
-            return 0;
-        }
+        Judge();
 
         cout << "Test: " << i << " CORRECT!\n";
     }
