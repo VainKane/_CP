@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t6"
+#define name ""
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,35 +19,30 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 6767;
 
-int const ntest = 1e4;
-
-void GenTest()
-{
-    ofstream cout(name".inp");
-
-    int const lim = 10;
-    int t = Rand(1, 1);
-
-    cout << t << '\n';
-    while (t--)
-    {
-        int n = Rand(1, lim);
-        cout << n << '\n';
-        while (n--) cout << Rand(0, 1) << ' ';
-    }
-}
+int n;
+int a[N];
 
 int main()
 {
-    FOR(i, 1, ntest)
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i];
+
+    int res = 0;
+    FOR(i, 1, n) FOR(j, i + 1, n) FOR(u, j + 1, n) FOR(v, u + 1, n)
     {
-        GenTest();
-        system(name".exe <"name".inp> "name".out");
-        cout << "Test: " << i << " judged\n";
+        if (a[j] < a[i] && a[i] < a[u] && a[u] < a[v])
+        {
+            // cout << i << ' ' << j << ' ' << u << ' ' << v << '\n';
+            res++;
+        }
     }
+
+    cout << res;
 
     return 0;
 }

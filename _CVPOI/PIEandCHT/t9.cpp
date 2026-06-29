@@ -11,139 +11,108 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
 int const M = 3e4 + 5;
-int const LOG = 20;
 
 int n;
 
 int a[N];
 vector<int> adj[N];
+ll d[N];
 
-namespace Sub1
+bool prime[M];
+vector<int> facts[M], divs[M];
+
+int cnt[N];
+ll len[N];
+ll res = 0;
+
+int in[N], out[N];
+int node[N], bigChild[N];
+int timer = 0;
+
+void DFSPrepare(int u, int p)
 {
-    bool CheckSub()
+    in[u] = ++timer;
+    node[timer] = u;
+    int sz = 0;
+
+    for (auto &v : adj[u]) if (v != p)
     {
-        return true;
+        d[v] = d[u] + a[v];
+        DFSPrepare(v, u);
+        if (maxi(sz, out[v] - in[v] + 1)) bigChild[u] = v;
     }
 
-    long long d[N];
-    int up[2 * N][LOG];
-    int pos[N];
-    int timer = 0;
-
-    int GCD(int a, int b)
-    {
-        while (true)
-        {
-            if (a == 0 || b == 0 || a == b) return a | b;
-            if (a > b) a %= b; else b %= a;
-        }
-    }
-
-    bool cmp(int u, int v)
-    {
-        return pos[u] < pos[v];
-    }
-
-    void DFS(int u, int p)
-    {
-        up[++timer][0] = u;
-        pos[u] = timer;
-
-        for (auto &v : adj[u]) if (v != p)
-        {
-            d[v] = d[u] + a[v];
-            DFS(v, u);
-            up[++timer][0] = u;
-        }
-    }
-
-    void Build()
-    {
-        FOR(j, 1, 31 - __builtin_clz(timer)) FOR(i, 1, timer - MK(j) + 1)
-            up[i][j] = min(up[i][j - 1], up[i + MK(j - 1)][j - 1], cmp);
-    }
-
-    int LCA(int u, int v)
-    {
-        u = pos[u], v = pos[v];
-        if (u > v) swap(u, v);
-
-        int k = 31 - __builtin_clz(v - u + 1);
-        return min(up[u][k], up[v - MK(k) + 1][k], cmp);
-    }
-
-    long long Dist(int u, int v)
-    {
-        int p = LCA(u, v);
-        return d[u] + d[v] - 2 * d[p] + a[p];
-    }
-
-    void Process()
-    {
-        d[1] = a[1];
-        DFS(1, -1);
-        Build();
-
-        long long res = 0;
-        FOR(u, 1, n) FOR(v, u + 1, n) if (GCD(a[u], a[v]) > 1) res += Dist(u, v);
-        cout << res;
-    }
+    out[u] = timer;
 }
 
-namespace Sub2
+void UpdateRes(int v, int u)
 {
-    bool CheckSub()
+    int k = 0;
+    ll sum = 0;
+
+    FOR(mask, 1, MK(sz(facts[a[u]])) - 1)
     {
-        FOR(u, 1, n) if (a[u] != a[1]) return false;
-        return true;
-    }
-
-    int sz[N];
-    long long f[N], fPar[N];
-    long long s = 0;
-
-    void DFSPrepare(int u, int p)
-    {
-        sz[u] = 1;
-
-        for (auto &v : adj[u]) if (v != p)
+        int delta = __builtin_parity(mask) ? 1 : -1;
+        
+        int lcm = 1;
+        for (int tmp = mask; tmp; tmp ^= tmp & -tmp)
         {
-            DFSPrepare(v, u);
-            f[u] += f[v] + sz[v];
-            sz[u] += sz[v];
+            int i = __builtin_ctz(tmp);
+            lcm *= facts[v][i];
         }
+
+        sum += delta * len[lcm];
+        k += delta * cnt[lcm];
     }
 
-    void DFS(int u, int p)
+    res += sum + k * (d[v] - 2 * d[u]);
+}
+
+void DFS(int u, int p)
+{
+    for (auto &v : adj[u]) if (v != p && v != bigChild[u])
     {
-        for (auto &v : adj[u]) if (v != p)
-        {
-            fPar[v] = f[u] + fPar[u] - f[v] - sz[v] + n - sz[v];
-            DFS(v, u);
-        }
+        DFS(v, u);
+        FOR(i, in[v], out[v]) cnt[node[i]] = len[node[i]] = 0;
     }
 
-    void Process()
+    if (bigChild[u]) DFS(bigChild[u], u);
+    for (auto &v : adj[u]) if (v != p && v != bigChild[u])
     {
-        DFSPrepare(1, -1);
-        DFS(1, -1);
+        FOR(i, in[v], out[v]) UpdateRes(node[i], u);
+        FOR(i, in[v], out[v]) for (auto &x : divs[a[u]]) cnt[x]++, len[x] += d[u];
+    }
 
-        long long res = 0;
-        FOR(u, 1, n) res += f[u] + fPar[u] + n - 1;
-        cout << res / 2 * (a[1] > 1 ? a[1] : 0);
+    for (auto &x : divs[a[u]]) cnt[x]++, len[x] += d[u];
+    UpdateRes(u, u);
+}
+
+void Sieve()
+{
+    int lim = *max_element(a + 1, a + n + 1);
+
+    memset(prime, true, sizeof prime);
+    prime[0] = prime[1] = false;
+    FOR(i, 2, sqrt(lim)) if (prime[i]) for (int j = i * i; j <= lim; j += i) prime[j] = false;
+
+    FOR(i, 1, sqrt(lim)) for (int j = i * i; j <= lim; j += i)
+    {
+        if (i > 1) divs[j].push_back(i);
+        if (prime[i]) facts[j].push_back(i);
+
+        if (i * i == j) continue;
+        divs[j].push_back(j / i);
+        if (prime[j / i]) facts[j].push_back(j / i);
     }
 }
 
@@ -162,8 +131,24 @@ int main()
         adj[v].push_back(u);
     }
 
-    if (Sub2::CheckSub()) return Sub2::Process(), 0;
-    if (Sub1::CheckSub()) return Sub1::Process(), 0;
+    d[1] = a[1];
+    
+    Sieve();
+    DFSPrepare(1, -1);
+    DFS(1, -1);
+
+    cout << res;
+
+    // FOR(i, 1, n)
+    // {
+    //     cout << a[i] << ":\n";
+    //     cout << "facts: ";
+    //     for (auto &x : facts[a[i]]) cout << x << ' ';
+    //     cout << '\n';
+    //     cout << "divs: ";
+    //     for (auto &x : divs[a[i]]) cout << x << ' ';
+    //     cout << "\n-----------------\n";
+    // }
 
     return 0;
 }

@@ -58,18 +58,13 @@ void BFS()
     }
 }
 
-void NoSolution()
-{
-    REP(haha, n - 1) cout << 0;
-    exit(0);
-}
 
 bool Init()
 {
     int ma = 0;
     FOR(i, 1, k)
     {
-        if (node[h[s[i]]]) return NoSolution(), false;
+        if (node[h[s[i]]]) return false;
         node[h[s[i]]] = s[i], maxi(ma, h[s[i]]);
     }
 
@@ -84,11 +79,7 @@ bool Init()
     return true;
 }
 
-bool Check(int u)
-{
-    if (node[h[u]]) return u == node[h[u]];
-    return f[u] & g[u];
-}
+bool Check(int u) { return f[u] & g[u]; }
 
 int main()
 {
@@ -99,6 +90,8 @@ int main()
     while (t--)
     {
         cin >> n >> m >> k >> l;
+        Reset();
+     
         FOR(i, 1, k) cin >> s[i];
         FOR(i, 1, l) cin >> d[i];
         FOR(i, 1, m)
@@ -109,16 +102,20 @@ int main()
             adj[v].push_back(u);
         }
 
-        Reset();
         BFS();
-        if (!Init()) continue;
+        if (!Init())
+        {
+            FOR(u, 2, n) cout << 0;
+            cout << '\n';
+            continue;
+        }
 
         int k = *max_element(h + 1, h + n + 1);
-        FOR(i, 1, k) for (auto &u : ver[i]) if (f[u]) 
-            for (auto &v : adj[u]) f[v] = (!node[i + 1] || v == node[i + 1]);
+        FOR(i, 1, k) for (auto &u : ver[i]) if (f[u]) for (auto &v : adj[u]) if (h[v] == h[u] + 1)
+            f[v] = (!node[i + 1] || v == node[i + 1]);
 
-        FORD(i, k, 1) for (auto &u : ver[i]) if (g[u])
-            for (auto &v : adj[u]) g[v] = (!node[i - 1] || v == node[i - 1]);
+        FORD(i, k, 1) for (auto &u : ver[i]) if (g[u]) for (auto &v : adj[u]) if (h[v] == h[u] - 1)
+            g[v] = (!node[i - 1] || v == node[i - 1]);
 
         FOR(u, 2, n) cout << Check(u);
         cout << '\n';

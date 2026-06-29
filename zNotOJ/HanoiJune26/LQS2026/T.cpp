@@ -1,5 +1,5 @@
 #ifndef LOCALONLY
-#include "ones.h"
+#include "flip.h"
 #endif // LOCALONLY
 
 #include <bits/stdc++.h>
@@ -27,7 +27,7 @@ mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 #ifdef LOCALONLY
-ii find_longest_subarray_of_ones(int _n);
+ii solve(int _n);
 
 struct Jury
 {
@@ -57,7 +57,7 @@ struct Jury
         return ans;
     }
 
-    int flip_bits(const std::vector<bool> &flips){
+    int query(const std::vector<bool> &flips){
         assert((int)flips.size() == n);
         assert(++num_queries <= 40);
         for(int i = 0; i < n; ++i)
@@ -67,18 +67,17 @@ struct Jury
 
     void Judge()
     {
-        ii p = find_longest_subarray_of_ones(n);
+        ii p = solve(n);
+        // REP(i, n) cout << a[i] << ' ';
+        // cout << '\n' << p.F << ' ' << p.S;
 
-        REP(i, n) cerr << a[i] << ' ';
-        cerr << '\n' << p.F << ' ' << p.S << '\n';
-
-    //     assert(p.F <= p.S && p.F >= 0 && p.S < n);
-    //     assert(p.S - p.F + 1 == longest_seq_of_1s());
-    //     FOR(i, p.F, p.S) assert(a[i]);
+        assert(p.F <= p.S && p.F >= 0 && p.S < n);
+        assert(p.S - p.F + 1 == longest_seq_of_1s());
+        FOR(i, p.F, p.S) assert(a[i]);
     }
 } jury;
 
-int flip_bits(vector<bool> const &v) { return jury.flip_bits(v); }
+int query(vector<bool> const &v) { return jury.query(v); }
 #endif // LOCALONLY
 
 int const N = 1e4 + 5;
@@ -91,18 +90,18 @@ void Init()
     memset(mark, 0, sizeof mark);
     vector<bool> v(n, 1);
 
-    int lenFlip = flip_bits(v);
-    len = flip_bits(v);
+    int lenFlip = query(v);
+    len = query(v);
     bool lmao = false;
 
     while (len <= lenFlip)
     {
         REP(i, n) v[i] = Rand(0, 1);
-        len = flip_bits(v), lenFlip = flip_bits(vector<bool>(n, 1));
+        len = query(v), lenFlip = query(vector<bool>(n, 1));
         lmao = true;
     }
 
-    if (lmao) flip_bits(vector<bool>(n, 1));
+    if (lmao) query(vector<bool>(n, 1));
 }
 
 bool Check(int idx)
@@ -110,14 +109,14 @@ bool Check(int idx)
     vector<bool> v(n, 0);
     FOR(i, 0, idx) v[i] = !mark[i];
 
-    int k = flip_bits(v);
-    if (k < len) flip_bits(v);
+    int k = query(v);
+    if (k < len) query(v);
     else FOR(i, 0, idx) mark[i] = 1;
 
     return k >= len;
 }
 
-ii find_longest_subarray_of_ones(int _n)
+ii solve(int _n)
 {
     n = _n;
     Init();
@@ -134,7 +133,7 @@ ii find_longest_subarray_of_ones(int _n)
 
     vector<bool> v(n, 0);
     REP(i, n) v[i] = mark[i];
-    if (v != vector<bool>(n, 0)) flip_bits(v);
+    if (v != vector<bool>(n, 0)) query(v);
 
     return {res + 1, res + len};
 }

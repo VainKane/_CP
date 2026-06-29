@@ -6,80 +6,63 @@ using namespace std;
 #define FORD(i, b, a) for (int i = (b), _a = (a); i >= _a; i--)
 #define REP(i, n) for (int i = 0, _n = (n); i < _n; i++)
 #define BIT(i, x) (((x) >> (i)) & 1)
-#define MK(i) (1ll << (i))
+#define MK(i) (1LL << (i))
 #define all(v) v.begin(), v.end()
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 50;
+int const N = 36;
 
 int n;
 string s[N];
+vector<int> adj[N];
 
-int id[N];
+int res = N;
+int col[N];
 
-bool c[N][N];
-int deg[N];
-
-int res;
-
-bool Equal(string a, string b)
+bool Check(string &a, string &b)
 {
     if (sz(a) != sz(b)) return false;
-    REP(i, sz(a))
-    {
-        if (a[i] == '*' || b[i] == '*') continue;
-        if (a[i] != b[i]) return false;
-    }
-    return true;
+    REP(i, sz(a)) if (a[i] != b[i] && a[i] != '*' && b[i] != '*') return true;
+    return false;
 }
 
-bool cmp(int id1, int id2)
+void Solve()
 {
-    return deg[id1] > deg[id2];
-}
+    vector<int> v;
+    FOR(i, 1, n) v.push_back(i), col[i] = MK(n) - 1;
 
-bool Check(vector<int> &clique, int i)
-{
-    for (auto &j : clique) if (!c[i][j]) return false;
-    return true;
-}
+    int ma = -1;
 
-void Try(vector<vector<int>> &cliques, int pos)
-{
-    if (pos > n)
+    while (!v.empty())
     {
-        mini(res, sz(cliques));
-        return;
+        shuffle(all(v), mt19937_64(time(0)));
+
+        int c = __builtin_ctz(col[v.back()] & -col[v.back()]);
+        col[v.back()] = 0;
+
+        for (auto &u : adj[v.back()]) if (col[u]) col[u] ^= MK(c);
+        maxi(ma, c);
+
+        v.clear();
+        int mi = n;
+        FOR(u, 1, n) if (col[u])
+        {
+            int cnt = __builtin_popcount(col[u]);
+            if (mini(mi, cnt)) v = {u};
+            else if (mi == cnt) v.push_back(u);
+        }
     }
 
-    bool inserted = false;
-    REP(i, sz(cliques)) if (Check(cliques[i], id[pos]))
-    {
-        cliques[i].push_back(id[pos]);
-        Try(cliques, pos + 1);
-        cliques[i].pop_back();
-
-        inserted = true;
-    }
-
-    if (!inserted)
-    {
-        cliques.push_back(vector<int> {id[pos]});
-        Try(cliques, pos + 1);
-        cliques.pop_back();
-    }
+    mini(res, ma);
 }
 
 int main()
@@ -88,21 +71,16 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n;
-    FOR(i, 1, n) cin >> s[i], id[i] = i;
+    FOR(i, 1, n) cin >> s[i];
 
-    FOR(i, 1, n) FOR(j, 1, n) if (i != j && Equal(s[i], s[j]))
+    FOR(i, 1, n) FOR(j, i + 1, n) if (Check(s[i], s[j]))
     {
-        c[i][j] = true;
-        deg[i]++;
+        adj[i].push_back(j);
+        adj[j].push_back(i);
     }
 
-    sort(id + 1, id + n + 1, cmp);
-
-    vector<vector<int>> cliques;
-    res = n;
-
-    Try(cliques, 1);
-    cout << res;
+    REP(haha, 1e4) Solve();
+    cout << res + 1;
 
     return 0;
 }

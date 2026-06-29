@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t6"
+#define name ""
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,35 +19,47 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 1e6 + 5;
 
-int const ntest = 1e4;
+int n;
+vector<int> adj[N];
 
-void GenTest()
+map<int, int> mp[N];
+int h[N];
+ii res[N];
+
+void DFS(int u, int p)
 {
-    ofstream cout(name".inp");
+    mp[u][h[u]] = 1;
 
-    int const lim = 10;
-    int t = Rand(1, 1);
-
-    cout << t << '\n';
-    while (t--)
+    for (auto &v : adj[u]) if (v != p)
     {
-        int n = Rand(1, lim);
-        cout << n << '\n';
-        while (n--) cout << Rand(0, 1) << ' ';
+        h[v] = h[u] + 1;
+        DFS(v, u);
+
+        if (sz(mp[u]) < sz(mp[v])) swap(mp[u], mp[v]);
+        for (auto &p : mp[v]) mp[u][p.F] += p.S;
     }
+
+    for (auto &p : mp[u]) maxi(res[u], {p.S, h[u] - p.F});
 }
 
 int main()
 {
-    FOR(i, 1, ntest)
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    cin >> n;
+    FOR(i, 2, n)
     {
-        GenTest();
-        system(name".exe <"name".inp> "name".out");
-        cout << "Test: " << i << " judged\n";
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
+
+    DFS(1, -1);
+    FOR(u, 1, n) cout << -res[u].S << '\n';
 
     return 0;
 }

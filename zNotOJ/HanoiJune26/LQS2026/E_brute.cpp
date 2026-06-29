@@ -60,16 +60,7 @@ struct DSU
 };
 
 int n, q;
-DSU up[20];
-
-void Update(int l, int r, int k)
-{
-    if (r > n) return;
-    if (!up[k].Union(l, r) || !k) return;
-    
-    Update(l, r, k - 1);
-    Update(l + MK(k - 1), r + MK(k - 1), k - 1);
-}
+DSU dsu;
 
 int main()
 {
@@ -77,7 +68,7 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> q;
-    FOR(i, 0, 31 - __builtin_clz(n)) up[i] = DSU(n);
+    dsu = DSU(n);
 
     while (q--)
     {
@@ -85,20 +76,14 @@ int main()
         if (type == 1)
         {
             int u; cin >> u;
-            u = up[0].Find(u);
-            cout << up[0].mi[u] << ' ' << up[0].ma[u] << '\n';
+            u = dsu.Find(u);
+            cout << dsu.mi[u] << ' ' << dsu.ma[u] << '\n';
         }
         else
         {
             int l, r, len;
             cin >> l >> r >> len;
-
-            for (int tmp = len; tmp; tmp ^= tmp & -tmp)
-            {
-                int i = __builtin_ctz(tmp);
-                Update(l, r, i);
-                l += MK(i), r += MK(i);
-            }
+            REP(i, len) dsu.Union(l + i, r + i);
         }
     }
 

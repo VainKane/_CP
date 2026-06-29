@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t6"
+#define name ""
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,35 +19,44 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 1e5 + 5;
 
-int const ntest = 1e4;
+int n;
+vector<int> adj1[N], adj2[N];
+int root1, root2;
 
-void GenTest()
+void DFSPrepare(int u, int p)
 {
-    ofstream cout(name".inp");
-
-    int const lim = 10;
-    int t = Rand(1, 1);
-
-    cout << t << '\n';
-    while (t--)
-    {
-        int n = Rand(1, lim);
-        cout << n << '\n';
-        while (n--) cout << Rand(0, 1) << ' ';
-    }
+    
 }
 
 int main()
 {
-    FOR(i, 1, ntest)
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    cin >> n;
+    FOR(i, 1, n)
     {
-        GenTest();
-        system(name".exe <"name".inp> "name".out");
-        cout << "Test: " << i << " judged\n";
+        int p1, p2;
+        cin >> p1 >> p2;
+        
+        if (p1 == -1) root1 = i;
+        else
+        {
+            adj1[i].push_back(p1);
+            adj1[p1].push_back(i);
+        }
+
+        if (p2 == -1) root2 = i;
+        else
+        {
+            adj2[i].push_back(p2);
+            adj2[p2].push_back(i);
+        }
     }
+
+
 
     return 0;
 }

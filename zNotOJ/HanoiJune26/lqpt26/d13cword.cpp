@@ -19,7 +19,7 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 36;
+int const N = 120;
 
 int n;
 string s[N];
@@ -27,7 +27,7 @@ string s[N];
 vector<int> adj[N];
 int res = N;
 
-bitset<36> col[N];
+bitset<N> col[N];
 int c[N];
 
 bool Check(string a, string b)
@@ -84,7 +84,7 @@ int main()
         adj[j].push_back(i);
     }
 
-    REP(haha, 67) Solve();
+    REP(haha, 1e4) Solve();
     cout << res;
 
     return 0;

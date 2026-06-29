@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "G"
+#define name "E"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -28,16 +28,26 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 3000;
-    int const oo = 1e9;
-    
-    int n = Rand(1, lim);
-    int k = Rand(1, oo);
+    int const lim = 1000;
 
-    cout << n << ' ' << k << '\n';
-    FOR(i, 1, n) cout << Rand(1, oo) << ' ';
-    cout << '\n';
-    FOR(i, 1, n) cout << "LR"[Rand(0, 1)];
+    int n = Rand(2, lim);
+    int q = Rand(1, lim);
+
+    cout << n << ' ' << q << '\n';
+    while (q--)
+    {
+        int type = Rand(1, 2);
+        cout << type << ' ';
+
+        if (type == 1) cout << Rand(1, n) << '\n';
+        else
+        {
+            int l = Rand(1, n - 1);
+            int r = Rand(l + 1, n);
+            int len = min(n - r + 1, r - l);
+            cout << l << ' ' << r << ' ' << Rand(1, len) << '\n';
+        }
+    }
 }
 
 int main()
@@ -45,15 +55,14 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system("./"name" <"name".inp> "name".out");
-        system("./"name"_brute <"name".inp> "name".ans");
-
-        if (system("diff "name".out "name".ans") != 0)
+        system(name".exe <"name".inp> "name".out");
+        system(name"_brute.exe <"name".inp> "name".ans");
+    
+        if (system("fc "name".out "name".ans") != 0)
         {
             cout << "Test: " << i << " WRONG!\n";
             return 0;
         }
-
         cout << "Test: " << i << " CORRECT!\n";
     }
 
