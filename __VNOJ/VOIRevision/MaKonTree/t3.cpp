@@ -36,34 +36,18 @@ int sz[N];
 
 void DFS(int u, int p)
 {
-    dp[u][0] = 0;
+    dp[u][1] = a[u];
+    sz[u] = 1;
 
-    vector<int> child;
     for (auto &v : adj[u]) if (v != p)
     {
-        child.push_back(v);
         DFS(v, u);
-    }
-
-    bool cur = 1;
-
-    memset(f[cur], -0x3f, sizeof f[cur]);
-    f[cur][0] = 0;
-
-    FOR(i, 1, sz(child))
-    {
-        cur ^= 1;
-        memset(f[cur], -0x3f, sizeof f[cur]);
-
-        int v = child[i - 1];
-        FOR(k1, 0, sz[u]) FOR(k2, 0, sz[v])
-            maxi(f[cur][k1 + k2], f[cur ^ 1][k1] + dp[v][k2]);
+        
+        FORD(k1, sz[u], 0) FOR(k2, 0, sz[v])
+            maxi(dp[u][k1 + k2], dp[u][k1] + dp[v][k2]);
 
         sz[u] += sz[v];
     }
-
-    sz[u]++;
-    FOR(k, 1, sz[u]) dp[u][k] = f[cur][k - 1] + a[u];
 }
 
 int main()

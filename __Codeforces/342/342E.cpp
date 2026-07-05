@@ -11,103 +11,55 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
-int const LOG = 18;
-int const BK = 314;
-int bkId[N], bkL[N], bkR[N];
 
 int n, q;
-
 vector<int> adj[N];
-pair<int, int> qr[N];
+vector<ii> centAdj[N];
 
-int h[N];
-int up[2 * N][20];
+int sz[N];
+bool del[N];
+int minD[N];
 
-int in[N];
-int timer = 0;
-
-bool visited[N];
-int d[N];
-
-void DFS(int u, int p)
+void DFSPrepare(int u, int p)
 {
-    up[in[u] = ++timer][0] = u;
-    for (auto &v : adj[u]) if (v != p)
+    sz[u] = 1;
+    for (auto &v : adj[u]) if (v != p && !del[v])
     {
-        h[v] = h[u] + 1;
-        DFS(v, u);
-        up[++timer][0] = u;
+        DFSPrepare(v, u);
+        sz[u] += sz[v];
     }
 }
 
-bool cmp(int u, int v)
+int Centroid(int u, int p, int n)
 {
-    return h[u] < h[v];
+    for (auto &v : adj[u]) if (v != p && !del[v] && sz[v] > n / 2) return Centroid(v, u, n);
+    return u;
 }
 
-void Init()
+void DFS(int u, int p, int cent, int h = 0)
 {
-    FOR(i, 1, q)
-    {
-        int &id = bkId[i] = (i - 1) / BK + 1;
-        if (!bkL[id]) bkL[id] = i;
-        bkR[id] = i;
-    }
-
-    FOR(j, 1, LOG) FOR(i, 1, timer - MK(j) + 1)
-        up[i][j] = min(up[i][j - 1], up[i + MK(j - 1)][j - 1], cmp);
+    centAdj[u].push_back({cent, h});
+    for (auto &v : adj[u]) if (v != p && !del[v]) DFS(v, u, cent, h + 1);
 }
 
-int LCA(int u, int v)
+void Solve(int u)
 {
-    u = in[u], v = in[v];
-    if (u > v) swap(u, v);
+    DFSPrepare(u, -1);
+    int cent = Centroid(u, -1, sz[u]);
 
-    int k = 31 - __builtin_clz(v - u + 1);
-    return min(up[u][k], up[v - MK(k) + 1][k], cmp);
-}
+    DFS(cent, -1, cent);
+    del[cent] = 1;
 
-int Dist(int u, int v)
-{
-    return h[u] + h[v] - 2 * h[LCA(u, v)];
-}
-
-void BFS(vector<int> &nodes)
-{
-    memset(visited, false, sizeof visited);
-
-    queue<int> q;
-    for (auto &u : nodes) 
-    {
-        visited[u] = true;
-        d[u] = 0;
-        q.push(u);
-    }
-
-    while (!q.empty())
-    {
-        int u = q.front();
-        q.pop();
-
-        for (auto &v : adj[u]) if (!visited[v])
-        {
-            visited[v] = true;
-            d[v] = d[u] + 1;
-            q.push(v);
-        }
-    }
+    for (auto &v : adj[cent]) if (!del[v]) Solve(v);
 }
 
 int main()
@@ -116,7 +68,6 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> q;
-    
     FOR(i, 2, n)
     {
         int u, v;
@@ -125,21 +76,21 @@ int main()
         adj[v].push_back(u);
     }
 
-    FOR(i, 1, q) cin >> qr[i].F >> qr[i].S;
-
-    DFS(1, -1);
-    Init();
-
-    FOR(id, 1, bkId[q])
+    memset(minD, 0x3f, sizeof minD);
+    Solve(1);
+    
+    for (auto &p : centAdj[1]) mini(minD[p.F], p.S);
+    while (q--)
     {
-        vector<int> nodes = {1};
-        FOR(i, 1, bkR[id - 1]) if (qr[i].F == 1) nodes.push_back(qr[i].S);
-        BFS(nodes);
+        int type, u;
+        cin >> type >> u;
 
-        FOR(i, bkL[id], bkR[id])
+        if (type == 1) for (auto &p : centAdj[u]) mini(minD[p.F], p.S);
+        else
         {
-            if (qr[i].F == 1) FOR(j, i + 1, bkR[id]) mini(d[qr[j].S], Dist(qr[i].S, qr[j].S));
-            else cout << d[qr[i].S] << '\n';
+            int res = N;
+            for (auto &p : centAdj[u]) mini(res, minD[p.F] + p.S);
+            cout << res << '\n';
         }
     }
 

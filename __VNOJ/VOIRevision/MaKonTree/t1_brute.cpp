@@ -24,50 +24,65 @@ int const N = 1e6 + 5;
 int n, k;
 vector<int> adj[N];
 
+int sz[N], h[N];
+bool del[N];
+
 int in[N], out[N];
-int node[N], bigChild[N];
+int node[N];
 int timer = 0;
 
-int h[N], cnt[N];
+int cnt[N];
 ll res = 0;
 
 void DFSPrepare(int u, int p)
 {
+    sz[u] = 1;
+    for (auto &v : adj[u]) if (v != p && !del[v])
+    {
+        DFSPrepare(v, u);
+        sz[u] += sz[v];
+    }
+}
+
+int Centroid(int u, int p, int n)
+{
+    for (auto &v : adj[u]) if (v != p && !del[v] && sz[v] > n / 2) return Centroid(v, u, n);
+    return u;
+}
+
+void DFS(int u, int p)
+{
     in[u] = ++timer;
     node[timer] = u;
-    int sz = 0;
 
-    for (auto &v : adj[u]) if (v != p)
+    for (auto &v : adj[u]) if (v != p && !del[v])
     {
         h[v] = h[u] + 1;
-        DFSPrepare(v, u);
-        if (maxi(sz, out[v] - in[v] + 1)) bigChild[u] = v;
+        DFS(v, u);
     }
 
     out[u] = timer;
 }
 
-void DFS(int u, int p)
+void Solve(int u)
 {
-    for (auto &v : adj[u]) if (v != p && v != bigChild[u])
-    {
-        DFS(v, u);
-        FOR(i, in[v], out[v]) cnt[h[node[i]]] = 0;
-    }
+    DFSPrepare(u, -1);
+    int cent = Centroid(u, -1, sz[u]);
 
-    if (bigChild[u]) DFS(bigChild[u], u);
-    for (auto &v : adj[u]) if (v != p && v != bigChild[u])
+    timer = h[cent] = 0;
+    del[cent] = 1;
+
+    DFS(cent, -1);
+    cnt[h[cent]] = 1;
+
+    for (auto &v : adj[cent]) if (!del[v])
     {
-        FOR(i, in[v], out[v])
-        {
-            int x = k + 2 * h[u] - h[node[i]];
-            if (x >= 1 && x <= n) res += cnt[x];
-        }
+        FOR(i, in[v], out[v]) if (k >= h[node[i]]) res += cnt[k - h[node[i]]];
         FOR(i, in[v], out[v]) cnt[h[node[i]]]++;
     }
 
-    if (k + h[u] <= n) res += cnt[k + h[u]];
-    cnt[h[u]]++;
+    FOR(i, in[cent], out[cent]) cnt[h[node[i]]] = 0;
+    for (auto &v : adj[cent]) if (!del[v]) Solve(v);
 }
 
 int main()
@@ -84,9 +99,7 @@ int main()
         adj[v].push_back(u);
     }
 
-    DFSPrepare(1, -1);
-    DFS(1, -1);
-
+    Solve(1);
     cout << res;
 
     return 0;

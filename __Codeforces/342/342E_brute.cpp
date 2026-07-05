@@ -22,26 +22,28 @@ template <class t> bool mini(t &x, t const &y)
     return x > y ? x = y, 1 : 0;
 }
 
-int const N = 1e6 + 5;
-int const LOG = 21;
+int const N = 1e5 + 5;
+int const LOG = 18;
+int const BK = 314;
+int bkId[N], bkL[N], bkR[N];
 
-int n, k;
+int n, q;
+
 vector<int> adj[N];
+pair<int, int> qr[N];
 
-int up[2 * N][22];
-int h[N], pos[N];
+int h[N];
+int up[2 * N][20];
+
+int in[N];
 int timer = 0;
 
-bool cmp(int u, int v)
-{
-    return pos[u] < pos[v];
-}
+bool visited[N];
+int d[N];
 
 void DFS(int u, int p)
 {
-    up[++timer][0] = u;
-    pos[u] = timer;
-
+    up[in[u] = ++timer][0] = u;
     for (auto &v : adj[u]) if (v != p)
     {
         h[v] = h[u] + 1;
@@ -50,15 +52,27 @@ void DFS(int u, int p)
     }
 }
 
-void Build()
+bool cmp(int u, int v)
 {
+    return h[u] < h[v];
+}
+
+void Init()
+{
+    FOR(i, 1, q)
+    {
+        int &id = bkId[i] = (i - 1) / BK + 1;
+        if (!bkL[id]) bkL[id] = i;
+        bkR[id] = i;
+    }
+
     FOR(j, 1, LOG) FOR(i, 1, timer - MK(j) + 1)
         up[i][j] = min(up[i][j - 1], up[i + MK(j - 1)][j - 1], cmp);
 }
 
 int LCA(int u, int v)
 {
-    u = pos[u], v = pos[v];
+    u = in[u], v = in[v];
     if (u > v) swap(u, v);
 
     int k = 31 - __builtin_clz(v - u + 1);
@@ -70,12 +84,39 @@ int Dist(int u, int v)
     return h[u] + h[v] - 2 * h[LCA(u, v)];
 }
 
+void BFS(vector<int> &nodes)
+{
+    memset(visited, false, sizeof visited);
+
+    queue<int> q;
+    for (auto &u : nodes) 
+    {
+        visited[u] = true;
+        d[u] = 0;
+        q.push(u);
+    }
+
+    while (!q.empty())
+    {
+        int u = q.front();
+        q.pop();
+
+        for (auto &v : adj[u]) if (!visited[v])
+        {
+            visited[v] = true;
+            d[v] = d[u] + 1;
+            q.push(v);
+        }
+    }
+}
+
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> k;
+    cin >> n >> q;
+    
     FOR(i, 2, n)
     {
         int u, v;
@@ -84,12 +125,23 @@ int main()
         adj[v].push_back(u);
     }
 
-    DFS(1, -1);
-    Build();
+    FOR(i, 1, q) cin >> qr[i].F >> qr[i].S;
 
-    int res = 0;
-    FOR(u, 1, n) FOR(v, u + 1, n) res += Dist(u, v) == k;
-    cout << res;
+    DFS(1, -1);
+    Init();
+
+    FOR(id, 1, bkId[q])
+    {
+        vector<int> nodes = {1};
+        FOR(i, 1, bkR[id - 1]) if (qr[i].F == 1) nodes.push_back(qr[i].S);
+        BFS(nodes);
+
+        FOR(i, bkL[id], bkR[id])
+        {
+            if (qr[i].F == 1) FOR(j, i + 1, bkR[id]) mini(d[qr[j].S], Dist(qr[i].S, qr[j].S));
+            else cout << d[qr[i].S] << '\n';
+        }
+    }
 
     return 0;
 }

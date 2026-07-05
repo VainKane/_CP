@@ -94,15 +94,11 @@ void DFS(int u, int p)
 
     cur = 0;
     if (bigChild[u]) DFS(bigChild[u], u);
-    for (auto &v : adj[u]) if (v != p && v != bigChild[u])
+    for (auto &v : adj[u]) if (v != p && v != bigChild[u]) FOR(i, in[v], out[v])
     {
-        FOR(i, in[v], out[v])
-        {
-            int x = d[node[i]];
-            cur += bit.Get(x - r, x - l) + bit.Get(l + x, r + x);
-        }
-
-        FOR(i, in[v], out[v]) bit.Update(d[node[i]], 1);
+        int x = d[node[i]];
+        cur += bit.Get(x - r, x - l) + bit.Get(l + x, r + x);
+        bit.Update(x, 1);
     }
 
     bit.Update(d[u], 1);

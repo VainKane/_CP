@@ -20,25 +20,25 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2e5 + 5;
+int const LOG = 20;
 
-int n;
-
-int c[N];
+int n, l, r;
 vector<int> adj[N];
 
 int sz[N];
 bool del[N];
 
-vector<ii> centAdj[N];
-int minD[N];
-int res;
+int h[N], cnt[N];
+ll res = 0;
 
-void DFSPreapre(int u, int p)
+int maxH;
+
+void DFSPrepare(int u, int p)
 {
     sz[u] = 1;
     for (auto &v : adj[u]) if (v != p && !del[v])
     {
-        DFSPreapre(v, u);
+        DFSPrepare(v, u);
         sz[u] += sz[v];
     }
 }
@@ -49,35 +49,45 @@ int Centroid(int u, int p, int n)
     return u;
 }
 
-void DFS(int u, int p, int cent, int h = 0)
+void DFS(int u, int p, bool add)
 {
-    centAdj[u].push_back({cent, h});
-    for (auto &v : adj[u]) if (v != p && !del[v]) DFS(v, u, cent, h + 1);
+    if (add) cnt[h[u]]++;
+    maxi(maxH, h[u]);
+
+    for (auto &v : adj[u]) if (v != p && !del[v])
+    {
+        h[v] = h[u] + 1;
+        DFS(v, u, add);
+    }
 }
 
 void Solve(int u)
 {
-    DFSPreapre(u, -1);
+    DFSPrepare(u, -1);
     int cent = Centroid(u, -1, sz[u]);
 
-    DFS(cent, -1, cent);
     del[cent] = 1;
+    maxH = h[cent] = 0;
+    cnt[0] = 1;
 
-    for (auto &v : adj[cent]) if (!del[v]) Solve(v);
-}
-
-void Reset()
-{
-    FOR(u, 1, n)
+    for (auto &v : adj[cent]) if (!del[v])
     {
-        adj[u].clear();
-        centAdj[u].clear();
-        
-        del[u] = 0;
-        minD[u] = N;
+        DFS(v, u, false);
+
+        int sum = 0;
+        FOR(i, l, r) sum += cnt[i];
+        FOR(i, 1, maxH)
+        {
+            if (l - i - 1 >= 0) sum -= cnt[l - i - 1];
+            if (r - i <= maxH) sum += cnt[r - i];
+
+            res += 1LL * cnt[i] * sum;
+        }
+
+        DFS(v, u, true);
     }
 
-    res = N;
+    for (auto &v : adj[cent]) if (!del[v]) Solve(v);
 }
 
 int main()
@@ -85,37 +95,17 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    int t; cin >> t;
-    while (t--)
+    cin >> n >> l >> r;
+    FOR(i, 2, n)
     {
-        cin >> n >> c[1];
-        FOR(i, 2, n) cin >> c[i];
-
-        Reset();
-        FOR(i, 2, n)
-        {
-            int u, v;
-            cin >> u >> v;
-            adj[u].push_back(v);
-            adj[v].push_back(u);
-        }
-
-        Solve(1);
-        for (auto &p : centAdj[c[1]]) mini(minD[p.F], p.S);
-
-        FOR(i, 2, n)
-        {
-            for (auto &p : centAdj[c[i]])
-            {
-                mini(res, p.S + minD[p.F]);
-                mini(minD[p.F], p.S);
-            }
-
-            cout << res << ' ';
-        }
-
-        cout << '\n';
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
+
+    Solve(1);
+    cout << res;
 
     return 0;
 }
