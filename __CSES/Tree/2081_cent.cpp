@@ -20,7 +20,6 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2e5 + 5;
-int const LOG = 20;
 
 int n, l, r;
 vector<int> adj[N];
@@ -28,7 +27,7 @@ vector<int> adj[N];
 int sz[N];
 bool del[N];
 
-int h[N], cnt[N];
+int cnt[N], c[N];
 ll res = 0;
 
 int maxH;
@@ -49,16 +48,13 @@ int Centroid(int u, int p, int n)
     return u;
 }
 
-void DFS(int u, int p, bool add)
+void DFS(int u, int p, int h, bool add)
 {
-    if (add) cnt[h[u]]++;
-    maxi(maxH, h[u]);
+    if (add) cnt[h]++, c[h] = 0;
+    else c[h]++;
 
-    for (auto &v : adj[u]) if (v != p && !del[v])
-    {
-        h[v] = h[u] + 1;
-        DFS(v, u, add);
-    }
+    maxi(maxH, h);
+    for (auto &v : adj[u]) if (v != p && !del[v]) DFS(v, u, h + 1, add);
 }
 
 void Solve(int u)
@@ -67,26 +63,31 @@ void Solve(int u)
     int cent = Centroid(u, -1, sz[u]);
 
     del[cent] = 1;
-    maxH = h[cent] = 0;
     cnt[0] = 1;
+
+    int sum = 0, iniSum = 0;
+    int ma = 0;
 
     for (auto &v : adj[cent]) if (!del[v])
     {
-        DFS(v, u, false);
+        maxH = 0;
+        DFS(v, cent, 1, false);
+        maxi(ma, maxH);
 
-        int sum = 0;
-        FOR(i, l, r) sum += cnt[i];
+        sum = iniSum;
         FOR(i, 1, maxH)
         {
-            if (l - i - 1 >= 0) sum -= cnt[l - i - 1];
-            if (r - i <= maxH) sum += cnt[r - i];
+            if (l - i >= 0) sum += cnt[l - i];
+            if (r - i + 1 >= 0) sum -= cnt[r - i + 1];
 
-            res += 1LL * cnt[i] * sum;
+            if (l <= i && i <= r) iniSum += c[i];
+            res += 1LL * c[i] * sum;
         }
 
-        DFS(v, u, true);
+        DFS(v, cent, 1, true);
     }
 
+    FOR(i, 1, ma) cnt[i] = 0;
     for (auto &v : adj[cent]) if (!del[v]) Solve(v);
 }
 

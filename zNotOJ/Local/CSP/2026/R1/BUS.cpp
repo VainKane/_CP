@@ -31,6 +31,7 @@ struct Edge
 int n, m, q;
 
 vector<int> adj[N];
+vector<int> dagAdj[N];
 Edge e[N];
 
 int d[N], deg[N];
@@ -81,7 +82,7 @@ void Update(int id)
     {
         int u = q.front(); q.pop();
 
-        for (auto &id : adj[u]) if (used[id])
+        for (auto &id : dagAdj[u]) if (used[id])
         {
             int v = e[id].Other(u);
             if (!--deg[v]) q.push(v), res--;
@@ -110,6 +111,7 @@ int main()
     {
         int v = e[id].Other(u);
         deg[v] += d[v] == d[u] + 1;
+        dagAdj[u].push_back(v);
     }
 
     res = n - 1;

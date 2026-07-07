@@ -28,7 +28,7 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 5e5;
+    int const lim = 100;
     
     int n = Rand(2, lim);
     int m = Rand(n - 1, lim);

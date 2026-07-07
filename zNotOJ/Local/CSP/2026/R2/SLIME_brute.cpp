@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "CARDS"
+#define name "SLIME"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,16 +19,10 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e6 + 5;
+int const N = 5e5 + 5;
 
-int n;
-ll k;
-
-char s[N];
-int a[N], b[N];
-
-bool visited[N];
-int cnt[256];
+int n, k, x;
+int cnt[N];
 
 int main()
 {
@@ -36,37 +30,35 @@ int main()
     cin.tie(0); cout.tie(0);
 
     freopen(name".inp", "r", stdin);
-    freopen(name".out", "w", stdout);
+    freopen(name".ans", "w", stdout);
 
-    cin >> n >> k;
-    FOR(i, 1, n) cin >> s[i], cnt[s[i]]++;
-    FOR(i, 1, n) cin >> a[i];
-
-    FOR(i, 1, n) if (!visited[i])
-    {
-        vector<int> v = {i};
-
-        visited[i] = true;
-        int pos = i;
-
-        while (!visited[a[pos]])
-        {
-            pos = a[pos];
-            visited[pos] = true;
-            v.push_back(pos);
-        }
-
-        REP(j, sz(v)) b[v[j]] = v[(j + k) % sz(v)];
-    }
-
-    char ch = 'a';
+    cin >> n >> k >> x;
     FOR(i, 1, n)
     {
-        while (!cnt[ch]) ch++;
-        s[i] = ch, cnt[ch]--;
+        int a, b, c, t;
+        cin >> a >> b >> c >> t;
+
+        int sz = 0, day = t;
+        bool ok = true;
+
+        while (day <= 5e5)
+        {
+            day++;
+            if (ok) sz += a;
+            else
+            {
+                sz -= b;
+                if (sz < x) break;
+            }
+
+            if (sz >= c) ok = false;
+            cnt[day] += sz >= x;
+        }
     }
 
-    FOR(i, 1, n) cout << s[b[i]];
-    
+    int res = 0;
+    FOR(i, 1, 5e5) res += cnt[i] >= k;
+    cout << res;
+
     return 0;
 }

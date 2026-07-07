@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "2081_sack"
+#define name "RAIN"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -28,14 +28,20 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 5000;
+    int const lim = 1e5;
+    int const oo = 1e9;
 
     int n = Rand(1, lim);
-    int l = Rand(1, min(n, 500));
-    int r = Rand(l, min(n, 500));
+    int q = Rand(1, 1e3);
+    int t = Rand(0, 0);
 
-    cout << n << ' ' << l << ' ' << r << '\n';
-    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << '\n';
+    cout << n << ' ' << q << ' ' << t << '\n';
+
+    if (n > 1) cout << oo << ' ';
+    FOR(i, 2, n - 1) cout << Rand(1, oo) << ' ';
+    cout << oo << '\n';
+
+    while (q--) cout << 1 << ' ' << n << ' ' << Rand(1, oo) << '\n';
 }
 
 int main()
@@ -43,8 +49,8 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system(name".exe <"name".inp> "name".out");
-        system(name"_brute.exe <"name".inp> "name".ans");
+        system(name".exe");
+        system(name"_brute.exe");
 
         if (system("fc "name".out "name".ans") != 0)
         {

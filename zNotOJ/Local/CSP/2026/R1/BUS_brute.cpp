@@ -66,7 +66,7 @@ int main()
     cin.tie(0); cout.tie(0);
 
     freopen(name".inp", "r", stdin);
-    freopen(name".ans", "w", stdout);
+    freopen(name".out", "w", stdout);
 
     cin >> n >> m >> q;
     FOR(i, 1, m)

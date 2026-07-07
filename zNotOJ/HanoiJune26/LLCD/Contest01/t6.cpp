@@ -94,10 +94,6 @@ void UpdateRes(int v, int u)
         k += delta * cnt[lcm];
     }
 
-    // cout << v << ' ' << u << ' ' << sum << ' ' << k << '\n';
-    // FOR(i, 1, n) cout << s[i] << ' ' << cnt[i] << '\n';
-    // cout << "-------------------\n";
-
     res.F += sum + k * (d[v] - 2 * d[u]);
     res.S += k;
 }
@@ -125,8 +121,8 @@ void DFS(int u, int p)
             s[x] += d[node[i]], cnt[x]++;
     }
 
-    for (auto &x : divs[u]) s[x] += d[u], cnt[x]++;
     UpdateRes(u, u);
+    for (auto &x : divs[u]) s[x] += d[u], cnt[x]++;
 }
 
 int main()
@@ -147,19 +143,7 @@ int main()
     DFSPrepare(1, -1);
     DFS(1, -1);
 
-    cout << fixed << setprecision(6) << 1.0 * res.F / (res.S - 1);
-    // cout << res.F << ' ' << res.S;
-
-    // for (auto &x : facts[2]) cout << x << ' ';
-
-    // FOR(i, 1, n)
-    // {
-    //     cout << i << ":\n";
-    //     for (auto &x : facts[i]) cout << x << ' ';
-    //     cout << '\n';
-    //     for (auto &x : divs[i]) cout << x << ' ';
-    //     cout << '\n';
-    // }
+    cout << fixed << setprecision(6) << (double)res.F / res.S;
 
     return 0;
 }

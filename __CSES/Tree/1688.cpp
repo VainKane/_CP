@@ -49,7 +49,7 @@ void DFS(int u, int p)
 
 bool cmp(int u, int v)
 {
-    return h[u] < h[v];
+    return pos[u] < pos[v];
 }
 
 void Build()
