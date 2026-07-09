@@ -19,21 +19,18 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 2e5 + 5;
+
+int n, k;
+int c[N];
 
 int main()
 {
-    ofstream cout("testcase.inp");
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
 
-    int const lim = 2e5;
-    int const oo = 1e9;
-
-    int n = lim;
-
-    cout << n << " 1\n";
-    FOR(i, 1, n) cout << oo << ' ';
-    cout << "\n2 " << 1 << ' ' << n;
+    cin >> n >> k;
+    FOR(i, 1, n) cin >> c[i];
 
     return 0;
 }

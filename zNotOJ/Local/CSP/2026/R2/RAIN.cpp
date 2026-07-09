@@ -26,7 +26,7 @@ int a[N];
 
 namespace Sub1
 {
-    bool CheckSub() { return n * q <= 1e8; }
+    bool CheckSub() { return n * q <= 5e7; }
 
     int pre[N], suf[N];
     ll res = 0, haha = 0;
@@ -35,7 +35,7 @@ namespace Sub1
     {
         while (q--)
         {
-            int l, r, h;
+            ll l, r, h;
             cin >> l >> r >> h;
 
             l = l ^ (t * res);
@@ -47,7 +47,7 @@ namespace Sub1
             FORD(i, r, l) suf[i] = max(suf[i + 1], a[i]);
 
             res = 0;
-            FOR(i, l + 1, r - 1) res += max(0, min({h, pre[i - 1], suf[i + 1]}) - a[i]);
+            FOR(i, l + 1, r - 1) res += max(0, min({(int)h, pre[i - 1], suf[i + 1]}) - a[i]);
             haha ^= res;
         }
 
