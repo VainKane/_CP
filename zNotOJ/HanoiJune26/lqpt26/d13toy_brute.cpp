@@ -61,6 +61,8 @@ int main()
         int ma = max(preMax[l - 1], sufMax[r + 1]);
         int mi = min(preMin[l - 1], sufMin[r + 1]);
         mini(res, a[r].F - a[l].F + ma - mi);
+
+        // cout << l << ' ' << r << ' ' << res << '\n';
     }
 
     cout << res;

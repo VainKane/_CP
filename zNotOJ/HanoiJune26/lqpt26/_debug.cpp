@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "d5tabn3"
+#define name "d13toy"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -56,21 +56,17 @@ void Try(int pos, int mi1, int mi2, int ma, vector<int> seq)
     }
 }
 
-
 void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 500;
+    int const lim = 1000;
     int const oo = 1e9;
 
-    n = Rand(1, lim);
-    int x = Rand(0, n);
-    int y = Rand(0, n - x);
-    int z = Rand(0, n - x - y);
-
-    cout << n << ' ' << x << ' ' << y << ' ' << z << '\n';
-    FOR(i, 1, n) REP(i, 3) cout << Rand(1, oo) << ' ';
+    int n = Rand(2, lim);
+    
+    cout << n << '\n';
+    while (n--) cout << Rand(0, oo) << ' ' << Rand(0, oo) << '\n';
 }
 
 int main()
@@ -78,8 +74,8 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system("./"name" <"name".inp> "name".out");
-        system("./"name"_brute <"name".inp> "name".ans");
+        system("./"name".exe <"name".inp> "name".out");
+        system("./"name"_brute.exe <"name".inp> "name".ans");
 
         if (system("diff "name".out "name".ans") != 0)
         {

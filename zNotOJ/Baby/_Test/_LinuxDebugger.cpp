@@ -34,8 +34,8 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system("./"name" <"name".inp> "name".out");
-        system("./"name"_brute <"name".inp> "name".ans");
+        system("./"name".exe <"name".inp> "name".out");
+        system("./"name"_brute.exe <"name".inp> "name".ans");
 
         if (system("diff "name".out "name".ans") != 0)
         {
