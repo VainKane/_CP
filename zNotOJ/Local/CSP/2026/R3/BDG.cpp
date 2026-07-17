@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "VLXX"
+#define name "BDG"
 
 using ll = long long;
 using ii = pair<int, int>;
