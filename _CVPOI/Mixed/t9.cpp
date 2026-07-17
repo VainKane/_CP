@@ -22,30 +22,51 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return rd() * 1LL * rd() % (r - l + 1); }
 
+struct Point
+{
+    double x, y;
+    Point(double _x = 0, double _y = 0) { x = _x, y = _y; }
+    void Input() { cin >> x >> y; }
+};
+
+void Equa(Point A, Point B, double &a, double &b, double &c)
+{
+    a = A.y - B.y, b = B.x - A.x;
+    c = -a * A.x -b * A.y;
+}
+
+Point Inter(Point A, Point B, Point C, Point D)
+{
+    double a1, b1, c1, a2, b2, c2;
+    Equa(A, B, a1, b1, c1);
+    Equa(C, D, a2, b2, c2);
+
+    double x = (-c2 -b1 * c1) / (a2 * b1 - a1 * b1);
+    double y = (-c1 - x) / b1;
+
+    return {x, y};
+}
+
 int const N = 1009;
-int const oo = 1e4 + 67;
 
 int n, k;
-double x[N], y[N];
-int miX = oo, miY = oo, maX, maY;
+Point p[N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    freopen(name".inp", "r", stdin);
-    freopen(name".out", "w", stdout);
+    // freopen(name".inp", "r", stdin);
+    // freopen(name".out", "w", stdout);
 
     cin >> n >> k;
-    while (n--)
+    FOR(i, 1, n) p[i].Input();
+    REP(haha, k)
     {
-        cin >> x[i] >> y[i];
-        mini(miX, (int)x), mini(miY, (int)y);
-        maxi(maX, (int)x), maxi(maY, (int)y);
+        auto lmao = Inter(p[Rand(1, n)], Rand(1, n) p[Rand(1, n)]);
+        cout << lmao.x << ' ' << lmao.y << '\n';
     }
-
-
 
     return 0;
 }
