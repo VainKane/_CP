@@ -22,51 +22,81 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return rd() * 1LL * rd() % (r - l + 1); }
 
-struct Point
-{
-    double x, y;
-    Point(double _x = 0, double _y = 0) { x = _x, y = _y; }
-    void Input() { cin >> x >> y; }
-};
-
-void Equa(Point A, Point B, double &a, double &b, double &c)
-{
-    a = A.y - B.y, b = B.x - A.x;
-    c = -a * A.x -b * A.y;
-}
-
-Point Inter(Point A, Point B, Point C, Point D)
-{
-    double a1, b1, c1, a2, b2, c2;
-    Equa(A, B, a1, b1, c1);
-    Equa(C, D, a2, b2, c2);
-
-    double x = (-c2 -b1 * c1) / (a2 * b1 - a1 * b1);
-    double y = (-c1 - x) / b1;
-
-    return {x, y};
-}
-
 int const N = 1009;
+ll const oo = 1e18;
 
 int n, k;
-Point p[N];
+
+double x[N], y[N];
+double centX[N], centY[N];
+
+ll sumX[N], sumY[N];
+int cnt[N];
+
+double cx[N], cy[N];
+
+double Dist(int i, int id)
+{
+    double a = x[i] - centX[id];
+    double b = y[i] - centY[id];
+    return a * a + b * b;
+}
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    // freopen(name".inp", "r", stdin);
-    // freopen(name".out", "w", stdout);
+    freopen(name".inp", "r", stdin);
+    freopen(name".out", "w", stdout);
 
     cin >> n >> k;
-    FOR(i, 1, n) p[i].Input();
-    REP(haha, k)
+    FOR(i, 1, n) cin >> x[i] >> y[i];
+
+    double res = oo;
+    REP(haha, 435)
     {
-        auto lmao = Inter(p[Rand(1, n)], Rand(1, n) p[Rand(1, n)]);
-        cout << lmao.x << ' ' << lmao.y << '\n';
+        FOR(i, 1, k) centX[i] = x[Rand(1, n)], centY[i] = y[Rand(1, n)];
+
+        REP(hihi, max(5, (int)1e6 / n / k))
+        {
+            FOR(i, 1, k) sumX[i] = sumY[i] = cnt[i] = 0;
+            FOR(i, 1, n)
+            {
+                double d = oo;
+                int id = 0;
+
+                FOR(j, 1, k) if (mini(d, Dist(i, j))) id = j;
+                sumX[id] += x[i], sumY[id] += y[i];
+                cnt[id]++;
+            }
+
+            FOR(i, 1, k)
+            {
+                if (cnt[i])
+                {
+                    centX[i] = (double)sumX[i] / cnt[i];
+                    centY[i] = (double)sumY[i] / cnt[i];
+                }
+                else centX[i] = x[Rand(1, n)], centY[i] = y[Rand(1, n)];
+            }
+        }
+
+        double cost = 0;
+        FOR(i, 1, n)
+        {
+            double d = oo;
+            int id = 0;
+
+            FOR(j, 1, k) if (mini(d, Dist(i, j))) id = j;
+            assert(id);
+            cost += sqrt(d);
+        }
+
+        if (mini(res, cost)) FOR(i, 1, k) cx[i] = centX[i], cy[i] = centY[i];
     }
+
+    FOR(i, 1, k) cout << fixed << setprecision(7) << cx[i] << ' ' << cy[i] << '\n';
 
     return 0;
 }

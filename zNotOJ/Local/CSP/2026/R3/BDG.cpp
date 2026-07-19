@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "BDG"
+#define name "BDQ"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -62,7 +62,7 @@ void Init()
 
 Hash GetHash(int l, int r)
 {
-    if (l < 1 || r > n || l > r) return Hash();
+    if (l < 1 || r > m || l > r) return Hash();
     Hash res;
 
     REP(k, NMOD)
@@ -90,6 +90,8 @@ int main()
     while (t--)
     {
         cin >> n >> m;
+
+        mp1.clear(); mp2.clear();
 
         ll res = 0;
         FOR(i, 1, n)
