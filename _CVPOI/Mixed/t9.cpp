@@ -49,6 +49,8 @@ int main()
 
     freopen(name".inp", "r", stdin);
     freopen(name".out", "w", stdout);
+    freopen(name".inp", "r", stdin);
+    freopen(name".out", "w", stdout);
 
     cin >> n >> k;
     FOR(i, 1, n) cin >> x[i] >> y[i];
