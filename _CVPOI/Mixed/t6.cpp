@@ -83,7 +83,7 @@ int flip_bits(vector<bool> const &v) { return jury.flip_bits(v); }
 
 int const N = 1e4 + 5;
 
-int n, len;
+int n, len, k;
 bool mark[N];
 
 void Init()
@@ -110,7 +110,7 @@ bool Check(int idx)
     vector<bool> v(n, 0);
     FOR(i, 0, idx) v[i] = !mark[i];
 
-    int k = flip_bits(v);
+    k = flip_bits(v);
     if (k < len) flip_bits(v);
     else FOR(i, 0, idx) mark[i] = 1;
 
@@ -134,7 +134,7 @@ ii find_longest_subarray_of_ones(int _n)
 
     vector<bool> v(n, 0);
     REP(i, n) v[i] = mark[i];
-    if (v != vector<bool>(n, 0)) flip_bits(v);
+    if (v != vector<bool>(n, 0) && k != len) flip_bits(v);
 
     return {res + 1, res + len};
 }

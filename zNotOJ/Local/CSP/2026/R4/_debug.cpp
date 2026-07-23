@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t13"
+#define name "MIGU"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -28,24 +28,22 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 3;
-    int const oo = 5;
+    int const lim = 1e5;
+    int t = Rand(1, 67);
 
-    int n = Rand(2, lim);
-    int q = Rand(1, lim);
+    cout << t << '\n';
 
-    cout << n << '\n';
-    FOR(i, 1, n)
+    while (t--)
     {
-        FOR(j, 1, n) cout << (i == j ? 0 : Rand(0, oo)) << ' ';
+        int n = Rand(1, lim);
+
+        int a[2 * n + 1];
+        FOR(i, 1, 2 * n) a[i] = i;
+        shuffle(a + 1, a + 2 * n + 1, rd);
+
+        cout << n << '\n';
+        FOR(i, 1, n) cout << a[i] << ' ';
         cout << '\n';
-    }
-
-    cout << q << '\n';
-    while (q--)
-    {
-        int u = Rand(1, n - 1), v = Rand(u + 1, n);
-        cout << u << ' ' << v << ' ' << Rand(1, n - 1);
     }
 }
 
@@ -54,8 +52,8 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system("./"name".exe <"name".inp> "name".out");
-        system("./"name"_brute.exe <"name".inp> "name".ans");
+        system("./"name".exe");
+        system("./"name"_brute.exe");
 
         if (system("diff "name".out "name".ans") != 0)
         {

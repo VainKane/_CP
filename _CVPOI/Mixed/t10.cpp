@@ -54,11 +54,10 @@ struct DSU
         for (auto &p : mp[v])
         {
             int &node = mp[u][p.F];
-            node = sz(mp[node]) > sz(mp[p.S]) ? node : p.S;
-            if (node) q.push({node, p.S});
-        }
 
-        mp[v].clear();
+            if (node) q.push({node, p.S});
+            node = sz(mp[node]) > sz(mp[p.S]) ? node : p.S;
+        }
     }
 };
 

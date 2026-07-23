@@ -11,8 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name ""
-#define y1 alisdhflahsd
+#define name "BALLOON"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -20,34 +19,32 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1509;
+int const N = 1e5 + 5;
 
 int n, m;
-int x1, y1, x2, y2;
-
 vector<ii> adj[N], dagAdj[N];
 
-int dx1[N], dy1[N];
-int dx2[N], dy2[N];
+ll d[N], dp[N];
 
-int deg[N], dp[N];
+int deg[N];
 vector<int> topo;
 
-void Dijkstra(int s, int d[])
+void Dijkstra()
 {
-    memset(d, 0x3f, (n + 1) * sizeof(int));
-    d[s] = 0;
+    memset(d, 0x3f, sizeof d);
+    d[0] = 0;
 
-    priority_queue<ii, vector<ii>, greater<ii>> pq;
-    pq.push({d[s], s});
+    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+    pq.push({d[0], 0});
 
     while (!pq.empty())
     {
         int u = pq.top().S;
-        int du = pq.top().F;
+        ll du = pq.top().F;
         pq.pop();
 
         if (du > d[u]) continue;
+
         for (auto &e : adj[u])
         {
             int v = e.F, w = e.S;
@@ -59,7 +56,7 @@ void Dijkstra(int s, int d[])
 void BFS()
 {
     queue<int> q;
-    FOR(u, 1, n) if (!deg[u]) q.push(u);
+    FOR(u, 0, n) if (!deg[u]) q.push(u);
 
     while (!q.empty())
     {
@@ -74,43 +71,15 @@ void BFS()
     }
 }
 
-int Solve()
-{
-    Dijkstra(x1, dx1); Dijkstra(y1, dy1);
-    Dijkstra(x2, dx2); Dijkstra(y2, dy2);
-
-    FOR(u, 1, n) dagAdj[u].clear();
-    FOR(u, 1, n) for (auto &e : adj[u])
-    {
-        int v = e.F, w = e.S;
-        if (dx1[u] + w + dy1[v] != dx1[y1]) continue;
-        if (dx2[u] + w + dy2[v] != dx2[y2]) continue;
-        
-        dagAdj[u].push_back(e);
-        deg[v]++;
-    }
-
-    memset(dp, 0, sizeof dp);
-    topo.clear();
-    BFS();
-
-    for (auto &u : topo) for (auto &e : dagAdj[u])
-    {
-        int v = e.F, w = e.S;
-        maxi(dp[v], dp[u] + w);
-    }
-
-    return *max_element(dp + 1, dp + n + 1);
-}
-
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> m;
-    cin >> x1 >> y1 >> x2 >> y2;
+    freopen(name".inp", "r", stdin);
+    freopen(name".out", "w", stdout);
 
+    cin >> n >> m;
     FOR(i, 1, m)
     {
         int u, v, w;
@@ -119,9 +88,21 @@ int main()
         adj[v].push_back({u, w});
     }
 
-    int tmp = Solve();
-    swap(x2, y2);
-    cout << max(tmp, Solve());
+    Dijkstra();
+
+    FOR(u, 0, n) for (auto &e : adj[u])
+    {
+        int v = e.F, w = e.S;
+        if (d[u] + w == d[v]) dagAdj[u].push_back({v, w}), deg[v]++;
+    }
+
+    BFS();
+
+    for (auto &u : topo) for (auto &e : dagAdj[u])
+    {
+        int v = e.F, w = e.S;
+        maxi(dp[v], d[u] + w);
+    }
 
     return 0;
 }

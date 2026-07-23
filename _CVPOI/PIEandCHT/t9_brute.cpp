@@ -162,7 +162,7 @@ int main()
         adj[v].push_back(u);
     }
 
-    if (Sub2::CheckSub()) return Sub2::Process(), 0;
+    // if (Sub2::CheckSub()) return Sub2::Process(), 0;
     if (Sub1::CheckSub()) return Sub1::Process(), 0;
 
     return 0;

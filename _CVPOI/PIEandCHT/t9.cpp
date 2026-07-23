@@ -31,8 +31,8 @@ ll d[N];
 bool prime[M];
 vector<int> facts[M], divs[M];
 
-int cnt[N];
-ll len[N];
+int cnt[M];
+ll len[M];
 ll res = 0;
 
 int in[N], out[N];
@@ -60,7 +60,7 @@ void UpdateRes(int v, int u)
     int k = 0;
     ll sum = 0;
 
-    FOR(mask, 1, MK(sz(facts[a[u]])) - 1)
+    FOR(mask, 1, MK(sz(facts[a[v]])) - 1)
     {
         int delta = __builtin_parity(mask) ? 1 : -1;
         
@@ -68,14 +68,14 @@ void UpdateRes(int v, int u)
         for (int tmp = mask; tmp; tmp ^= tmp & -tmp)
         {
             int i = __builtin_ctz(tmp);
-            lcm *= facts[v][i];
+            lcm *= facts[a[v]][i];
         }
 
         sum += delta * len[lcm];
         k += delta * cnt[lcm];
     }
 
-    res += sum + k * (d[v] - 2 * d[u]);
+    res += sum + k * (d[v] - 2 * d[u] + a[u]);
 }
 
 void DFS(int u, int p)
@@ -83,18 +83,18 @@ void DFS(int u, int p)
     for (auto &v : adj[u]) if (v != p && v != bigChild[u])
     {
         DFS(v, u);
-        FOR(i, in[v], out[v]) cnt[node[i]] = len[node[i]] = 0;
+        FOR(i, in[v], out[v]) for (auto &x : divs[a[node[i]]]) cnt[x] = len[x] = 0;
     }
 
     if (bigChild[u]) DFS(bigChild[u], u);
     for (auto &v : adj[u]) if (v != p && v != bigChild[u])
     {
         FOR(i, in[v], out[v]) UpdateRes(node[i], u);
-        FOR(i, in[v], out[v]) for (auto &x : divs[a[u]]) cnt[x]++, len[x] += d[u];
+        FOR(i, in[v], out[v]) for (auto &x : divs[a[node[i]]]) cnt[x]++, len[x] += d[node[i]];
     }
 
-    for (auto &x : divs[a[u]]) cnt[x]++, len[x] += d[u];
     UpdateRes(u, u);
+    for (auto &x : divs[a[u]]) cnt[x]++, len[x] += d[u];
 }
 
 void Sieve()
@@ -138,17 +138,6 @@ int main()
     DFS(1, -1);
 
     cout << res;
-
-    // FOR(i, 1, n)
-    // {
-    //     cout << a[i] << ":\n";
-    //     cout << "facts: ";
-    //     for (auto &x : facts[a[i]]) cout << x << ' ';
-    //     cout << '\n';
-    //     cout << "divs: ";
-    //     for (auto &x : divs[a[i]]) cout << x << ' ';
-    //     cout << "\n-----------------\n";
-    // }
 
     return 0;
 }
