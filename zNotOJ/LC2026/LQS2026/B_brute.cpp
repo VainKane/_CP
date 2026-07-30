@@ -19,22 +19,18 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 67;
-int const MOD = 998244353;
+int const N = 1e5 + 5;
 
-int n;
-int a[N], pre[N];
-int dp[N];
+int n, k;
+int a[N][12];
 
-int Get(ll x)
+ll dp[N];
+
+ll Val(int i, int j)
 {
-    FOR(i, 1, n)
-    {
-        if (BIT(i - 1, x)) dp[i] = (pre[i - 1] + 1LL * dp[i - 1] * a[i]) % MOD;
-        else dp[i] = dp[i - 1];
-    }
-
-    return dp[n];
+    ll res = 0;
+    FOR(id, 1, k) res += abs(a[i][id] - a[j][id]);
+    return res;
 }
 
 int main()
@@ -42,19 +38,11 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i];
+    cin >> n >> k;
+    FOR(i, 1, n) FOR(j, 1, k) cin >> a[i][j];
 
-    dp[0] = pre[0] = 1;
-    FOR(i, 1, n) pre[i] = 1LL * pre[i - 1] * (a[i] + 1) % MOD;
-
-    int q; cin >> q;
-    while (q--)
-    {
-        ll l, r;
-        cin >> l >> r;
-        cout << (Get(r) - Get(l - 1) + MOD) % MOD << '\n';
-    }
+    FOR(i, 1, n) REP(j, i) maxi(dp[i], dp[j] + Val(j + 1, i));
+    cout << dp[n];
 
     return 0;
 }

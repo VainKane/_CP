@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t3"
+#define name "C"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -28,13 +28,14 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 5000;
-
+    int const lim = 20;
+    
     int n = Rand(1, lim);
-    cout << n << '\n';
-    FOR(i, 1, n) cout << Rand(1, n) << ' ';
-    cout << '\n';
-    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << '\n';
+    int m = Rand(1, lim);
+    int MOD = Rand(1, lim);
+
+    cout << n << ' ' << m << ' ' << MOD << '\n';
+    while (n--) cout << Rand(0, m) << ' ';
 }
 
 int main()

@@ -19,19 +19,31 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 2e5 + 5;
-int const LOG = 20;
+int const N = 8e4 + 5;
+int const M = 2e4 + 5;
+int const LOG = 18;
 
-int n;
+struct Data
+{
+    int w, t, p;
 
-int c[N];
+    Data(int _w = 0, int _t = 0, int _p = 0) { w = _w, t = _t, p = _p; }
+    void Input() { cin >> w >> t >> p; }
+    bool operator < (Data const other) const { return t < other.t; }
+};
+
+int n, m, bullshit;
+
 vector<int> adj[N];
+Data a[M];
 
 int up[2 * N][LOG];
 int pos[N], h[N];
 int timer = 0;
 
-bool cmp(int u, int v) { return pos[u] < pos[v]; }
+ll dp[N];
+
+bool cmp(int u, int v) { return h[u] < h[v]; }
 
 void DFS(int u, int p)
 {
@@ -46,12 +58,6 @@ void DFS(int u, int p)
     }
 }
 
-void Build()
-{
-    FOR(j, 1, 31 - __builtin_clz(timer)) FOR(i, 1, timer - MK(j) + 1)
-        up[i][j] = min(up[i][j - 1], up[i + MK(j - 1)][j - 1], cmp);
-}
-
 int LCA(int u, int v)
 {
     u = pos[u], v = pos[v];
@@ -61,6 +67,12 @@ int LCA(int u, int v)
     return min(up[u][k], up[v - MK(k) + 1][k], cmp);
 }
 
+void Init()
+{
+    FOR(j, 1, 31 - __builtin_clz(timer)) FOR(i, 1, timer - MK(j) + 1)
+        up[i][j] = min(up[i][j - 1], up[i + MK(j - 1)][j - 1], cmp);
+}
+
 int Dist(int u, int v) { return h[u] + h[v] - 2 * h[LCA(u, v)]; }
 
 int main()
@@ -68,8 +80,7 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> c[i];
+    cin >> n >> m >> bullshit;
     FOR(i, 2, n)
     {
         int u, v;
@@ -78,15 +89,14 @@ int main()
         adj[v].push_back(u);
     }
 
-    DFS(1, -1);
-    Build();
+    FOR(i, 1, m) a[i].Input();
+    sort(a + 1, a + m + 1);
 
-    FOR(u, 1, n)
-    {
-        int res = 0;
-        FOR(v, 1, n) if (v != u) res += Dist(u, v) <= c[v];
-        cout << res << ' ';
-    }
+    DFS(1, -1);
+    Init();
+    
+    FOR(i, 1, m) REP(j, i) if (a[j].t + Dist(a[i].w, a[j].w) <= a[i].t) maxi(dp[i], dp[j] + a[i].p);
+    cout << *max_element(dp + 1, dp + m + 1);
 
     return 0;
 }

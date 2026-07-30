@@ -28,7 +28,7 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 5000;
+    int const lim = 2e5;
 
     int n = Rand(1, lim);
     int l = Rand(1, min(n, 500));
@@ -43,10 +43,10 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system(name".exe <"name".inp> "name".out");
-        system(name"_brute.exe <"name".inp> "name".ans");
+        system("./"name".exe <"name".inp> "name".out");
+        system("./"name"_brute.exe <"name".inp> "name".ans");
 
-        if (system("fc "name".out "name".ans") != 0)
+        if (system("diff "name".out "name".ans") != 0)
         {
             cout << "Test: " << i << " WRONG!\n";
             return 0;

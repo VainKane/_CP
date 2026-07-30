@@ -29,7 +29,8 @@ int n;
 int x[N], y[N];
 
 bool used[N];
-int id[N];
+int id[N], resId[N];
+
 double c[N][N];
 
 void Init()
@@ -54,6 +55,13 @@ void Init()
     }
 }
 
+double Cost(int id[])
+{
+    double res = 0;
+    FOR(i, 1, n) res += c[id[i]][id[i + 1]];
+    return res;
+}
+
 int main()
 {
     ios_base::sync_with_stdio(false);
@@ -65,22 +73,23 @@ int main()
     id[1] = id[n + 1] = 1;
     Init();
 
-    bool lmao = true;
-    while (lmao)
+    FOR(i, 1, n + 1) resId[i] = id[i];
+    REP(hihi, 4e4)
     {
-        lmao = false;
-        FOR(u, 2, n) FOR(v, u + 2, n) if (c[id[u] - 1][id[v - 1]] + c[id[u]][id[v]] < c[id[u - 1]][id[u]] + c[id[v - 1]][id[v]])
+        bool ok = false;
+        FOR(u, 2, n) FOR(v, u + 2, n)
         {
-            for (int i = u, j = v; i <= j; i++, j--) swap(id[i], id[j]);
-            lmao = true;
+            double d1 = c[id[u - 1]][id[u]] + c[id[v - 1]][id[v]];
+            double d2 = c[id[u - 1]][id[v - 1]] + c[id[u]][id[v]];
+            if (d1 > d2) reverse(id + u, id + v), ok = true;
         }
+
+        if (Cost(id) < Cost(resId)) FOR(i, 1, n + 1) resId[i] = id[i];
+        if (!ok && n > 1) REP(hihi, n / 15) swap(id[Rand(2, n)], id[Rand(2, n)]);
     }
 
-    double res = 0;
-    FOR(i, 1, n) res += c[id[i]][id[i + 1]];
-    
-    cout << fixed << setprecision(10) << res << '\n';
-    FOR(i, 1, n) cout << id[i] << ' ';
+    cout << fixed << setprecision(10) << Cost(resId) << '\n';
+    FOR(i, 1, n) cout << resId[i] << ' ';
 
     return 0;
 }

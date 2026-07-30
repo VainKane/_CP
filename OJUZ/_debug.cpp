@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "CEOI09_harbingers"
+#define name "COCI19_lampice"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -31,14 +31,14 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 1e5;
-    int const oo = 1e9;
+    int const lim = 1000;
 
     int n = Rand(1, lim);
 
     cout << n << '\n';
-    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << ' ' << Rand(1, 1e4) << '\n';
-    FOR(i, 2, n) cout << Rand(1, oo) << ' ' << Rand(1, oo) << '\n';
+    FOR(i, 1, n) cout << (char)Rand('a', 'd');
+    cout << '\n';
+    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << '\n';
 }
 
 int main()
@@ -46,10 +46,10 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system(name".exe <"name".inp> "name".out");
-        system(name"_brute.exe <"name".inp> "name".ans");
+        system("./"name".exe <"name".inp> "name".out");
+        system("./"name"_brute.exe <"name".inp> "name".ans");
 
-        if (system("fc "name".out "name".ans") != 0)
+        if (system("diff "name".out "name".ans") != 0)
         {
             cout << "Test: " << i << " WRONG!\n";
             return 0;

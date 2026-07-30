@@ -32,6 +32,7 @@ int h[N], maxH[N];
 int cnt[N], c[N];
 
 ll res = 0;
+int iniSum = 0;
 
 void DFSPrepare(int u, int p)
 {
@@ -52,6 +53,12 @@ void DFSPrepare(int u, int p)
     out[u] = timer;
 }
 
+int Val(int x)
+{
+    if (x < 0 || x > n) return 0;
+    return cnt[x];
+}
+
 void DFS(int u, int p)
 {
     for (auto &v : adj[u]) if (v != p && v != bigChild[u])
@@ -60,6 +67,7 @@ void DFS(int u, int p)
         FOR(i, in[v], out[v]) cnt[h[node[i]]] = 0;
     }
 
+    iniSum = 0;
     if (bigChild[u]) DFS(bigChild[u], u);
     int sum = 0;
 
@@ -67,23 +75,27 @@ void DFS(int u, int p)
     {
         FOR(i, in[v], out[v]) c[h[node[i]]]++;
 
-        // sum = iniSum;
+        sum = iniSum;
+        
+        sum = 0;
+        FOR(i, l + 2 * h[u], min(n, r + 2 * h[u])) sum += cnt[i];
+
         FOR(i, h[v], maxH[v])
         {
-            // if (l - i + 2 * h[u] >= 0) sum += cnt[l + 2 * h[u] - i];
-            // if (r - i + 2 * h[u] + 1 >= 0) sum -= cnt[r + 2 * h[u] - i + 1];
+            sum += Val(l - i + 2 * h[u]);
+            sum -= Val(r - i + 2 * h[u] + 1);
 
-            sum = 0;
-            FOR(j, max(0, l + 2 * h[u] - i), min(n, r + 2 * h[u] - i)) sum += cnt[j];
-            iniSum += c[i];
+            if (l + 2 * h[u] <= i && i <= r + 2 * h[u]) iniSum += c[i];
             res += 1LL * c[i] * sum;
         }
 
         FOR(i, in[v], out[v]) cnt[h[node[i]]]++, c[h[node[i]]] = 0;
     }
 
-    res += iniSum;
+    FOR(i, l + h[u], min(r + h[u], n)) res += cnt[i];
+    // res += iniSum;
     cnt[h[u]]++;
+    iniSum++;
 }
 
 int main()

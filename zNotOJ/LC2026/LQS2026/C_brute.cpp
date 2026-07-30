@@ -19,42 +19,44 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 67;
-int const MOD = 998244353;
+int const N = 1e6 + 5;
+int MOD;
 
-int n;
-int a[N], pre[N];
-int dp[N];
-
-int Get(ll x)
+void Add(int &x, int const &y)
 {
-    FOR(i, 1, n)
-    {
-        if (BIT(i - 1, x)) dp[i] = (pre[i - 1] + 1LL * dp[i - 1] * a[i]) % MOD;
-        else dp[i] = dp[i - 1];
-    }
-
-    return dp[n];
+    x += y;
+    if (x >= MOD) x -= MOD;
 }
+
+int n, m;
+int a[N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i];
+    cin >> n >> m >> MOD;
+    REP(i, n) cin >> a[i];
 
-    dp[0] = pre[0] = 1;
-    FOR(i, 1, n) pre[i] = 1LL * pre[i - 1] * (a[i] + 1) % MOD;
-
-    int q; cin >> q;
-    while (q--)
+    int res = 0;
+    REP(mask, MK(n)) if (mask ^ (mask & -mask))
     {
-        ll l, r;
-        cin >> l >> r;
-        cout << (Get(r) - Get(l - 1) + MOD) % MOD << '\n';
+        int val = 2 * m;
+        for (int tmp = mask; tmp; tmp ^= tmp & -tmp)
+        {
+            int i = __builtin_ctz(tmp);
+            for (int haha = tmp ^ MK(i); haha; haha ^= haha & -haha)
+            {
+                int j = __builtin_ctz(haha);
+                mini(val, a[i] ^ a[j]);
+            }
+        }
+
+        res = (res + val) % MOD;
     }
+
+    cout << res;
 
     return 0;
 }
