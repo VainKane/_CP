@@ -27,8 +27,7 @@ mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 509;
-int const K = 22;
-int const lim = 45 * 60000;
+int const lim = 1 * 60000;
 
 int n, k, t;
 
@@ -37,18 +36,15 @@ int d[N][N];
 int l[6], r[6];
 
 int id[N], resId[N];
-pair<ll, ll> val, resVal;
-
-vector<int> gr[K];
-pair<ll, ll> grVal[K];
-ll sum[K][6];
+int cnt[36];
+vector<int> gr[N];
 
 void Init()
 {
-    FOR(i, 1, k) id[i] = id[i + k] = i;
-    FOR(i, 2 * k + 1, n) id[i] = Rand(1, k);
-
+    FOR(i, 1, k) id[i] = id[i + k] = i, cnt[i] = 2;
+    FOR(i, 2 * k + 1, n) id[i] = Rand(1, k), cnt[id[i]]++;
     shuffle(id + 1, id + n + 1, rd);
+
     FOR(i, 1, n) resId[i] = id[i];
 }
 
@@ -60,46 +56,18 @@ pair<ll, ll> Eval(int id[])
     pair<ll, ll> res = {0, 0};
     FOR(i, 1, k)
     {
-        grVal[i] = {0, 0};
-        for (auto &z : gr[i]) for (auto &u : gr[i]) grVal[i].S += d[u][z];
-
+        for (auto &z : gr[i]) for (auto &u : gr[i]) res.S += d[u][z];
         FOR(j, 1, t)
         {
-            sum[i][j] = 0;
-            for (auto &z : gr[i]) sum[i][j] += a[z][j];
+            ll s = 0;
+            for (auto &z : gr[i]) s += a[z][j];
 
-            if (sum[i][j] < l[j]) grVal[i].F += l[j] - sum[i][j];
-            if (sum[i][j] > r[j]) grVal[i].F += sum[i][j] - r[j];
+            if (s < l[j]) res.F += l[j] - s;
+            if (s > r[j]) res.F += s - r[j];
         }
-
-        res.F += grVal[i].F, res.S += grVal[i].S;
     }
 
     return res;
-}
-
-void Update(int idx, int i, int delta)
-{
-    if (delta == 1) id[i] = idx, gr[idx].push_back(i);
-    else
-    {
-        vector<int> tmp;
-        for (auto &j : gr[idx]) if (j != i) tmp.push_back(j);
-        gr[idx] = tmp;
-    }
-
-    val.F -= grVal[idx].F, val.S -= grVal[idx].S;
-    for (auto &j : gr[idx]) grVal[idx].S += delta * (d[i][j] + d[j][i]);
-
-    grVal[idx].F = 0;
-    FOR(j, 1, t)
-    {
-        sum[idx][j] += delta * a[i][j];
-        if (sum[idx][j] < l[j]) grVal[idx].F += l[j] - sum[idx][j];
-        if (sum[idx][j] > r[j]) grVal[idx].F += sum[idx][j] - r[j];
-    }
-
-    val.F += grVal[idx].F, val.S += grVal[idx].S;
 }
 
 int main()
@@ -121,61 +89,40 @@ int main()
     FOR(i, 1, t) cin >> r[i];
 
     Init();
-    resVal = val = Eval(id);
 
     auto startTime = chrono::high_resolution_clock::now();
     while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
     {
         cerr << fixed << "progress: " << (double)chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() / lim * 100 << "% ";
-        cerr << resVal.F << ' ' << resVal.S << '\n';
-        // auto haha = Eval(id);
-        // cerr << fixed << haha.F << ' ' << haha.S << '\n';
+        auto haha = Eval(resId);
+        cerr << fixed << haha.F << ' ' << haha.S << '\n';
 
         bool opt = false;
-        FOR(i, 1, n) if (sz(gr[id[i]]) > 2) FOR(j, 1, k)
+        FOR(i, 1, n) if (cnt[id[i]] > 2) FOR(j, 1, k)
         {
-            auto cur = val;
             int curId = id[i];
+            auto cur = Eval(id);
 
-            Update(curId, i, -1);
-            Update(j, i, 1);
-
-            if (val < cur) opt = true;
-            else
+            id[i] = j;
+            if (Eval(id) < cur)
             {
-                Update(j, i, -1);
-                Update(curId, i, 1);
+                cnt[curId]--, cnt[id[i]]++;
+                opt = true;
             }
+            else id[i] = curId;
         }
 
         FOR(u, 1, n) FOR(v, u + 1, n)
         {
-            int idU = id[u], idV = id[v];
-            auto cur = val;
+            auto cur = Eval(id);
 
-            Update(idU, u, -1);
-            Update(idV, v, -1);
-            
-            Update(idV, u, 1);
-            Update(idU, v, 1);
-
-            if (val < cur) opt = true;
-            else
-            {
-                Update(idV, u, -1);
-                Update(idU, v, -1);
-
-                Update(idU, u, 1);
-                Update(idV, v, 1);
-            }
+            swap(id[u], id[v]);
+            if (Eval(id) < cur) opt = true;
+            else swap(id[u], id[v]);
         }
 
-        if (mini(resVal, val)) FOR(i, 1, n) resId[i] = id[i];
-        if (!opt)
-        {
-            FOR(i, 1, n / 20) swap(id[Rand(1, n)], id[Rand(1, n)]);
-            val = Eval(id);
-        }
+        if (Eval(id) < Eval(resId)) FOR(i, 1, n) resId[i] = id[i];
+        if (!opt) FOR(i, 1, n / 15) swap(id[Rand(1, n)], id[Rand(1, n)]);
     }
 
     assert(Eval(resId).F == 0);
