@@ -23,6 +23,7 @@ mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 109;
+int const lim = 867;
 double const oo = 6e9 + 9;
 
 int n;
@@ -72,9 +73,10 @@ int main()
 
     id[1] = id[n + 1] = 1;
     Init();
-
     FOR(i, 1, n + 1) resId[i] = id[i];
-    REP(hihi, 4e4)
+
+    auto startTime = chrono::high_resolution_clock::now();
+    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
     {
         bool ok = false;
         FOR(u, 2, n) FOR(v, u + 2, n)

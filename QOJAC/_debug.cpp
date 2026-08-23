@@ -11,40 +11,37 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "2742"
+#define name "410"
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 mt19937_64 rd(time(0));
-int const ntest = 1e4;
+ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
-long long Rand(long long l, long long r)
-{
-    return l + rd() * 1ll * rd() % (r - l + 1);
-}
+int const ntest = 1e4;
 
 void GenTest()
 {
     ofstream cout(name".inp");
 
-    string haha = "ABXY";
-    string moves;
+    int const lim = 4;
+    int const oo = 3;
 
-    char ini = haha[Rand(0, 3)];
-    for (auto &ch : haha) if (ch != ini) moves.push_back(ch);    
+    int n = Rand(2, lim);
 
-    int n = Rand(1, 1000);
     cout << n << '\n';
-    cout << ini;
-    FOR(i, 2, n) cout << moves[Rand(0, 2)];
+
+    cout << Rand(2, n) << ' ' << Rand(1, oo) << '\n';
+    FOR(i, 2, n - 1)
+    {
+        int haha[] = {Rand(1, i - 1), Rand(i + 1, n)};
+        cout << haha[Rand(0, 1)] << ' ' << Rand(1, oo) << '\n';
+    }
+    cout << Rand(1, n - 1) << ' ' << Rand(1, oo) << '\n';
 }
 
 int main()
@@ -52,7 +49,16 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system(name".exe");
+        system("./"name".exe <"name".inp> "name".out");
+        system("./"name"_brute.exe <"name".inp> "name".ans");
+
+        if (system("diff "name".out "name".ans") != 0)
+        {
+            cout << "Test: " << i << " WRONG!\n";
+            return 0;
+        }
+
+        cout << "Test: " << i << " CORRECT!\n";
     }
 
     return 0;

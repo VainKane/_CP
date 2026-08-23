@@ -41,7 +41,7 @@
                 "${file}",
                 "--std=c++14",
                 "-pipe",
-                "-static",
+                // "-static",
                 "-lm",
                 "-x",
                 "-Wall",

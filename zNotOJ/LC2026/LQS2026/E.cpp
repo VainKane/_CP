@@ -28,7 +28,7 @@ ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 509;
 int const K = 22;
-int const lim = 45 * 60000;
+int const lim = 3 * 60000;
 
 int n, k, t;
 

@@ -23,6 +23,7 @@ mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 1009;
+int const lim = 967;
 ll const oo = 1e18;
 
 int n, k;
@@ -54,11 +55,13 @@ int main()
     FOR(i, 1, n) cin >> x[i] >> y[i];
 
     double res = oo;
-    REP(haha, 435)
+
+    auto startTime = chrono::high_resolution_clock::now();
+    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
     {
         FOR(i, 1, k) centX[i] = x[Rand(1, n)], centY[i] = y[Rand(1, n)];
 
-        REP(hihi, max(5, (int)1e6 / n / k))
+        REP(haha, max(5, (int)1e6 / n / k))
         {
             FOR(i, 1, k) sumX[i] = sumY[i] = cnt[i] = 0;
             FOR(i, 1, n)
@@ -96,7 +99,7 @@ int main()
         if (mini(res, cost)) FOR(i, 1, k) cx[i] = centX[i], cy[i] = centY[i];
     }
 
-    FOR(i, 1, k) cout << fixed << setprecision(7) << cx[i] << ' ' << cy[i] << '\n';
+    FOR(i, 1, k) cout << fixed << setprecision(6) << cx[i] << ' ' << cy[i] << '\n';
 
     return 0;
 }
