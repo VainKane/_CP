@@ -675,7 +675,7 @@ int main() {
     // Keep the same limit.
     // --------------------------------------------------------
 
-    const long long TIME_LIMIT_MS = 1LL * 60000LL;
+    const long long TIME_LIMIT_MS = 3LL * 60000LL;
 
     cerr << "========================================\n";
     cerr << "Test = " << testId << '\n';

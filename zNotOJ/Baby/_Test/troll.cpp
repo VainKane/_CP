@@ -1,7 +1,2 @@
 #include <bits/stdc++.h>
-using namespace std;
-int main()
-{
-    vector<long long> v;
-    while (true) v.push_back(3);
-}
+int main() { std::vector<long long> v; while (36) v.push_back(67); }

@@ -19,30 +19,22 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 36;
 
-int const N = 1009;
-int const lim = 14950;
+int n, m;
+vector<int> nodes[N];
+int pos[N];
 
-int m, n, k;
-int a[N][N];
-
-bool mark[N][N];
-ll val, res;
-
-void Init()
+bool Check(int idx)
 {
-    vector<ii> v;
-    FOR(i, 1, m) FOR(j, 1, n) v.push_back({i, j});
-    shuffle(all(v), rd);
-
-    REP(i, k) mark[v[i].F][v[i].S] = true;
+    FOR(i, 0, sz(nodes[idx]) - 2) if (pos[nodes[idx][i]] >= pos[nodes[idx][i + 1]]) return false;
+    return true;
 }
 
-ll Eval()
+int Cal()
 {
-    if (k < )
+    FOR(i, 1, m) if (!Check(i)) return i - 1;
+    return m;
 }
 
 int main()
@@ -50,18 +42,31 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    auto startTime = chrono::high_resolution_clock::now();
+    cin >> n >> m;
 
-    cin >> m >> m >> n >> k;
-    FOR(i, 1, m) FOR(j, 1, n) cin >> a[i][j];
-
-    Init();
-    res = val = Eval();
-
-    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
+    FOR(i, 1, m)
     {
-
+        int k; cin >> k;
+        while (k--)
+        {
+            int u; cin >> u;
+            nodes[i].push_back(u);
+        }
     }
+
+    vector<int> id, res;
+    int ma = -1;
+
+    FOR(i, 1, n) id.push_back(i);
+
+    do
+    {
+        REP(i, n) pos[id[i]] = i;
+        if (maxi(ma, Cal())) res = id;
+    } while (next_permutation(all(id)));
+
+    for (auto &i : res) cout << i << ' ';
+    // cout << ma;
 
     return 0;
 }

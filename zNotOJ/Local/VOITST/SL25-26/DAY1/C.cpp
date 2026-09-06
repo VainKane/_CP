@@ -19,30 +19,16 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 1e6 + 5;
 
-int const N = 1009;
-int const lim = 14950;
+int n, m, cntOther = 0;
+int cnt[N];
 
-int m, n, k;
-int a[N][N];
-
-bool mark[N][N];
-ll val, res;
-
-void Init()
+int Cal(int k)
 {
-    vector<ii> v;
-    FOR(i, 1, m) FOR(j, 1, n) v.push_back({i, j});
-    shuffle(all(v), rd);
-
-    REP(i, k) mark[v[i].F][v[i].S] = true;
-}
-
-ll Eval()
-{
-    if (k < )
+    int res = 0;
+    FOR(i, 1, m) if (cnt[i] < k) res += k - cnt[i];
+    return res;
 }
 
 int main()
@@ -50,18 +36,27 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    auto startTime = chrono::high_resolution_clock::now();
-
-    cin >> m >> m >> n >> k;
-    FOR(i, 1, m) FOR(j, 1, n) cin >> a[i][j];
-
-    Init();
-    res = val = Eval();
-
-    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
+    cin >> n >> m;
+    FOR(i, 1, n)
     {
-
+        int x; cin >> x;
+        if (x <= m) cnt[x]++;
+        else cntOther++;
     }
+
+    int l = 1;
+    int r = n;
+    ii res;
+
+    while (l <= r)
+    {
+        int mid = l + r >> 1;
+        int cost = Cal(mid);
+        if (cost <= cntOther) res = {mid, cost}, l = mid + 1;
+        else r = mid - 1;
+    }
+
+    cout << res.F << ' ' << res.S;
 
     return 0;
 }

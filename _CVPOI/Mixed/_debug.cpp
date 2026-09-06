@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "t23"
+#define name "t43"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -28,19 +28,20 @@ void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 7000;
+    int const lim = 10;
     int const oo = 1e9;
 
-    string val[] = {"0.00", "0.1", "0.3", "0.5", "0.7", "0.9"};
-
     int n = Rand(1, lim);
-    int q = Rand(1, lim);
+    int m = Rand(1, lim);
 
-    cout << n << ' ' << q << '\n';
-    FOR(i, 1, n) cout << Rand(0, oo) << ' ';
-    cout << '\n';
-    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << ' ' << val[Rand(0, 4)] << '\n';
-    while (q--) cout << Rand(1, n) << ' ' << Rand(1, n) << '\n';
+    cout << n << ' ' << m << '\n';
+    FOR(i, 1, m)
+    {
+        int k = Rand(1, n);
+        cout << k << ' ';
+        while (k--) cout << Rand(1, n) << ' ';
+        cout << '\n';
+    }
 }
 
 int main()

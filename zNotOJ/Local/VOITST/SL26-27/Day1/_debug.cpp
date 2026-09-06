@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "ZA"
+#define name "COW"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -22,44 +22,39 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
-int const ntest = 1e4;
+int const ntest = 1;
 
 void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 100;
+    int const lim = 8000;
+    int n = Rand(7500, lim);
 
-    int t = Rand(1, 10);
-    cout << t << '\n';
-
-    while (t--)
-    {
-        int n = Rand(1, lim);
-        int m = Rand(n - 1, lim);
-        int k = Rand(1, lim);
-
-        cout << n << ' ' << m << ' ' << k << '\n';
-        FOR(i, 1, n) cout << Rand(1, k) << ' ';
-        cout << '\n';
-        // FOR(i, 2, n) cout << i << ' ' << Rand(1, i - 1) << '\n';
-        FOR(i, 1, m) cout << Rand(1, n) << ' ' << Rand(1, n) << '\n';
-    }
+    cout << n << '\n';
+    FOR(i, 1, n) cout << Rand(1, n) << ' ';
+    cout << '\n';
+    FOR(i, 1, n) cout << Rand(1, n) << ' ';
 }
 
 int main()
 {
-    FOR(i, 1, ntest)
+    FOR(i, 14, 20)
     {
         GenTest();
-        system("./"name".exe <"name".inp> "name".out");
-        system("./"name"_brute.exe <"name".inp> "name".ans");
+        system("./"name".exe");
 
-        if (system("diff "name".out "name".ans") != 0)
-        {
-            cout << "Test: " << i << " WRONG!\n";
-            return 0;
-        }
+        system(("mkdir test" + to_string(i)).c_str());
+        system(("mv "name".inp test" + to_string(i)).c_str());
+        system(("mv "name".out test" + to_string(i)).c_str());
+
+        // system("./"name"_brute.exe <"name".inp> "name".ans");
+
+        // if (system("diff "name".out "name".ans") != 0)
+        // {
+        //     cout << "Test: " << i <<x " WRONG!\n";
+        //     return 0;
+        // }
 
         cout << "Test: " << i << " CORRECT!\n";
     }

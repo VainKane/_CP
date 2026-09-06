@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name ""
+#define name "COW"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,30 +19,23 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
+int const N = 8009;
 
-int const N = 1009;
-int const lim = 14950;
+int n;
+int a[N], b[N];
 
-int m, n, k;
-int a[N][N];
+int res[N];
+int cnt = 0;
 
-bool mark[N][N];
-ll val, res;
-
-void Init()
+void Cal(int l, int r)
 {
-    vector<ii> v;
-    FOR(i, 1, m) FOR(j, 1, n) v.push_back({i, j});
-    shuffle(all(v), rd);
-
-    REP(i, k) mark[v[i].F][v[i].S] = true;
-}
-
-ll Eval()
-{
-    if (k < )
+    int val = cnt;
+    for (; l >= 1 && r <= n; l--, r++)
+    {
+        val += (a[l] == b[r]) - (a[l] == b[l]);
+        val += (a[r] == b[l]) - (a[r] == b[r]);
+        res[val]++;
+    }
 }
 
 int main()
@@ -50,18 +43,17 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    auto startTime = chrono::high_resolution_clock::now();
+    freopen(name".inp", "r", stdin);
+    freopen(name".out", "w", stdout);
 
-    cin >> m >> m >> n >> k;
-    FOR(i, 1, m) FOR(j, 1, n) cin >> a[i][j];
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i];
+    FOR(i, 1, n) cin >> b[i];
 
-    Init();
-    res = val = Eval();
+    FOR(i, 1, n) cnt += a[i] == b[i];
+    FOR(i, 1, n) Cal(i, i), Cal(i, i + 1);
 
-    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
-    {
-
-    }
+    FOR(i, 0, n) cout << res[i] << '\n';
 
     return 0;
 }

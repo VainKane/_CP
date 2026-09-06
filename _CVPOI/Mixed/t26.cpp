@@ -19,48 +19,45 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-mt19937_64 rd(time(0));
-ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
-
-int const N = 1009;
-int const lim = 14950;
-
-int m, n, k;
-int a[N][N];
-
-bool mark[N][N];
-ll val, res;
-
-void Init()
+struct FenwickTree
 {
-    vector<ii> v;
-    FOR(i, 1, m) FOR(j, 1, n) v.push_back({i, j});
-    shuffle(all(v), rd);
+    vector<int> bit;
+    int n;
 
-    REP(i, k) mark[v[i].F][v[i].S] = true;
-}
+    FenwickTree(int _n = 0)
+    {
+        n = _n;
+        bit.assign(n + 5, 0);
+    }
 
-ll Eval()
-{
-    if (k < )
-}
+    void Update(int idx, int val) { for (; idx; idx ^= idx & -idx) bit[idx] += val; }
+
+    int Get(int idx)
+    {
+        int res = 0;
+        for (; idx <= n; idx += idx & -idx) res += bit[idx];
+        return res;
+    }
+};
+
+int n, q;
+FenwickTree bit1, bit2;
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    auto startTime = chrono::high_resolution_clock::now();
+    cin >> n >> q;
+    bit1 = bit2 = FenwickTree(n);
 
-    cin >> m >> m >> n >> k;
-    FOR(i, 1, m) FOR(j, 1, n) cin >> a[i][j];
-
-    Init();
-    res = val = Eval();
-
-    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
+    while (q--)
     {
+        int type, l, r;
+        cin >> type >> l >> r;
 
+        if (type == 1) bit1.Update(l, 1), bit2.Update(r, 1);
+        else cout << bit2.Get(l) - bit1.Get(r + 1) << '\n';
     }
 
     return 0;

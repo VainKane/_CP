@@ -27,7 +27,7 @@ mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 1e5 + 5;
-int const lim = 40 * 60000;
+int const lim = 10 * 60000;
 ll const oo = 1e18 + 9;
 
 int n;
@@ -54,9 +54,9 @@ bool cmp(int i, int j) { return x[i] + y[i] < x[j] + y[j]; }
 void Init()
 {
     FOR(i, 1, n) id[i] = i;
-    sort(id + 1, id + n + 1, cmp);
     // shuffle(id + 1, id + n + 1, rd);
 
+    sort(id + 1, id + n + 1, cmp);
     FOR(i, 2, n) pre[i] = pre[i - 1] + Dist(id[i], id[i - 1]);
 
     pair<ll, int> tmp = {oo, 1};
@@ -68,42 +68,17 @@ void Init()
     FOR(i, 1, n) resId[i] = id[i];
 }
 
-bool TwoOpt(ll &x, int OS = 0)
+bool TwoOpt()
 {
     bool opt = false;
-    REP(haha, 1e3)
+    REP(haha, 6e8)
     {
-        int i = Rand(2, n / 2 - 3), j = Rand(i + 2, n / 2);
-        i += OS, j += OS;
-
+        int i = Rand(1, n / 2 - 3), j = Rand(i + 2, n / 2);
         int delta = Dist(id[i - 1], id[j - 1]) + Dist(id[i], id[j]) - Dist(id[i - 1], id[i]) - Dist(id[j - 1], id[j]);
         if (delta < 0)
         {
-            x += delta;
-            reverse(id + i, id + j);
-            opt = true;
-        }
-    }
-
-    val = Eval();
-    return opt;
-}
-
-bool CrossExchange()
-{
-    bool opt = false;
-    REP(haha, 1e3)
-    {
-        int len = Rand(1, 20);
-        int i = Rand(2, n / 2 - len), j = Rand(n / 2 + 2, n - len);
-
-        ll delta = Dist(id[j], id[i - 1]) - Dist(id[i], id[i - 1]) + Dist(id[j + len - 1], id[i + len]) - Dist(id[i + len - 1], id[i + len]);
-        FOR(k, 1, len - 1) delta += Dist(id[j + k - 1], id[j + k]) - Dist(id[i + k - 1], id[i + k]);
-    
-        if (delta < 0)
-        {
-            REP(k, len) swap(id[i + k], id[j + k]);
             val.F += delta;
+            reverse(id + i, id + j);
             opt = true;
         }
     }
@@ -132,14 +107,7 @@ int main()
         cerr << fixed << "progress: " << tt << "%: " << resVal.F << ' '<< resVal.S << '\n';
 
         bool opt = false;
-        REP(haha, 100)
-        {
-            opt |= TwoOpt(val.F);
-            opt |= TwoOpt(val.S, n / 2);
-            opt |= CrossExchange();
-            opt |= TwoOpt(val.F);
-            opt |= TwoOpt(val.S, n / 2);
-        }
+        opt |= TwoOpt();
 
         if (mini(resVal, val)) FOR(i, 1, n) resId[i] = id[i];
         if (!opt)

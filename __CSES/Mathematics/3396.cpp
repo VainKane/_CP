@@ -19,36 +19,48 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 36;
-ll oo = 1e18 + 9;
+int const N = 2e6 + 5;
 
-int n;
-int a[N], c[N];
+bool prime[N];
+vector<int> primes;
 
-int id[N];
+void Sieve()
+{
+    memset(prime, true, sizeof prime);
+    prime[0] = prime[1] = false;
+
+    FOR(i, 2, sqrt(2e6)) if (prime[i]) for (int j = i * i; j <= 2e6; j += i) prime[j] = false;
+    FOR(i, 2, 2e6) if (prime[i]) primes.push_back(i);
+}
+
+bool Prime(ll x)
+{
+    if (x < 2) return false;
+ 
+    int k = sqrt(x);
+    for (auto &i : primes)
+    {
+        if (i > k) break;
+        if (x % i == 0) return false;
+    }
+    
+    return true;
+}
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i] >> c[i];
+    Sieve();
 
-    FOR(i, 1, n) id[i] = i;
-    ll res = oo;
-
-    do
+    int t; cin >> t;
+    while (t--)
     {
-        id[n + 1] = id[1];
-
-        ll cost = 0;
-        FOR(i, 2, n + 1) cost += a[id[i]] == id[i - 1] ? 0 : c[id[i]];
-        mini(res, cost);
-
-    } while (next_permutation(id + 1, id + n + 1));
-
-    cout << res;
+        ll n; cin >> n;
+        while (!Prime(++n));
+        cout << n << '\n';
+    }
 
     return 0;
 }

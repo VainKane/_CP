@@ -28,7 +28,7 @@ ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 509;
 int const K = 22;
-int const lim = 3 * 60000;
+int const lim = 30 * 60000;
 
 int n, k, t;
 
@@ -102,6 +102,60 @@ void Update(int idx, int i, int delta)
     val.F += grVal[idx].F, val.S += grVal[idx].S;
 }
 
+bool SetOpt()
+{
+    bool opt = false;
+
+    FOR(i, 1, n) if (sz(gr[id[i]]) > 2) FOR(j, 1, k)
+    {
+        auto cur = val;
+        int curId = id[i];
+
+        Update(curId, i, -1);
+        Update(j, i, 1);
+
+        if (val < cur) opt = true;
+        else
+        {
+            Update(j, i, -1);
+            Update(curId, i, 1);
+        }
+    }
+
+    return opt;
+}
+
+bool SwapOpt()
+{
+    bool opt = false;
+
+    FOR(u, 1, n) FOR(v, u + 1, n)
+    // REP(haha, 1e4)
+    {
+        // int u = Rand(1, n - 1), v = Rand(u + 1, n);
+        int idU = id[u], idV = id[v];
+        auto cur = val;
+
+        Update(idU, u, -1);
+        Update(idV, v, -1);
+        
+        Update(idV, u, 1);
+        Update(idU, v, 1);
+
+        if (val < cur) opt = true;
+        else
+        {
+            Update(idV, u, -1);
+            Update(idU, v, -1);
+
+            Update(idU, u, 1);
+            Update(idV, v, 1);
+        }
+    }
+
+    return opt;
+}
+
 int main()
 {
     ios_base::sync_with_stdio(false);
@@ -128,46 +182,14 @@ int main()
     {
         cerr << fixed << "progress: " << (double)chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() / lim * 100 << "% ";
         cerr << resVal.F << ' ' << resVal.S << '\n';
-        // auto haha = Eval(id);
-        // cerr << fixed << haha.F << ' ' << haha.S << '\n';
 
         bool opt = false;
-        FOR(i, 1, n) if (sz(gr[id[i]]) > 2) FOR(j, 1, k)
+        REP(haha, 1)
         {
-            auto cur = val;
-            int curId = id[i];
-
-            Update(curId, i, -1);
-            Update(j, i, 1);
-
-            if (val < cur) opt = true;
-            else
-            {
-                Update(j, i, -1);
-                Update(curId, i, 1);
-            }
-        }
-
-        FOR(u, 1, n) FOR(v, u + 1, n)
-        {
-            int idU = id[u], idV = id[v];
-            auto cur = val;
-
-            Update(idU, u, -1);
-            Update(idV, v, -1);
-            
-            Update(idV, u, 1);
-            Update(idU, v, 1);
-
-            if (val < cur) opt = true;
-            else
-            {
-                Update(idV, u, -1);
-                Update(idU, v, -1);
-
-                Update(idU, u, 1);
-                Update(idV, v, 1);
-            }
+            opt |= SetOpt();
+            opt |= SwapOpt();
+            opt |= SetOpt();
+            opt |= SwapOpt();
         }
 
         if (mini(resVal, val)) FOR(i, 1, n) resId[i] = id[i];

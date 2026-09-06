@@ -96,9 +96,9 @@ struct DSU
             st.pop_back();
 
             par[v.b] = v.p;
-            sz[v.a] = v.szA;
-            sz[v.b] = v.szB;
-        }        
+            sz[v.a] -= v.szB;
+            // sz[v.b] = v.szB;
+        }
     }
 };
 

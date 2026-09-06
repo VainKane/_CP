@@ -12,17 +12,14 @@ using namespace std;
 #define F first
 #define S second
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class t> bool maxi(t &x, t const &y) { return x < y ? x = y, 1 : 0; }
+template <class t> bool mini(t &x, t const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1009;
+int const lim = 936;
 
 int n, s;
 
@@ -34,11 +31,6 @@ bool mark[N];
 bool used[N];
 
 vector<int> ids;
-
-bool cmp(int i, int j)
-{
-    return w[i] < w[j];
-}
 
 int main()
 {
@@ -56,11 +48,11 @@ int main()
     }
 
     FOR(i, 1, n) id[i] = i;
-    sort(id + 1, id + n + 1);
 
     int res = 0;
 
-    REP(haha, 1e7 / n)
+    auto startTime = chrono::high_resolution_clock::now();
+    while (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() <= lim)
     {
         int sum = 0;
         FOR(i, 1, n)

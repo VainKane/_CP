@@ -19,7 +19,7 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e5 + 5;
+int const N = 2e6 + 5;
 int const oo = 1e9 + 9;
 
 struct FenwickTree
@@ -37,45 +37,54 @@ struct FenwickTree
 
     int Get(int idx)
     {
+        if (idx <= 0) return 0;
+
         int res = 0;
         for (; idx; idx ^= idx & -idx) res += bit[idx];
         return res;
     }
-
-    int Get(int l, int r) { return Get(r) - Get(l - 1); }
 };
 
 int n;
 
-ii a[N];
+int a[N], l[N];
 FenwickTree bit;
+
+void Init()
+{
+    vector<int> st;
+    a[0] = oo;
+    FORD(i, 2 * n, 0)
+    {
+        while (!st.empty() && a[st.back()] <= a[i])
+        {
+            l[st.back()] = i;
+            st.pop_back();
+        }
+        st.push_back(i);
+    }
+}
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    int t; cin >> t;
-    while (t--)
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i], a[n + i] = a[i];
+
+    Init();
+    bit = FenwickTree(2 * n + 1);
+
+    int res = 0;
+    FOR(i, 1, 2 * n)
     {
-        cin >> n;
-        FOR(i, 1, n) cin >> a[i].F, a[i].S = i;
-
-        sort(a + 1, a + n + 1);
-
-        bit = FenwickTree(n);
-
-        ll res = 0;
-
-        int j = 1;
-        FOR(i, 1, n)
-        {
-            for (; j <= n && a[j].F < a[i].F; j++) bit.Update(a[j].S, 1);
-            res += min(bit.Get(a[i].S), bit.Get(a[i].S, n));
-        }
-
-        cout << res << '\n';
+        if (i > n) bit.Update(l[i - n] + 1, -1);
+        bit.Update(l[i] + 1, 1);
+        maxi(res, bit.Get(i - n + 1));
     }
+
+    cout << res;
 
     return 0;
 }

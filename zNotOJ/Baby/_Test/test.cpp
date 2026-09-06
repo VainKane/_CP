@@ -41,7 +41,7 @@ int Fibo(int n)
 int Count(int x)
 {
     int cnt = 0;
-    FOR(i, 2, sqrt(x)) if (x % i == 0)
+    FOR(i, 1, sqrt(x)) if (x % i == 0)
     {
         cnt++;
         cnt += i * i != x;
@@ -50,8 +50,33 @@ int Count(int x)
     return cnt;
 }
 
+int MaxDivs(int x)
+{
+    int cnt = 0;
+    FOR(i, 1, x) maxi(cnt, Count(x));
+    return cnt;
+}
+
+int CountPrimes(int x)
+{
+    int cnt = 0;
+    FOR(i, 1, x) cnt += Count(i) == 2;
+    return cnt;
+}
+
 int main()
 {
+    vector<int> v;
+    FOR(i, 1, 1e6) v.push_back(Count(i));
+    sort(all(v), greater<int>());
+
+    int sum = 0;
+    REP(i, 2e5) sum += v[i];
+    cout << sum;
+
+    // cout << MaxDivs(1e6);
+    // cout << CountPrimes(1e6);
+
     // int idx = 67;
     // for (; false; idx++) cout << "lmao\n";
     // cout << idx;
@@ -143,8 +168,4 @@ int main()
 
     // cout << (long long)1e11 - 1;
 //    cout << (int)'.';
-
-    #ifdef LOCALONLY
-    cout << "gold medalist\n";
-    #endif //LOCALONLY
 }
