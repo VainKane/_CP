@@ -19,46 +19,37 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e6 + 5;
+int const N = 3e4 + 5;
+int const lim = 3e4;
 
-int n;
+int n, d;
+int a[N];
 
-string a, b, c;
-
-int r[N], rr[N];
-bool mark[N];
+int dp[N][436];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> a >> b >> c;
-
-    n = sz(a);
-    a = " " + a, b = " " + b, c = " " + c;
-
+    cin >> n >> d;
     FOR(i, 1, n)
     {
-        r[i] = rr[i] = 67;
-        int delta = a[i] + b[i] - c[i] - '0';
-        
-        if (delta == 0) r[i] = rr[i] = 0;
-        else if (delta == -1) r[i] = 0, rr[i] = 1;
-        else if (delta == 10) r[i] = 1, rr[i] = 0;
-        else if (delta == 9) r[i] = rr[i] = 1;
+        int x; cin >> x;
+        a[x]++;
     }
 
-    FOR(i, 1, n) mark[i] = r[i] != 67 && rr[i] == r[i + 1];
+    int minLen = max(1, d - 250), maxLen = min(lim, d + 150);
 
-    ll res = 0;
-    int cnt = 0;
+    memset(dp, -1, sizeof dp);
+    dp[d][d - minLen] = a[d];
 
-    FOR(i, 1, n)
+    int res = 0;
+    FOR(i, d, lim) FOR(j, minLen, maxLen) if (dp[i][j - minLen] != -1)
     {
-        cnt += !r[i];
-        if (!rr[i]) res += cnt;
-        if (!mark[i]) cnt = 0;
+        maxi(res, dp[i][j - minLen]);
+        FOR(k, -1, 1) if (j + k - minLen >= 0 && i + j + k <= lim)
+            maxi(dp[i + j + k][j + k - minLen], dp[i][j - minLen] + a[i + j + k]);
     }
 
     cout << res;

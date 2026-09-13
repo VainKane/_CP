@@ -19,49 +19,34 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e6 + 5;
+int const N = 5009;
 
-int n;
+int n, m, k;
 
-string a, b, c;
-
-int r[N], rr[N];
-bool mark[N];
+ll dp[2][N * N];
+ll pre[N][N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> a >> b >> c;
-
-    n = sz(a);
-    a = " " + a, b = " " + b, c = " " + c;
-
-    FOR(i, 1, n)
+    cin >> n >> m >> k;
+    FOR(i, 1, n) FOR(j, 1, m)
     {
-        r[i] = rr[i] = 67;
-        int delta = a[i] + b[i] - c[i] - '0';
-        
-        if (delta == 0) r[i] = rr[i] = 0;
-        else if (delta == -1) r[i] = 0, rr[i] = 1;
-        else if (delta == 10) r[i] = 1, rr[i] = 0;
-        else if (delta == 9) r[i] = rr[i] = 1;
+        ll x; cin >> x;
+        pre[i][j] = pre[i][j - 1] + x; 
     }
 
-    FOR(i, 1, n) mark[i] = r[i] != 67 && rr[i] == r[i + 1];
-
-    ll res = 0;
-    int cnt = 0;
-
+    bool cur = 1;
     FOR(i, 1, n)
     {
-        cnt += !r[i];
-        if (!rr[i]) res += cnt;
-        if (!mark[i]) cnt = 0;
+        cur ^= 1;
+        memset(dp[cur], 0, k * sizeof(ll));
+        FOR(s, 0, m) FORD(j, k, s) maxi(dp[cur][j], dp[cur ^ 1][j - s] + pre[i][s]);
     }
 
-    cout << res;
+    cout << dp[cur][k];
 
     return 0;
 }
