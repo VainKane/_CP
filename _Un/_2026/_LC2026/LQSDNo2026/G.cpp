@@ -21,43 +21,82 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2e5 + 5;
 int const LOG = 20;
+int const oo = 1e9 + 9;
+
+struct SegmentTree
+{
+    vector<int> t;
+    int n;
+
+    SegmentTree(int _n = 0)
+    {
+        n = _n;
+        t.assign(4 * n, 0);
+    }
+
+    void Update(int v, int l, int r, int pos, int val)
+    {
+        if (l == r)
+        {
+            t[v] = val;
+            return;
+        }
+
+        int mid = l + r >> 1;
+        if (pos <= mid) Update(v << 1, l, mid, pos, val);
+        else Update(v << 1 | 1, mid + 1, r, pos, val);
+
+        t[v] = max(t[v << 1], t[v << 1 | 1]);
+    }
+
+    int Get(int v, int l, int r, int left, int right)
+    {
+        if (l > right || r < left) return 0;
+        if (left <= l && right >= r) return t[v];
+
+        int mid = l + r >> 1;
+        int val1 = Get(v << 1, l, mid, left, right);
+        int val2 = Get(v << 1 | 1, mid + 1, r, left, right);
+
+        return max(val1, val2);
+    }
+
+    void Update(int pos, int val) { return Update(1, 1, n, pos, val); }
+    int Get(int l, int r) { return Get(1, 1, n, l, r); }
+};
 
 int n;
 ii a[N];
 
 int dp[N];
-int up[N][LOG];
+SegmentTree it;
 
-void Compress()
-{
-    vector<int> vals;
-
-    FOR(i, 1, n) vals.push_back(a[i].F);
-    sort(all(vals));
-    vals.erase(unique(all(vals)), vals.end());
-
-    FOR(i, 1, n) a[i].F = lower_bound(all(vals), a[i].F) - vals.begin() + 1;
-}
+int l[N], r[N];
 
 void Init()
 {
-    FOR(i, 1, n) up[i][0] = a[i].F;
-    FOR(j, 1, 31 - __builtin_clz(n)) FOR(i, 1, n - MK(j) + 1)
-        up[i][j] = max(up[i][j - 1], up[i + MK(j - 1)][j - 1]);
-}
+    vector<int> st;
+    a[0].F = a[n + 1].F = oo;
 
-int Get(int l, int r)
-{
-    if (l > r) return 0;
-    int k = 31 - __builtin_clz(r - l + 1);
-    return max(up[l][k], up[r - MK(k) + 1][k]);
-}
+    FOR(i, 1, n + 1)
+    {
+        while (!st.empty() && a[i].F >= a[st.back()].F)
+        {
+            r[st.back()] = i - 1;
+            st.pop_back();
+        }
+        st.push_back(i);
+    }
 
-bool Check(int i, int j)
-{
-    int l = a[i].S, r = a[j].S;
-    if (l > r) swap(l, r);
-    return Get(l + 1, r - 1) < a[j].F;
+    FORD(i, n, 0)
+    {
+        while (!st.empty() && a[i].F >= a[st.back()].F)
+        {
+            l[st.back()] = i + 1;
+            st.pop_back();
+        }
+        st.push_back(i);
+    }
 }
 
 int main()
@@ -68,12 +107,18 @@ int main()
     cin >> n;
     FOR(i, 1, n) cin >> a[i].F, a[i].S = i;
 
-    Compress();
     Init();
-
     sort(a + 1, a + n + 1);
-    FOR(i, 1, n) FOR(j, 1, i - 1) if (a[i].F > a[j].F && Check(j, i)) maxi(dp[i], dp[j] + 1);
-    cout << *max_element(dp + 1, dp + n + 1) + 1;
+
+    it = SegmentTree(n);
+
+    FOR(i, 1, n)
+    {
+        dp[i] = it.Get(l[a[i].S], r[a[i].S]) + 1;
+        it.Update(a[i].S, dp[i]);
+    }
+
+    cout << *max_element(dp + 1, dp + n + 1);
 
     return 0;
 }
