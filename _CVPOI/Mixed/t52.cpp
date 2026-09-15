@@ -20,12 +20,48 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 5e5 + 5;
+int const oo = 1e9 + 9;
+
+struct FenwickTree
+{
+    vector<int> bit;
+    int n;
+
+    FenwickTree(int _n = 0)
+    {
+        n = _n;
+        bit.assign(n + 5, -oo);
+    }
+
+    void Update(int idx, int val) { for (; idx <= n; idx += idx & -idx) maxi(bit[idx], val); }
+
+    int Get(int idx)
+    {
+        int res = -oo;
+        for (; idx; idx ^= idx & -idx) maxi(res, bit[idx]);
+        return res;
+    }
+};
 
 int n;
-int a[N];
-
 ll pre[N];
-int dp[N];
+
+int dp[N], maxDp[N];
+FenwickTree bit1, bit2;
+
+vector<ll> vals;
+
+void Compress()
+{
+    vals.clear();
+
+    FOR(i, 1, n) vals.push_back(pre[i]);
+    sort(all(vals));
+    vals.erase(unique(all(vals)), vals.end());
+
+    FOR(i, 1, n) pre[i] = lower_bound(all(vals), pre[i]) - vals.begin() + 1;
+    bit1 = bit2 = FenwickTree(n);
+}
 
 int main()
 {
@@ -36,18 +72,26 @@ int main()
     while (t--)
     {
         cin >> n;
-        FOR(i, 1, n) cin >> a[i], pre[i] = pre[i - 1] + a[i];
-
-        memset(dp, -0x3f, (n + 1) * sizeof(int));
-        dp[0] = 0;
-
-        FOR(i, 1, n) REP(j, i)
+        FOR(i, 1, n)
         {
-            int val = 0;
-            if (pre[i] - pre[j] > 0) val = i - j;
-            else val = j - i;
+            int x; cin >> x;
+            pre[i] = pre[i - 1] + x;
+        }
 
-            maxi(dp[i], dp[j] + val);
+        Compress();
+        memset(maxDp, -0x3f, (n + 1) * sizeof(int));
+
+        FOR(i, 1, n)
+        {
+            dp[i] = vals[pre[i] - 1] == 0 ? 0 : (vals[pre[i] - 1] > 0 ? i : -i);
+
+            maxi(dp[i], maxDp[pre[i]]);
+            maxi(dp[i], bit1.Get(n - pre[i]) - i);
+            maxi(dp[i], bit2.Get(pre[i] - 1) + i);
+
+            maxi(maxDp[pre[i]], dp[i]);
+            bit1.Update(n - pre[i] + 1, dp[i] + i);
+            bit2.Update(pre[i], dp[i] - i);
         }
 
         cout << dp[n] << '\n';

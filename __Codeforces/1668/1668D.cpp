@@ -49,10 +49,12 @@ ll pre[N];
 int dp[N], maxDp[N];
 FenwickTree bit1, bit2;
 
+vector<ll> vals;
+
 void Compress()
 {
-    vector<ll> vals;
-    
+    vals.clear();
+
     FOR(i, 1, n) vals.push_back(pre[i]);
     sort(all(vals));
     vals.erase(unique(all(vals)), vals.end());
@@ -81,20 +83,18 @@ int main()
 
         FOR(i, 1, n)
         {
-            dp[i] = pre[i] == 0 ? 0 : (pre[i] > 0 ? i : -i);
+            dp[i] = vals[pre[i] - 1] == 0 ? 0 : (vals[pre[i] - 1] > 0 ? i : -i);
 
             maxi(dp[i], maxDp[pre[i]]);
-            maxi(dp[i], bit1.Get(n - pre[i]) + i);
-            maxi(dp[i], bit2.Get(pre[i] - 1) - i);
+            maxi(dp[i], bit1.Get(n - pre[i]) - i);
+            maxi(dp[i], bit2.Get(pre[i] - 1) + i);
 
             maxi(maxDp[pre[i]], dp[i]);
-            bit1.Update(n - pre[i] + 1, dp[i] - i);
-            bit2.Update(pre[i], dp[i] + i);
-
-            cout << dp[i] << ' ';
+            bit1.Update(n - pre[i] + 1, dp[i] + i);
+            bit2.Update(pre[i], dp[i] - i);
         }
 
-        // cout << dp[n] << '\n';
+        cout << dp[n] << '\n';
     }
 
     return 0;

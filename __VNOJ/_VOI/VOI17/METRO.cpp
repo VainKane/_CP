@@ -50,7 +50,7 @@ void Dijkstra(int s)
         {
             int v = e.v;
             mini(res[v], d[u] + e.w + e.id * (u != s));
-            if (mini(d[v], d[u] + e.w + (delta + u != s) * e.id)) pq.push({d[v], v});
+            if (mini(d[v], d[u] + e.w + (delta + (u != s)) * e.id)) pq.push({d[v], v});
         }
     }
 }
