@@ -47,15 +47,13 @@ int main()
         if (!mark[i])
         {
             val = {x[i], -i};
-            if (k >= 1 && !s.empty() && mini(val, *s.begin())) op = 1;
-            if (k >= 2 && !ssuf.empty() && mini(val, *ssuf.begin())) op = 2;
-         
-            if (val.F == x[i]) val = {x[i], -i}, op = 0;
+            if (k >= 1 && !s.empty() && val.F > s.begin()->F) val = *s.begin(), op = 1;
+            if (k >= 2 && !ssuf.empty() && val.F > ssuf.begin()->F) val = *ssuf.begin(), op = 2;
         }
         else
         {
-            if (!s.empty()) mini(val, *s.begin()), op = 1;
-            if (k >= 1 && !ssuf.empty() && mini(val, *ssuf.begin())) op = 2;
+            if (!s.empty() && val.F > s.begin()->F) val = *s.begin(), op = 1;
+            if (k >= 1 && !ssuf.empty() && val.F > ssuf.begin()->F) val = *ssuf.begin(), op = 2;
         }
 
         if (op == 1) s.erase(val);
