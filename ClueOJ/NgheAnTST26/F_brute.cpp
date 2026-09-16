@@ -66,8 +66,6 @@ int main()
     {
         DFS(u, -1);
         mini(res, max({f[u], 1LL * a[u], (dp[u] + 1) / 2}));
-        // cout << f[u] << ' ';
-        cout << dp[u] << ' ';
     }
 
     cout << res;
