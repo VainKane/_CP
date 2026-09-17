@@ -30,9 +30,7 @@ int a[N];
 ll dp[N], f[N];
 
 ll dpPar[N], fPar[N];
-ll sum[N], sumPar[N];
-
-ll tmp[N], dpp[N];
+ll sum[N], dpp[N];
 
 void DFSPrepare(int u, int p)
 {
@@ -52,13 +50,11 @@ void DFS(int u, int p)
 {
     for (auto &v : adj[u]) if (v != p)
     {
-        ll s = tmp[p] + sum[u] - dp[v];
-        tmp[u] = max(0LL, a[u] - s) + s;
+        ll s = dpPar[p] + sum[u] - dp[v];
+        dpPar[u] = max(0LL, a[u] - s) + s;
+        dpp[v] = max(0LL, a[v] - (sum[v] + dpPar[u])) + sum[v] + dpPar[u];
 
-        dpp[v] = max(0LL, a[v] - (sum[v] + tmp[u])) + sum[v] + tmp[u];
-
-        dpPar[v] = max(0LL, a[v] - tmp[u]) + tmp[u];
-        fPar[v] = max(fPar[u], tmp[u]);
+        fPar[v] = max(fPar[u], dpPar[u]);
         DFS(v, u);
     }
 }
