@@ -19,44 +19,38 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e5 + 5;
-ll const oo = 1e18 + 9;
+int const N = 2e5 + 5;
+int const oo = 1e9 + 9;
 
-int n;
+int n, d;
 
+ii a[N];
 vector<int> adj[N];
-int a[N];
 
-ll dp[N], f[N];
-
-ll dpPar[N], fPar[N];
-ll sum[N], dpp[N];
-
-void DFSPrepare(int u, int p)
-{
-    dp[u] = a[u];
-
-    for (auto &v : adj[u]) if (v != p)
-    {
-        DFSPrepare(v, u);
-        maxi(f[u], max(f[v], dp[v]));
-        sum[u] += dp[v];
-    }
-
-    dp[u] = max(0LL, a[u] - sum[u]) + sum[u];
-}
+bool mark[N];
+int dp[N];
 
 void DFS(int u, int p)
 {
+    dp[u] = 0;
     for (auto &v : adj[u]) if (v != p)
     {
-        ll s = dpPar[p] + sum[u] - dp[v];
-        dpPar[u] = max(0LL, a[u] - s) + s;
-        dpp[v] = max(0LL, a[v] - (sum[v] + dpPar[u])) + sum[v] + dpPar[u];
-
-        fPar[v] = max(fPar[u], dpPar[u]);
         DFS(v, u);
+        dp[u] += dp[v];
     }
+
+    if (dp[u] == 0) dp[u] = !mark[u];
+}
+
+int Cal()
+{
+    FOR(u, 1, n) if (!mark[u])
+    {
+        DFS(u, -1);
+        return (dp[u] + 1) / 2;
+    }
+
+    return 0;
 }
 
 int main()
@@ -64,22 +58,27 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i];
+    cin >> n >> d;
+    FOR(i, 1, n) cin >> a[i].F, a[i].S = i;
     FOR(i, 2, n)
     {
         int u, v;
         cin >> u >> v;
+        u++, v++;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
 
-    DFSPrepare(1, -1);
-    dpp[1] = dp[1];
-    DFS(1, 0);
+    sort(a + 1, a + n + 1);
 
-    ll res = oo;
-    FOR(u, 1, n) mini(res, max({max(f[u], fPar[u]), 1LL * a[u], (dpp[u] + 1) / 2}));
+    int res = n, j = 1;
+    FOR(i, 1, n)
+    {
+        mark[a[i - 1].S] = false;
+        for (; j <= n && a[j].F - a[i].F <= d; j++) mark[a[j].S] = true;
+        mini(res, Cal());
+    }
+
     cout << res;
 
     return 0;
