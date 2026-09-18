@@ -68,9 +68,8 @@ int n, q;
 int a[N];
 vector<int> adj[N];
 
-int par[N], h[N];
+int par[N], sz[N];
 int bigChild[N];
-int sz[N];
 
 int head[N], pos[N];
 int timer = 0;
@@ -85,9 +84,7 @@ void DFSPrepare(int u, int p)
 
     for (auto &v : adj[u]) if (v != p)
     {
-        h[v] = h[u] + 1;
         par[v] = u;
-
         DFSPrepare(v, u);
 
         if (maxi(mxChild, sz[v])) bigChild[u] = v;
@@ -116,7 +113,7 @@ int LCA(int u, int v)
         else v = par[head[v]];
     }
 
-    return (h[u] < h[v]) ? u : v;
+    return (pos[u] < pos[v]) ? u : v;
 }
 
 int Query(int u, int p)
