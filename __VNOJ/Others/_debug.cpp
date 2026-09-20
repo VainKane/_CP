@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "nkleaves"
+#define name "bedao_oi1_a"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -20,24 +20,26 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 mt19937_64 rd(time(0));
-int const ntest = 1e4;
+ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
-ll Rand(ll l, ll r)
-{
-    return l + rd() * 1LL * rd() % (r - l + 1);
-}
+int const ntest = 1e4;
 
 void GenTest()
 {
     ofstream cout(name".inp");
 
-    int const lim = 5000;
-    int const oo = 1000;
-    
-    int n = Rand(2, lim);
-    cout << n << ' ' << Rand(1, min(10, n - 1)) << '\n';
+    int const lim = 5;
 
-    FOR(i, 1, n) cout << Rand(1, oo) << ' ';
+    int n = Rand(1, lim);
+    int m = Rand(n - 1, lim);
+    int q = Rand(1, 1);
+
+    cout << n << ' ' << m << ' ' << q << '\n';
+    
+    FOR(i, 2, n) cout << Rand(1, i - 1) << ' ' << i << '\n';
+    FOR(i, 1, m - n + 1) cout << Rand(1, n) << ' ' << Rand(1, n) << '\n';
+    
+    while (q--) cout << Rand(1, n) << ' ' << Rand(1, n) << ' ' << Rand(1, n) << ' ' << Rand(1, n) << '\n';
 }
 
 int main()
@@ -45,10 +47,10 @@ int main()
     FOR(i, 1, ntest)
     {
         GenTest();
-        system(name".exe <"name".inp> "name".out");
-        system(name"_brute.exe <"name".inp> "name".ans");
+        system("./"name".exe <"name".inp> "name".out");
+        system("./"name"_brute.exe <"name".inp> "name".ans");
 
-        if (system("fc "name".out "name".ans") != 0)
+        if (system("diff "name".out "name".ans") != 0)
         {
             cout << "Test: " << i << " WRONG!\n";
             return 0;

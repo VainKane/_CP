@@ -22,10 +22,24 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 int const N = 1.5e5 + 5;
 int const MOD = 998244353;
 
-void Add(int x, int y)
+void Add(int &x, int &y)
 {
     x += y;
     if (x >= MOD) x -= MOD;
+}
+
+int PowMod(int a, int b)
+{
+    int res = 1;
+
+    while (b)
+    {
+        if (b & 1) res = 1LL * res * a % MOD;
+        a = 1LL * a * a % MOD;
+        b >>= 1;
+    }
+
+    return res;
 }
 
 struct FenwickTree
@@ -39,7 +53,7 @@ struct FenwickTree
         bit.assign(n + 5, 0);
     }
 
-    void Update(int idx, int val) { for (; idx <= n; idx += idx & -idx) bit[idx] = (bit[idx] + val + MOD) % MOD; }
+    void Update(int idx, int val) { for (; idx <= n; idx += idx & -idx) bit[idx] = (1LL * bit[idx] + val + MOD) % MOD; }
     
     void Update(int l, int r, int val)
     {
@@ -64,13 +78,12 @@ int timer = 0;
 int sz[N], bigChild[N];
 int par[N], head[N];
 
-int inv[N];
-
 int sum[N];
 FenwickTree bit;
 
 void DFSPrepare(int u, int p)
 {
+    head[u] = u;
     sz[u] = 1;
     int mx = 0;
 
@@ -113,8 +126,8 @@ int main()
     DFSPrepare(1, -1);
     DFS(1, -1);
 
-    inv[1] = 1;
-    FOR(i, 2, n) inv[i] = MOD - 1LL * (MOD / i) * inv[MOD % i] % MOD;
+    bit = FenwickTree(n);
+    int inv = PowMod(n, MOD - 2);
 
     while (q--)
     {
@@ -124,9 +137,12 @@ int main()
         if (type == 1)
         {
             cin >> d;
-            bit.Update(in[bigChild[u]], out[bigChild[u]], 1LL * d * inv[n - sz[bigChild[u]]] % MOD);
+            bit.Update(in[u], in[u], d);
 
-            int val = 1LL * d * (n - sz[u]) % MOD;
+            d = 1LL * d * inv % MOD;
+            if (bigChild[u]) bit.Update(in[bigChild[u]], out[bigChild[u]], 1LL * d * (n - sz[bigChild[u]]) % MOD);
+
+            int val = 1LL * d * sz[u] % MOD;
             bit.Update(1, in[u] - 1, val);
             bit.Update(out[u] + 1, n, val);
 
@@ -134,8 +150,17 @@ int main()
         }
         else
         {
+            int res = bit.Get(in[u]);
+
+            while (u)
+            {
+                if (u != bigChild[par[head[u]]]) res = (res + 1LL * sum[par[head[u]]] * (n - sz[head[u]])) % MOD;
+                u = par[head[u]];
+            }
+
+            cout << res << '\n';
         }
     }
-    
+
     return 0;
 }

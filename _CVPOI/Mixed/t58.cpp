@@ -76,10 +76,8 @@ int main()
 
     int res = Cal(1, 1, m, n);
 
-    FOR(x, x1 + 1, x2) res = (res - 1LL * Cal(1, 1, x, y1 - 1) * Cal(x, y1, m, n)) % MOD;
-    FOR(y, y1 + 1, y2) res = (res - 1LL * Cal(1, 1, x1 - 1, y) * Cal(x1, y, m, n)) % MOD;
-    res = (res - 1LL * (Cal(1, 1, x1 - 1, y1) + Cal(1, 1, x1, y1 - 1)) * Cal(x1, y1, m, n)) % MOD;
-
+    FOR(x, x1, x2) res = (res - 1LL * Cal(1, 1, x, y1 - 1) * Cal(x, y1, m, n)) % MOD;
+    FOR(y, y1, y2) res = (res - 1LL * Cal(1, 1, x1 - 1, y) * Cal(x1, y, m, n)) % MOD;
     cout << (res + MOD) % MOD;
 
     return 0;
