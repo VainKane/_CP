@@ -20,33 +20,26 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
+int const K = 36;
 
-int n;
-int a[N];
+int n, k;
 
-int d[N];
+vector<int> adj[N];
+int dp[N][K];
 
-bool Check(int k)
+void DFS(int u, int p)
 {
-    memset(d, 0, sizeof d);
-    int cur = 0;
-
-    FOR(i, 1, n)
+    for (auto &v : adj[u]) if (v != p)
     {
-        cur += d[i];
-        if (cur > a[i]) return false;
-
-        if (i > n - k + 1)
+        DFS(v, u);
+        FORD(i, k, 1) FOR(j, 0, i)
         {
-            if (cur != a[i]) return false;
-            continue;
+            maxi(dp[u][i], dp[u][j] + dp[v][i - j]);
+            if (i - j - 1 >= 0) maxi(dp[u][i], dp[u][j] + dp[v][i - j - 1] + 1);
         }
-
-        d[i + k] -= a[i] - cur;
-        cur = a[i];
     }
 
-    return true;
+    FOR(i, 1, k) maxi(dp[u][i], dp[u][i - 1]);
 }
 
 int main()
@@ -54,17 +47,18 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i];
-
-    ll s = 0;
-    FOR(i, 1, n) s += a[i];
-
-    FORD(i, n, 1) if (s % i == 0 && Check(i))
+    cin >> n >> k;
+    FOR(i, 2, n)
     {
-        cout << i;
-        break;
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
+
+    DFS(1, -1);
+    // cout << dp[1][k - 1];
+    cout << dp[3][1];
 
     return 0;
 }
