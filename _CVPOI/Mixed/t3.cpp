@@ -27,19 +27,26 @@ int n, k;
 vector<int> adj[N];
 int dp[N][K];
 
+int f[2][K];
+
 void DFS(int u, int p)
 {
+    bool cur = 1;
+    memset(f[cur ^ 1], 0, sizeof f[cur ^ 1]);
+
     for (auto &v : adj[u]) if (v != p)
     {
         DFS(v, u);
-        FORD(i, k, 1) FOR(j, 0, i)
+
+        memset(f[cur], 0, sizeof f[cur]);
+        FOR(j, 0, k - 1) FOR(z, 0, k - 1)
         {
-            maxi(dp[u][i], dp[u][j] + dp[v][i - j]);
-            if (i - j - 1 >= 0) maxi(dp[u][i], dp[u][j] + dp[v][i - j - 1] + 1);
+            maxi(f[u][max(j, z + 1)], f[u][j] + dp[v][z] + 1);
+            maxi(f[u][j], f[u][j] + dp[v][z]);
         }
     }
 
-    FOR(i, 1, k) maxi(dp[u][i], dp[u][i - 1]);
+    FOR(i, 1, k) dp[u][i] = max(f[cur][i], dp[u][i - 1]);
 }
 
 int main()
