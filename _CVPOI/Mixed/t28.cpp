@@ -19,6 +19,8 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
+int const N = 1e5 + 5;
+
 int n, k;
 ll w[N];
 
@@ -30,10 +32,31 @@ int main()
     cin >> n >> k;
     FOR(i, 1, n) cin >> w[i];
 
-    priority_queue<ii> pq;
-    FOR(i, 1, n) pq.push({-w[i], 0});
+    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
 
-    
+    FOR(i, 1, n) pq.push({w[i], 0});
+
+    int r = n < k || (n - k) % (k - 1) == 0 ? k - 1 : (n - k) % (k - 1);
+    REP(haha, k - 1 - r) pq.push({0, 0});
+
+    ll res = 0;
+    while (sz(pq) > 1)
+    {
+        int h = 0;
+        ll sum = 0;
+
+        REP(haha, k)
+        {
+            sum += pq.top().F;
+            maxi(h, pq.top().S);
+            pq.pop();
+        }
+
+        pq.push({sum, h + 1});
+        res += sum;
+    }
+
+    cout << res << '\n' << pq.top().S;
 
     return 0;
 }
