@@ -20,12 +20,11 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 255;
-int const OS = 251;
 
 int n, m;
 int a[N];
 
-int dp[2][2 * N][2 * N];
+int dp[2][2 * N];
 
 int main()
 {
@@ -39,17 +38,8 @@ int main()
     REP(i, n)
     {
         memset(dp[cur ^ 1], 0x3f, sizeof dp[cur ^ 1]);
-        FOR(j, -m, m) FOR(x, -j, m) if (j + x >= a[i + 1] - x) FOR(k, j + x, m)
-            mini(dp[cur ^ 1][a[i + 1] - x + OS][j + x + OS], dp[cur][j + OS][k + OS] + abs(x));
-
-        // FORD(j, m - 1, -m) FORD(x, m, j) mini(dp[cur][j + OS][x + OS], dp[cur][j + OS][x + 1 + OS]);
-        cur ^= 1;
-        FOR(j, -m, m) FOR(x, j, m) cout << i + 1 << ' ' << j << ' ' << x << ": " <<  dp[cur ^ 1][j + OS][x + OS] << '\n';
     }
 
-    int res = m;
-    FOR(j, 0, m) FOR(x, j, m) mini(res, dp[cur][j + OS][x + OS]);
-    cout << res;
 
     return 0;
 }
