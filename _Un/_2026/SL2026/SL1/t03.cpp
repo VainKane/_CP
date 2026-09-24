@@ -19,35 +19,44 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 255;
+int const N = 3e6 + 5;
 
-int n, m;
+int n;
 
-int a[N], pre[N];
-int dp[2][N][N];
+int a[N];
+int res[N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> m;
-    FOR(i, 1, n) cin >> a[i], pre[i] = pre[i - 1] + a[i];
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i];
 
-    bool cur = 1;
-    FOR(i, 1, n)
+    int l = 1, r = 1;
+    int res = 0;
+
+    while (true)
     {
-        cur ^= 1;
-        memset(dp[cur], 0x3f, sizeof dp[cur]);
-
-        FOR(sum, 0, m) FORD(x, sum, 0)
+        if (r == n)
         {
-            dp[cur][sum][x] = dp[cur ^ 1][sum - x][x] + abs(sum - pre[i]);
-            mini(dp[cur][sum][x], dp[cur][sum][x + 1]);
+            cout << res;
+            return 0;
         }
-    }
 
-    cout << dp[cur][m][0];
+        int mx = 0;
+        FOR(i, l, r) maxi(mx, i + a[i]);
+
+        if (mx <= r)
+        {
+            cout << -1;
+            return 0;
+        }
+
+        l = r + 1, r = min(mx, n);
+        res++;
+    }
 
     return 0;
 }

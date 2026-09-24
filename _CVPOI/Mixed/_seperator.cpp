@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name ""
+#define name "bullshit"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,35 +19,20 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 255;
-
-int n, m;
-
-int a[N], pre[N];
-int dp[2][N][N];
-
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> m;
-    FOR(i, 1, n) cin >> a[i], pre[i] = pre[i - 1] + a[i];
+    freopen(name".inp", "r", stdin);
+    freopen(name".out", "w", stdout);
 
-    bool cur = 1;
-    FOR(i, 1, n)
+    REP(haha, 500)
     {
-        cur ^= 1;
-        memset(dp[cur], 0x3f, sizeof dp[cur]);
-
-        FOR(sum, 0, m) FORD(x, sum, 0)
-        {
-            dp[cur][sum][x] = dp[cur ^ 1][sum - x][x] + abs(sum - pre[i]);
-            mini(dp[cur][sum][x], dp[cur][sum][x + 1]);
-        }
+        int x, y;
+        cin >> x >> y;
+        cout << x << ' ' << y << '\n';
     }
-
-    cout << dp[cur][m][0];
 
     return 0;
 }
