@@ -24,12 +24,21 @@ ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 1009;
 int const lim = 14950;
+int const oo = 1e9 + 9;
 
 int m, n, k;
 int a[N][N];
 
-bool mark[N][N];
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
+
+vector<ii> pos;
 ll val, res;
+
+bool mark[N][N];
+bool visited[N][N];
+
+int Dist(ii a, ii b) { return abs(a.F - b.F) + abs(a.S - b.S); }
 
 void Init()
 {
@@ -37,12 +46,49 @@ void Init()
     FOR(i, 1, m) FOR(j, 1, n) v.push_back({i, j});
     shuffle(all(v), rd);
 
-    REP(i, k) mark[v[i].F][v[i].S] = true;
+    REP(i, k) pos.push_back(v[i]);
+}
+
+int BFS(int xs, int ys)
+{
+    queue<ii> q;
+    q.push({xs, ys});
+
+    visited[xs][ys] = true;
+    vector<ii> v;
+
+    while (!q.empty())
+    {
+        int x = q.front().F, y = q.front().S;
+        v.push_back({x, y});
+
+        REP(i, 4)
+        {
+            int u = x + dx[i], v = y + dy[i];
+            if (visited[u][v]) continue;
+
+            visited[u][v] = true;
+            q.push({u, v});
+        }
+    }
 }
 
 ll Eval()
 {
-    if (k < )
+    ll res = 0;
+    if (k < lim) REP(i, k)
+    {
+        int dist = oo;
+        REP(j, i) if (i != j) mini(dist, Dist);
+        res += 1LL * a[i][j] * dist;
+    }
+    else
+    {
+        REP(i, k) mark[pos[i].F][pos[i].S] = true;
+        REP(i, k) mark[pos[i].F][pos[i].S] = false;
+    }
+
+    return res;
 }
 
 int main()
