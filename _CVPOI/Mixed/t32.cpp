@@ -27,7 +27,7 @@ mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
 int const N = 1009;
-int const lim = 60000 * 1;
+int const lim = 60000 * 3;
 int const oo = 1e9 + 9;
 
 int m, n, k;
@@ -39,30 +39,26 @@ int dy[] = {0, 1, 0, -1};
 vector<ii> pos, resPos;
 ll val, resVal;
 
-bool mark[N][N];
 bool visited[N][N];
 
+int id[N][N];
 int d[N][N];
 
 bool Inside(int x, int y) { return x >= 1 && x <= m && y >= 1 && y <= n; }
 int Dist(ii a, ii b) { return abs(a.F - b.F) + abs(a.S - b.S); }
-
 bool cmp(ii x, ii y) { return a[x.F][x.S] > a[y.F][y.S]; }
 
 void Init()
 {
-    memset(mark, false, sizeof mark);
     pos.clear();
 
-    vector<ii> v;
-    FOR(i, 1, m) FOR(j, 1, n) v.push_back({i, j});
-    // shuffle(all(v), rd);
-    sort(all(v), cmp);
+    FOR(i, 1, m) FOR(j, 1, n) pos.push_back({i, j});
+    sort(all(pos), cmp);
 
-    REP(i, k)
+    REP(i, m * n)
     {
-        mark[v[i].F][v[i].S] = true;
-        pos.push_back(v[i]);
+        int x = pos[i].F, y = pos[i].S;
+        id[x][y] = i;
     }
 }
 
@@ -85,7 +81,7 @@ int BFS(int xs, int ys)
             int u = x + dx[i], v = y + dy[i];
             if (!Inside(u, v) || visited[u][v]) continue;
 
-            if (mark[u][v]) return d[u][v];
+            if (id[u][v] < k) return d[u][v];
 
             d[u][v] = d[x][y] + 1;
             visited[u][v] = true;
@@ -97,18 +93,34 @@ int BFS(int xs, int ys)
     return 0;
 }
 
-ll Eval(vector<ii> &pos, bool haha = true)
+ll Eval(vector<ii> &pos, bool haha = false)
 {
     ll res = 0;
     if (haha) REP(i, k)
     {
         int dist = oo;
-        REP(j, i) if (i != j) mini(dist, Dist(pos[i], pos[j]));
+        REP(j, k) if (i != j) mini(dist, Dist(pos[i], pos[j]));
         res += 1LL * a[pos[i].F][pos[i].S] * dist;
     }
     else REP(i, k) res += 1LL * BFS(pos[i].F, pos[i].S) * a[pos[i].F][pos[i].S];
 
     return res;
+}
+
+bool SwapOpt(int x, int y, int u, int v)
+{
+    int i = id[x][y], j = id[u][v];
+
+    swap(pos[i], pos[j]);
+    swap(id[x][y], id[u][v]);
+
+    if (!maxi(val, Eval(pos)))
+    {
+        swap(pos[i], pos[j]);
+        swap(id[x][y], id[u][v]);
+    }
+    else return true;
+    return false;
 }
 
 int main()
@@ -124,7 +136,9 @@ int main()
 
     Init();
     resVal = val = Eval(pos);
-    resPos = pos;
+
+    resPos = vector<ii>(k, {0, 0});
+    REP(i, k) resPos[i] = pos[i];
 
     auto startTime = chrono::high_resolution_clock::now();
     double per = 0;
@@ -132,43 +146,50 @@ int main()
     while (per < 100)
     {
         per = (double)chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() / lim * 100;
-        assert(Eval(resPos) == resVal);
         cerr << fixed << "Progress: " << per << "%: " << resVal << '\n';
 
         bool opt = false;
-        REP(i, k)
+        REP(haha, 1000)
         {
-            vector<ii> curPos = pos;
-            ll curVal = val;
-
+            int i = Rand(0, k - 1);
+            int x = pos[i].F, y = pos[i].S;
             REP(dir, 4)
             {
                 int dist = Rand(1, 20);
-                int x = pos[i].F + dx[dir] * dist;
-                int y = pos[i].S + dy[dir] * dist;
-                if (!Inside(x, y) || mark[x][y]) continue;
 
-                vector<ii> tmp;
-                REP(j, k)
-                {
-                    if (j == i) tmp.push_back({x, y});
-                    else tmp.push_back(pos[j]);
-                }
+                int u = x + dx[dir] * dist;
+                int v = y + dy[dir] * dist;
 
-                ll tmpVal = Eval(tmp);
-                if (maxi(val, tmpVal))
+                if (!Inside(u, v) || id[u][v] < k) continue;
+                if (SwapOpt(x, y, u, v))
                 {
-                    mark[pos[i].F][pos[i].S] = false;
-                    mark[x][y] = true;
-                    pos = tmp, opt = true;
+                    opt = true;
+                    break;
                 }
             }
         }
 
-        if (maxi(resVal, val)) resPos = pos;
+        REP(haha, 100)
+        {
+            int i = Rand(0, k - 1), j = Rand(k, n - 1);
+            int x = pos[i].F, y = pos[i].S;
+            int u = pos[i].F, v = pos[i].S;
+
+            opt |= SwapOpt(x, y, u, v);
+        }
+
+        if (maxi(resVal, val)) REP(i, k) resPos[i] = pos[i];
         if (!opt)
         {
-            Init();
+            REP(haha, k / 15)
+            {
+                int i = Rand(0, k - 1), j = Rand(k, m * n - 1);
+                int x = pos[i].F, y = pos[i].S;
+                int u = pos[i].F, v = pos[i].S;
+
+                swap(pos[i], pos[j]);
+                swap(id[x][y], id[u][v]);
+            }
             val = Eval(pos);
         }
     }
