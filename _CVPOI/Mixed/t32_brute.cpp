@@ -149,7 +149,7 @@ int main()
         cerr << fixed << "Progress: " << per << "%: " << resVal << '\n';
 
         bool opt = false;
-        REP(haha, 10)
+        REP(haha, 1e4)
         {
             int i = Rand(0, k - 1);
             int x = pos[i].F, y = pos[i].S;
@@ -169,7 +169,7 @@ int main()
             }
         }
 
-        REP(haha, 10)
+        REP(haha, 1e5)
         {
             int i = Rand(0, k - 1), j = Rand(k, n - 1);
             int x = pos[i].F, y = pos[i].S;
@@ -185,7 +185,7 @@ int main()
             {
                 int i = Rand(0, k - 1), j = Rand(k, m * n - 1);
                 int x = pos[i].F, y = pos[i].S;
-                int u = pos[i].F, v = pos[i].S;
+                int u = pos[j].F, v = pos[j].S;
 
                 swap(pos[i], pos[j]);
                 swap(id[x][y], id[u][v]);

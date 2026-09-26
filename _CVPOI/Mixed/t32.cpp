@@ -42,14 +42,21 @@ ll val, resVal;
 bool visited[N][N];
 
 int id[N][N];
-int d[N][N];
+multiset<int> s[N];
 
 bool Inside(int x, int y) { return x >= 1 && x <= m && y >= 1 && y <= n; }
 int Dist(ii a, ii b) { return abs(a.F - b.F) + abs(a.S - b.S); }
 bool cmp(ii x, ii y) { return a[x.F][x.S] > a[y.F][y.S]; }
 
-void Init()
+void Build(int i)
 {
+    s[i].clear();
+    REP(j, k) if (i != j) s[i].insert(Dist(pos[i], pos[j]));
+}
+
+void Init(bool haha = true)
+{
+    REP(i, n * m) s[i].clear();
     pos.clear();
 
     FOR(i, 1, m) FOR(j, 1, n) pos.push_back({i, j});
@@ -60,50 +67,14 @@ void Init()
         int x = pos[i].F, y = pos[i].S;
         id[x][y] = i;
     }
+
+    REP(i, k) Build(i);
 }
 
-int BFS(int xs, int ys)
-{
-    queue<ii> q;
-    q.push({xs, ys});
-
-    d[xs][ys] = 0;
-    visited[xs][ys] = true;
-    vector<ii> v = {{xs, ys}};
-
-    while (!q.empty())
-    {
-        int x = q.front().F, y = q.front().S;
-        v.push_back({x, y});
-
-        REP(i, 4)
-        {
-            int u = x + dx[i], v = y + dy[i];
-            if (!Inside(u, v) || visited[u][v]) continue;
-
-            if (id[u][v] < k) return d[u][v];
-
-            d[u][v] = d[x][y] + 1;
-            visited[u][v] = true;
-            q.push({u, v});
-        }
-    }
-
-    for (auto &p : v) visited[p.F][p.S] = false;
-    return 0;
-}
-
-ll Eval(vector<ii> &pos, bool haha = true)
+ll Eval(vector<ii> &pos)
 {
     ll res = 0;
-    if (haha) REP(i, k)
-    {
-        int dist = oo;
-        REP(j, k) if (i != j) mini(dist, Dist(pos[i], pos[j]));
-        res += 1LL * a[pos[i].F][pos[i].S] * dist;
-    }
-    else REP(i, k) res += 1LL * BFS(pos[i].F, pos[i].S) * a[pos[i].F][pos[i].S];
-
+    REP(i, k) res += 1LL * a[pos[i].F][pos[i].S] * *s[i].begin();
     return res;
 }
 
@@ -114,13 +85,6 @@ bool SwapOpt(int x, int y, int u, int v)
     swap(pos[i], pos[j]);
     swap(id[x][y], id[u][v]);
 
-    if (!maxi(val, Eval(pos)))
-    {
-        swap(pos[i], pos[j]);
-        swap(id[x][y], id[u][v]);
-    }
-    else return true;
-    return false;
 }
 
 int main()
@@ -173,7 +137,7 @@ int main()
         {
             int i = Rand(0, k - 1), j = Rand(k, n - 1);
             int x = pos[i].F, y = pos[i].S;
-            int u = pos[i].F, v = pos[i].S;
+            int u = pos[j].F, v = pos[j].S;
 
             opt |= SwapOpt(x, y, u, v);
         }
