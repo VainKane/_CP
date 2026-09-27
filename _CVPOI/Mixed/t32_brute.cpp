@@ -171,9 +171,9 @@ int main()
 
         REP(haha, 1e5)
         {
-            int i = Rand(0, k - 1), j = Rand(k, n - 1);
+            int i = Rand(0, k - 1), j = Rand(k, m * n - 1);
             int x = pos[i].F, y = pos[i].S;
-            int u = pos[i].F, v = pos[i].S;
+            int u = pos[j].F, v = pos[j].S;
 
             opt |= SwapOpt(x, y, u, v);
         }
@@ -190,6 +190,7 @@ int main()
                 swap(pos[i], pos[j]);
                 swap(id[x][y], id[u][v]);
             }
+
             val = Eval(pos);
         }
     }

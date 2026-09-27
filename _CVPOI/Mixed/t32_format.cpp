@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name ""
+#define name "bullshit"
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,35 +19,22 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e5 + 5;
-int const BK = 314;
+int const N = 1e6 + 5;
 
-int n;
-int a[N];
-
-int pre[N], suf[N];
-
-int f[BK + 5][N];
-int mx[N];
+ii a[N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i];
+    freopen(name".inp", "r", stdin);
+    freopen(name".out", "w", stdout);
 
-    FOR(i, 1, n) pre[i] = pre[i - 1] + a[i];
-    FORD(i, n, 1) suf[i] = pre[i + 1] + a[i];
+    REP(i, 1000) cin >> a[i].F >> a[i].S;
+    sort(a, a + 1000);
 
-    memset(mx, -0x3f, sizeof mx);
-    FOR(s, 0, BK) FOR(i, 1, n)
-    {
-        if (s) f[s][i] = f[s - 1][i];
-        if (pre[i] - s >= 0) maxi(f[s][i], mx[pre[i] - s] + 1);
-        maxi(mx[s], f[s][i]);
-    }
+    REP(i, 1000) cout << a[i].F << ' ' << a[i].S << '\n';
 
     return 0;
 }

@@ -24,18 +24,26 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    freopen(name".inp", "r", stdin);
+    // freopen(name".inp", "r", stdin);
     freopen(name".out", "w", stdout);
 
     int cnt = 0;
-    FOR(i, 1, 100) FOR(j, 1, 100)
+    FOR(i, 1, 100)
     {
-        if (cnt == 1000) break;
-        cnt++;
-        cout << i * 10 << ' ' << j * 10 << '\n';
+        if (i & 1) for (int j = 1; j <= 100; j += 10)
+        {
+            cout << i << ' ' << j << '\n';
+            cnt++;
+        }
+        else for (int j = 6; j <= 100; j += 10)
+        {
+            cout << i << ' ' << j << '\n';
+            cnt++;
+        }
     }
 
-    assert(cnt == 1000);
+    // assert(cnt == 1000);
+    cerr << cnt;
 
     return 0;
 }

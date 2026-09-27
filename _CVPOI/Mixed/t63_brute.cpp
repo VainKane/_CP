@@ -19,35 +19,45 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e5 + 5;
-int const BK = 314;
+int const N = 36;
+int const MOD = 998244353;
+int const oo = 1e9 + 9;
 
-int n;
+void Add(int &x, int const &y)
+{
+    x += y;
+    if (x >= MOD) x -= MOD;
+}
+
+int n, k;
 int a[N];
 
-int pre[N], suf[N];
+int Cal(vector<int> &v)
+{
+    sort(all(v));
 
-int f[BK + 5][N];
-int mx[N];
+    int res = oo;
+    REP(i, sz(v) - 1) mini(res, v[i + 1] - v[i]);
+    return res;
+}
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i];
+    cin >> n >> k;
+    REP(i, n) cin >> a[i];
 
-    FOR(i, 1, n) pre[i] = pre[i - 1] + a[i];
-    FORD(i, n, 1) suf[i] = pre[i + 1] + a[i];
-
-    memset(mx, -0x3f, sizeof mx);
-    FOR(s, 0, BK) FOR(i, 1, n)
+    int res = 0;
+    REP(mask, MK(n)) if (__builtin_popcount(mask) == k)
     {
-        if (s) f[s][i] = f[s - 1][i];
-        if (pre[i] - s >= 0) maxi(f[s][i], mx[pre[i] - s] + 1);
-        maxi(mx[s], f[s][i]);
+        vector<int> v;
+        for (int tmp = mask; tmp; tmp ^= tmp & -tmp) v.push_back(a[__builtin_ctz(tmp)]);
+        Add(res, Cal(v));
     }
+
+    cout << res;
 
     return 0;
 }

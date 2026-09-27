@@ -11,7 +11,7 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
-#define name "bullshit"
+#define name ""
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,19 +19,35 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
+int const N = 1009;
+int const M = 1e5 + 5;
+int const MOD = 998244353;
+
+int n, k;
+int a[N];
+
+int dp[N][N];
+int pre[N];
+
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    freopen(name".inp", "r", stdin);
-    freopen(name".out", "w", stdout);
+    cin >> n >> k;
+    FOR(i, 1, n) cin >> a[i];
 
-    REP(haha, 500)
+    sort(a + 1, a + n + 1);
+
+    FOR(t, 0, a[n] / k)
     {
-        int x, y;
-        cin >> x >> y;
-        cout << x << ' ' << y << '\n';
+        FOR(j, 1, k)
+        {
+            FOR(i, 1, n) if (a[i] - t >= 0)
+            {
+                maxi(dp[j][i], )
+            }
+        }
     }
 
     return 0;
