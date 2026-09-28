@@ -27,7 +27,7 @@ int n, k;
 int a[N];
 
 int dp[N][N];
-int pre[N];
+int pos[M];
 
 int main()
 {
@@ -38,17 +38,29 @@ int main()
     FOR(i, 1, n) cin >> a[i];
 
     sort(a + 1, a + n + 1);
-
-    FOR(t, 0, a[n] / k)
+    
+    FOR(i, 0, 1e5)
     {
+        if (i) pos[i] = pos[i - 1];
+        while (pos[i] < n && a[pos[i] + 1] <= i) pos[i]++;
+    }
+
+    int res = 0;
+    FOR(t, 1, a[n] / k)
+    {
+        FOR(i, 1, pos[t]) dp[0][i] = 1;
         FOR(j, 1, k)
         {
-            FOR(i, 1, n) if (a[i] - t >= 0)
+            FOR(i, 2, n) if (a[i] - t >= 0)
             {
-                maxi(dp[j][i], )
+                dp[j][i] = (dp[j][i - 1] + dp[j - 1][pos[a[i] - t]]) % MOD;
             }
         }
+
+        res = (res + 1LL * t * dp[k][n]) % MOD;
     }
+
+    cout << res;
 
     return 0;
 }

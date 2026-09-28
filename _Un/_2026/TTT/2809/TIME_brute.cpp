@@ -19,16 +19,67 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-string Del(string &s)
+string s;
+ll k;
+
+namespace Sub1
 {
-    string res = "";
+    bool CheckSub()
+    {
+        return true;
+    }
 
-    int idx = sz(s) - 1;
-    REP(i, sz(s) - 1) if (s[i] > s[i + 1]) idx = i;
+    string Del(string &s)
+    {
+        string res = "";
 
-    REP(i, sz(s)) if (i != idx) res += s[i];
-    s = res;
-    return res;
+        int idx = sz(s) - 1;
+        REP(i, sz(s) - 1) if (s[i] > s[i + 1])
+        {
+            idx = i;
+            break;
+        }
+
+        REP(i, sz(s)) if (i != idx) res += s[i];
+        return s = res;
+    }
+
+    char Process()
+    {
+        string res = " " + s;
+        ll len = sz(s);
+
+        REP(haha, sz(s) - 1)
+        {
+            if (len > k) break;
+            res += Del(s);
+            len += sz(s);
+        }
+
+        return res[k];
+    }
+}
+
+namespace Sub2
+{
+    bool CheckSub()
+    {
+        REP(i, sz(s) - 1) if (s[i] > s[i + 1]) return false;
+        return true;
+    }
+
+    char Process()
+    {
+        int len = sz(s);
+        while (k > len && len > 1) k -= len--;
+        return s[k - 1];
+    }
+}
+
+char Solve()
+{
+    if (Sub2::CheckSub()) return Sub2::Process();
+    if (Sub1::CheckSub()) return Sub1::Process();
 }
 
 int main()
@@ -37,19 +88,13 @@ int main()
     cin.tie(0); cout.tie(0);
 
     // freopen(name".inp", "r", stdin);
-    // freopen(name".ans", "w", stdout);
+    // freopen(name".out", "w", stdout);
 
     int t; cin >> t;
     while (t--)
     {
-        string s;
-        int k;
-
         cin >> s >> k;
-
-        string res = " " + s;
-        REP(haha, sz(s) - 1) res += Del(s);
-        cout << res[k] << '\n';
+        cout << Solve() << '\n';
     }
 
     return 0;

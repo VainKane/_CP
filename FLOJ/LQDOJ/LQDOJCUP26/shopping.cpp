@@ -21,10 +21,22 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 string s;
 
+bool Check(string &s)
+{
+    REP(i, sz(s) - 1) if (s[i + 1] > s[i]) return false;
+    return true;
+}
+
 int Get()
 {
-    REP(i, sz(s) - 1) if (s[i] < s[i + 1]) return i;
-    return sz(s);
+    int res = 0;
+    FOR(i, 1, sz(s))
+    {
+        if (s[i - 1] < s[i]) break;
+        if (s[i - 1] > s[i]) maxi(res, i);
+    }
+
+    return res;
 }
 
 int main()
@@ -39,6 +51,12 @@ int main()
     while (q--)
     {
         cin >> s;
+
+        if (Check(s))
+        {
+            cout << s << ' ';
+            continue;
+        }
 
         int idx = Get();
         REP(i, sz(s))
