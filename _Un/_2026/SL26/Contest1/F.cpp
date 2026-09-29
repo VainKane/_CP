@@ -62,30 +62,17 @@ int main()
     dp[0][0] = 1;
     FOR(i, 1, n) FOR(j, 0, n)
     {
-        REP(p, sz(posA[i])) pre[j][p] = (p > 0 ? pre[j][p - 1] : 0) + dp[posA[i][p]][j];
+        REP(p, sz(posA[i])) pre[j][p] = ((p > 0 ? pre[j][p - 1] : 0) + dp[posA[i][p]][j]) % MOD;
         int idx = -1;
 
         for (auto &q : posB[j])
         {
-            while (idx + 1 < sz(posA[i]) && 1LL * (preA[i] - preA[posA[i][idx + 1]]) * (i - posA[i][idx + 1]) <= 1LL * (preB[j] - preB[q]) * (j - q)) idx++;
-            // if (idx >= 0) assert(1LL * (preA[i] - preA[posA[i][idx]]) * (i - posA[i][idx]) <= 1LL * (preB[j] - preB[q]) * (j - q));
-            if (idx >= 0 && 1LL * (preA[i] - preA[posA[i][idx]]) * (i - posA[i][idx]) > 1LL * (preB[j] - preB[q]) * (j - q))
-            {
-                // cerr << i << ' ' << j << ' ' << posA[i][idx] << ' ' << q << '\n';
-            }
+            while (idx + 1 < sz(posA[i]) && 1LL * (preA[i] - preA[posA[i][idx + 1]]) * (j - q) <= 1LL * (preB[j] - preB[q]) * (i - posA[i][idx + 1])) idx++;
             if (idx >= 0) Add(dp[i][j], pre[q][idx]);
         }
     }
 
     cout << dp[n][n];
-
-    // cerr << posA[2][0];
-    // FOR(i, 1, n)
-    // {
-    //     cout << "pos " << i << ":\n";
-    //     for (auto &j : pos[i]) cout << j << ' ';
-    //     cout << '\n';
-    // }
 
     return 0;
 }
