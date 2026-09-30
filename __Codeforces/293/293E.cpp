@@ -23,21 +23,52 @@ int const N = 1e5 + 5;
 
 struct FenwickTree
 {
-    vector<int> bit;
-    int n;
+    vector<vector<int>> bit, vals;
+    int m, n;
 
-    FenwickTree(int _n = 0)
+    FenwickTree(int _m = 0, int _n = 0)
     {
-        n = _n;
-        bit.assign(n + 5, 0);
+        m = _m, n = _n;
+        bit.assign(m + 5, vector<int>());
+        vals.assign(m + 5, vector<int>());
     }
 
-    void Update(int idx, int val) { for (; idx <= n; idx += idx & -idx) bit[idx] += val; }
+    void FakeUpdate(int i, int j)
+    {
+        for (; i <= m; i += i & -i) for (; j <= n; j += j & -j)
+            vals[i].push_back(j);
+    }
 
-    int Get(int idx)
+    void FakeGet(int i, int j)
+    {
+        for (; i; i ^= i & -i) for (; j; j ^= j & -j)
+            vals[i].push_back(j);
+    }
+
+    void Compress()
+    {
+        FOR(i, 1, m)
+        {
+            sort(all(vals[i]));
+            vals[i].erase(unique(all(vals[i])), vals[i].end());
+            bit[i] = vector<int>(sz(vals[i]) + 5, 0);
+        }
+    }
+
+    #define GetId(i, x) (lower_bound(all(vals[i]), (x)) - vals[i].begin() + 1)
+
+    void Update(int i, int jj, int val)
+    {
+        for (; i <= m; i += i & -i) for (int j = GetId(i, jj); j <= sz(vals[i]); j += j & -j)
+            bit[i][j] += val;
+    }
+
+    int Get(int i, int jj)
     {
         int res = 0;
-        for (; idx; idx ^= idx & -idx) res += bit[idx];
+        for (; i; i ^= i & -i) for (int j = GetId(i, jj); j; j ^= j & -j)
+            res += bit[i][j];
+        
         return res;
     }
 };
@@ -45,76 +76,71 @@ struct FenwickTree
 int n, l, c;
 vector<ii> adj[N];
 
-int sz[N];
-bool del[N];
-
 int h[N], d[N];
 
 int in[N], out[N];
 int node[N];
 int timer = 0;
 
+int bigChild[N];
 FenwickTree bit;
+
+ll res = 0;
 
 void DFSPrepare(int u, int p)
 {
-    sz[u] = 1;
-    for (auto &e : adj[u])
-    {
-        int v = e.F;
-        if (v == p || del[v]) continue;
-
-        DFSPrepare(v, u);
-        sz[u] += sz[v];
-    }
-}
-
-int Centroid(int u, int p, int n)
-{
-    for (auto &e : adj[u])
-    {
-        int v = e.F;
-        if (v == p && del[v] && sz[v] <= n / 2) continue;
-        return Centroid(v, u, n);
-    }
-    
-    return u;
-}
-
-void DFS(int u, int p)
-{
     in[u] = ++timer;
     node[timer] = u;
+    int mx = 0;
 
     for (auto &e : adj[u])
     {
         int v = e.F, w = e.S;
-        if (v == p || del[v]) continue;
+        if (v == p) continue;
 
         h[v] = h[u] + 1;
         d[v] = d[u] + w;
-        DFS(v, u);
+        DFSPrepare(v, u);
+        if (maxi(mx, out[v] - in[v] + 1)) bigChild[u] = v;
     }
 
     out[u] = timer;
 }
 
-void Solve(int u)
+void DFS(int u, int p, bool prepare)
 {
-    DFSPrepare(u, -1);
-    int cen = Centroid(u, -1, sz[u]);
+    if (bigChild[u])
+    {
+        DFS(bigChild[u], u, prepare);
+        FOR(i, in[bigChild[u]], out[bigChild[u]])
+        {
+            int z = node[i];
+            if (prepare) bit.FakeUpdate(h[z], d[z]);
+            else bit.Update(h[z], d[z], -1);
+        }
+    }
 
-    del[cen] = true;
-    h[cen] = d[cen] = timer = 0;
-
-    for (auto &e : adj[cen])
+    for (auto &e : adj[u])
     {
         int v = e.F;
-        if (del[v]) continue;
+        if (v == p || v == bigChild[u]) continue;
 
-        vector<int> nodes;
-        FOR(i, in[v], out[v]) nodes.push_back(node[i]);
-        sort(all(nodes), cmp);
+        DFS(v, u, prepare);
+        FOR(i, in[v], out[v]) 
+        {
+            int z = node[i];
+
+            if (prepare)
+            { 
+                bit.FakeUpdate(h[z], d[z]);
+                bit.FakeGet(l + 2 * h[u] - h[z], c + 2 * d[u] - d[z]);
+            }
+            else
+            {
+                bit.Update(h[z], d[z], 1);
+                res += bit.Get(l + 2 * h[u] - h[z], c + 2 * d[u] - d[z]);
+            }
+        }
     }
 }
 
@@ -132,8 +158,15 @@ int main()
         adj[p].push_back({i, w});
     }
 
-    bit = FenwickTree(n);
-    Solve(1);
+    DFSPrepare(1, -1);
+
+    bit = FenwickTree(n, 1e9);
+    DFS(1, -1, true);
+
+    bit.Compress();
+    DFS(1, -1, false);
+
+    cout << res;
 
     return 0;
 }
