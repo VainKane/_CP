@@ -25,7 +25,7 @@ int const oo = 1e9 + 9;
 int n;
 int a[N][N];
 
-ii dp[N][N];
+int dp2[N][N], dp5[N][N];
 
 int Count(int x, int k)
 {
@@ -36,11 +36,19 @@ int Count(int x, int k)
     return res;
 }
 
-bool cmp(ii a, ii b)
+void PrintOne()
 {
-    int va = min(a.F, a.S), vb = min(b.F, b.S);
-    if (va != vb) return va < vb;
-    return a.F + a.S < b.F + b.S;
+    if (!a[1][1] || !a[n][n])
+    {
+        cout << 1;
+        exit(0);
+    }
+}
+
+bool Check()
+{
+    FOR(i, 1, n) FOR(j, 1, n) if (!a[i][j]) return true;
+    return false;
 }
 
 int main()
@@ -51,20 +59,23 @@ int main()
     cin >> n;
     FOR(i, 1, n) FOR(j, 1, n) cin >> a[i][j];
 
-    FOR(i, 1, n) dp[0][i] = dp[i][0] = {oo, oo};
-    dp[1][1] = {Count(a[1][1], 2), Count(a[1][1], 5)};
+    PrintOne();
+
+    memset(dp2, 0x3f, sizeof dp2);
+    memset(dp5, 0x3f, sizeof dp5);
+
+    dp2[1][1] = Count(a[1][1], 2);
+    dp5[1][1] = Count(a[1][1], 5);
 
     FOR(i, 1, n) FOR(j, 1, n) if (i != 1 || j != 1)
     {
-        int c2 = Count(a[i][j], 2), c5 = Count(a[i][j], 5);
-        ii p1 = {dp[i - 1][j].F + c2, dp[i - 1][j].S + c5};
-        ii p2 = {dp[i][j - 1].F + c2, dp[i][j - 1].S + c5};
-
-        dp[i][j] = min(p1, p2, cmp);
+        dp2[i][j] = min(dp2[i - 1][j], dp2[i][j - 1]) + Count(a[i][j], 2);
+        dp5[i][j] = min(dp5[i - 1][j], dp5[i][j - 1]) + Count(a[i][j], 5);
     }
 
-    // FOR(i, 1, n) FOR(j, 1, n) cout << min(dp[i][j].F, dp[i][j].S) << " \n"[j == n];
-    cout << min(dp[n][n].F, dp[n][n].S);
+    int res = min(dp2[n][n], dp5[n][n]);
+    if (Check()) mini(res, 1);
+    cout << res;
 
     return 0;
 }

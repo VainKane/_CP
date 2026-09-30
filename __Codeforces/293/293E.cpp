@@ -19,30 +19,30 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e5 + 5;
+#pragma GCC optimize("O3,Ofast,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,abm,mmx,avx,tune=native")
+
+int const N = 2e5 + 5;
 
 struct FenwickTree
 {
     vector<vector<int>> bit, vals;
     int m, n;
 
-    FenwickTree(int _m = 0, int _n = 0)
+    FenwickTree(int _m = 0)
     {
-        m = _m, n = _n;
+        m = _m;
         bit.assign(m + 5, vector<int>());
         vals.assign(m + 5, vector<int>());
     }
 
-    void FakeUpdate(int i, int j)
-    {
-        for (; i <= m; i += i & -i) for (; j <= n; j += j & -j)
-            vals[i].push_back(j);
-    }
-
+    void FakeUpdate(int i, int j) { for (; i <= m; i += i & -i) vals[i].push_back(j); }
     void FakeGet(int i, int j)
     {
-        for (; i; i ^= i & -i) for (; j; j ^= j & -j)
-            vals[i].push_back(j);
+        if (i < 0) return;
+        mini(i, m);
+        for (; i; i ^= i & -i) vals[i].push_back(j);
     }
 
     void Compress()
@@ -59,14 +59,17 @@ struct FenwickTree
 
     void Update(int i, int jj, int val)
     {
-        for (; i <= m; i += i & -i) for (int j = GetId(i, jj); j <= sz(vals[i]); j += j & -j)
+        for (; i <= m; i += i & -i) if (!vals[i].empty()) for (int j = GetId(i, jj); j <= sz(vals[i]); j += j & -j)
             bit[i][j] += val;
     }
 
     int Get(int i, int jj)
-    {
+    { 
+        if (i < 0 || jj < 0) return 0;
+        mini(i, m);
         int res = 0;
-        for (; i; i ^= i & -i) for (int j = GetId(i, jj); j; j ^= j & -j)
+
+        for (; i; i ^= i & -i) if (!vals[i].empty()) for (int j = GetId(i, jj); j; j ^= j & -j)
             res += bit[i][j];
         
         return res;
@@ -109,10 +112,13 @@ void DFSPrepare(int u, int p)
 
 void DFS(int u, int p, bool prepare)
 {
-    if (bigChild[u])
+    for (auto &e : adj[u])
     {
-        DFS(bigChild[u], u, prepare);
-        FOR(i, in[bigChild[u]], out[bigChild[u]])
+        int v = e.F;
+        if (v == p || v == bigChild[u]) continue;
+
+        DFS(v, u, prepare);
+        FOR(i, in[v], out[v])
         {
             int z = node[i];
             if (prepare) bit.FakeUpdate(h[z], d[z]);
@@ -120,27 +126,36 @@ void DFS(int u, int p, bool prepare)
         }
     }
 
+    if (bigChild[u]) DFS(bigChild[u], u, prepare);
     for (auto &e : adj[u])
     {
         int v = e.F;
         if (v == p || v == bigChild[u]) continue;
-
-        DFS(v, u, prepare);
-        FOR(i, in[v], out[v]) 
+        
+        FOR(i, in[v], out[v])
         {
             int z = node[i];
-
-            if (prepare)
-            { 
-                bit.FakeUpdate(h[z], d[z]);
-                bit.FakeGet(l + 2 * h[u] - h[z], c + 2 * d[u] - d[z]);
-            }
-            else
-            {
-                bit.Update(h[z], d[z], 1);
-                res += bit.Get(l + 2 * h[u] - h[z], c + 2 * d[u] - d[z]);
-            }
+            if (prepare) bit.FakeGet(l + 2 * h[u] - h[z], c + 2 * d[u] - d[z]);
+            else res += bit.Get(l + 2 * h[u] - h[z], c + 2 * d[u] - d[z]);
         }
+
+        FOR(i, in[v], out[v])
+        {
+            int z = node[i];
+            if (prepare) bit.FakeUpdate(h[z], d[z]);
+            else bit.Update(h[z], d[z], 1);
+        }
+    }
+
+    if (prepare)
+    {
+        bit.FakeGet(l + h[u], c + d[u]);
+        if (u != 1) bit.FakeUpdate(h[u], d[u]);
+    }
+    else
+    {
+        res += bit.Get(l + h[u], c + d[u]);
+        if (u != 1) bit.Update(h[u], d[u], 1);
     }
 }
 
@@ -160,7 +175,7 @@ int main()
 
     DFSPrepare(1, -1);
 
-    bit = FenwickTree(n, 1e9);
+    bit = FenwickTree(n);
     DFS(1, -1, true);
 
     bit.Compress();
