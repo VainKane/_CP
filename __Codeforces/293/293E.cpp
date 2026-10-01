@@ -59,7 +59,7 @@ struct FenwickTree
 
     void Update(int i, int jj, int val)
     {
-        for (; i <= m; i += i & -i) if (!vals[i].empty()) for (int j = GetId(i, jj); j <= sz(vals[i]); j += j & -j)
+        for (; i <= m; i += i & -i) for (int j = GetId(i, jj); j <= sz(vals[i]); j += j & -j)
             bit[i][j] += val;
     }
 
@@ -69,7 +69,7 @@ struct FenwickTree
         mini(i, m);
         int res = 0;
 
-        for (; i; i ^= i & -i) if (!vals[i].empty()) for (int j = GetId(i, jj); j; j ^= j & -j)
+        for (; i; i ^= i & -i) for (int j = GetId(i, jj); j; j ^= j & -j)
             res += bit[i][j];
         
         return res;
