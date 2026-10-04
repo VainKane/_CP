@@ -19,18 +19,12 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e5 + 5;
-int const lim = 5e5;
+int const N = 4009;
 
 int n;
-ll cnt[N], pre[N];
+int a[N];
 
-ll Get(int l, int r, ll pre[])
-{
-    maxi(l, 1), mini(r, lim);
-    if (l > r) return 0;
-    return pre[r] - pre[l - 1];
-}
+map<int, int> dp[N];
 
 int main()
 {
@@ -38,24 +32,17 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n;
-    FOR(i, 1, n)
+    FOR(i, 1, n) cin >> a[i];
+
+    int res = 1;
+    FOR(i, 1, n) FOR(j, 1, i - 1)
     {
-        int x; cin >> x;
-        cnt[x]++;
+        int &x = dp[i][a[i] - a[j]];
+        maxi(x, dp[j][a[i] - a[j]] + 1);
+        maxi(res, x);
     }
 
-    FOR(i, 1, lim)
-    {
-        pre[i] = pre[i - 1] + cnt[i] * i;
-        cnt[i] += cnt[i - 1];
-    }
-
-    FOR(i, 2, n)
-    {
-        ll res = 0;
-        for (int j = i; j <= lim + i; j += i) res += j * Get(j - i + 1, j - 1, cnt) - Get(j - i + 1, j - 1, pre);
-        cout << res << '\n';
-    }
+    cout << res + 1;
 
     return 0;
 }

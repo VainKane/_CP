@@ -19,17 +19,23 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e5 + 5;
-int const lim = 5e5;
+int const N = 4009;
 
 int n;
-ll cnt[N], pre[N];
+int a[N];
 
-ll Get(int l, int r, ll pre[])
+vector<int> vals ;
+int last[N];
+
+int dp[N][N];
+
+#define GetId(x) (lower_bound(all(vals), (x)) - vals.begin() + 1) 
+
+void Compress()
 {
-    maxi(l, 1), mini(r, lim);
-    if (l > r) return 0;
-    return pre[r] - pre[l - 1];
+    FOR(i, 1, n) vals.push_back(a[i]);
+    sort(all(vals));
+    vals.erase(unique(all(vals)), vals.end());
 }
 
 int main()
@@ -38,24 +44,27 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n;
+    FOR(i, 1, n) cin >> a[i];
+
+    Compress();
+    int res = 1 + (n > 1);
+
     FOR(i, 1, n)
     {
-        int x; cin >> x;
-        cnt[x]++;
+        FOR(j, i + 1, n)
+        {
+            dp[i][j] = 2;
+            int id = GetId(2 * a[i] - a[j]);
+            if (id > sz(vals) || id == 0 || vals[id - 1] != 2 * a[i] - a[j]) continue;
+
+            maxi(dp[i][j], dp[last[id]][i] + 1);
+            maxi(res, dp[i][j]);
+        }
+
+        last[GetId(a[i])] = i;
     }
 
-    FOR(i, 1, lim)
-    {
-        pre[i] = pre[i - 1] + cnt[i] * i;
-        cnt[i] += cnt[i - 1];
-    }
-
-    FOR(i, 2, n)
-    {
-        ll res = 0;
-        for (int j = i; j <= lim + i; j += i) res += j * Get(j - i + 1, j - 1, cnt) - Get(j - i + 1, j - 1, pre);
-        cout << res << '\n';
-    }
+    cout << res;
 
     return 0;
 }

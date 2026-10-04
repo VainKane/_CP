@@ -19,17 +19,23 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e5 + 5;
-int const lim = 5e5;
+int const N = 1e5 + 5;
 
 int n;
-ll cnt[N], pre[N];
+ll pre[N][2];
+int d[N];
 
-ll Get(int l, int r, ll pre[])
+int cnt[N];
+
+void Compress()
 {
-    maxi(l, 1), mini(r, lim);
-    if (l > r) return 0;
-    return pre[r] - pre[l - 1];
+    vector<ll> vals;
+
+    FOR(i, 0, n) vals.push_back(pre[i][0] - pre[i][1]);
+    sort(all(vals));
+    vals.erase(unique(all(vals)), vals.end());
+
+    FOR(i, 0, n) d[i] = lower_bound(all(vals), pre[i][0] - pre[i][1]) - vals.begin() + 1;
 }
 
 int main()
@@ -41,21 +47,16 @@ int main()
     FOR(i, 1, n)
     {
         int x; cin >> x;
-        cnt[x]++;
+        REP(j, 2) pre[i][j] = pre[i - 1][j];
+        pre[i][i & 1] += x;
     }
 
-    FOR(i, 1, lim)
-    {
-        pre[i] = pre[i - 1] + cnt[i] * i;
-        cnt[i] += cnt[i - 1];
-    }
+    Compress();
+    cnt[d[0]] = 1;
 
-    FOR(i, 2, n)
-    {
-        ll res = 0;
-        for (int j = i; j <= lim + i; j += i) res += j * Get(j - i + 1, j - 1, cnt) - Get(j - i + 1, j - 1, pre);
-        cout << res << '\n';
-    }
+    ll res = 0;
+    FOR(i, 1, n) res += cnt[d[i]]++;
+    cout << res;
 
     return 0;
 }

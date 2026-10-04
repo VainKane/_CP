@@ -20,6 +20,7 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2e5 + 5;
+int const LOG = 20;
 
 struct Query
 {
@@ -33,16 +34,9 @@ vector<int> v[2], h[2];
 Query qr[N];
 vector<int> vals;
 
-int nxtH[2][3 * N], nxtV[2][3 * N];
+int nxtX[2][LOG][3 * N], nxtV[2][LOG][3 * N];
 
-// #define GetId(x) (lower_bound(all(vals), (x)) - vals.begin() + 1)
-
-int GetId(int x)
-{
-    int id = lower_bound(all(vals), x) - vals.begin() + 1;
-    assert(vals[id - 1] == x);
-    return id;
-}
+#define GetId(x) (lower_bound(all(vals), (x)) - vals.begin() + 1)
 
 void Compress()
 {
@@ -71,13 +65,14 @@ void Compress()
 
 void Init()
 {
-    FOR(i, 1, sz(vals)) REP(j, 2)
+    FOR(i, 1, sz(vals))
     {
-        auto it = lower_bound(all(v[j]), vals[i - 1]);
-        if (it != v[j].end()) nxtH[i][j] = *it;
+        int x = vals[i - 1];
+        auto it = lower_bound(all(h[x & 1]), x);
+        if (it != h[x & 1].end()) nxtX[0][i] = GetId(*it);
 
-        it = lower_bound(all(h[j]), vals[i - 1]);
-        if (it != h[j].end()) nxtV[i][j] = *it;
+        // it = lower_bound(all(v[j]), x);
+        // if (it != v[j].end()) nxtV[i][j] = GetId(*it);
     }
 }
 
@@ -103,12 +98,8 @@ int main()
     REP(i, 2) sort(all(v[i])), sort(all(h[i]));
 
     Compress();
-    Init();
 
-    for (auto &x : vals) REP(i, 2)
-    {
-        cout << x << ' ' << i << ": " << nxtH[GetId(x)][i]  << '\n';
-    }
+
 
     return 0;
 }
