@@ -19,32 +19,20 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e7 + 5;
+int const N = 5e5 + 5;
+int const MOD = 1e9 + 7;
 
-int n, q;
-
-int cnt[N];
+int n;
+int a[N], b[N];
+int dp[N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> q;
-
-    int res = 0;
-    FOR(i, 1, q)
-    {
-        int l, r;
-        cin >> l >> r;
-
-        l = (res + l) % n, r = (res + r) % n;
-        if (l > r) r += n;
-
-        res = 0;
-        FOR(j, l, r) res += ++cnt[j % n] == i;
-        cout << res << '\n';
-    }
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i] >> b[i];
 
     return 0;
 }
