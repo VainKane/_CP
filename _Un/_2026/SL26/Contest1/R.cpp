@@ -19,7 +19,12 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
+#pragma GCC optimize("O3,Ofast,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,abm,mmx,avx,tune=native")
+
 int const N = 16;
+int const lim = 950;
 
 int m, n;
 ll v;
@@ -40,9 +45,9 @@ void Init()
         sMask[j][mask] += a[__builtin_ctz(tmp)][j];
 }
 
-void PrintYes(int maskM, int maskN)
+void PrintAns(int maskM, int maskN)
 {
-    cout << "YES\n" << __builtin_popcount(maskM) + __builtin_popcount(maskN) << '\n';
+    cout << __builtin_popcount(maskM) + __builtin_popcount(maskN) << '\n';
     
     for (int tmp = maskM; tmp; tmp ^= tmp & -tmp) cout << "1 " << __builtin_ctz(tmp) + 1 << '\n';
     for (int tmp = maskN; tmp; tmp ^= tmp & -tmp) cout << "2 " << __builtin_ctz(tmp) + 1 << '\n';
@@ -54,7 +59,7 @@ void Try(int pos)
 {
     if (pos == n)
     {
-        if (tsum - sum - haha == v) PrintYes(maskM, maskN);
+        if (tsum - sum - haha == v) PrintAns(maskM, maskN);
         return;
     }
 
@@ -68,7 +73,7 @@ void Try(int pos)
             haha -= BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
             continue;
         }
-
+        
         Try(pos + 1);
         haha -= BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
     }
@@ -85,8 +90,11 @@ int main()
 
     Init();
 
+    auto startTime = chrono::high_resolution_clock::now();
     for (maskM = 0; maskM < MK(m); maskM++)
     {
+        if (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() > lim) return !(cout << -1);
+
         sum = 0;
         for (int tmp = maskM; tmp; tmp ^= tmp & -tmp) sum += s[__builtin_ctz(tmp)];
         if (tsum - sum < v) continue;
@@ -96,7 +104,7 @@ int main()
         Try(0);
     }
 
-    cout << "NO";
+    cout << -1;
 
     return 0;
 }
