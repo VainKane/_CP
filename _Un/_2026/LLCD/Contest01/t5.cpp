@@ -19,31 +19,10 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5009;
+int const N = 5e5 + 5;
 
 int n, m;
-vector<int> adj[N];
-int d[N][N];
-
-void BFS(int s, int d[])
-{
-    queue<int> q;
-    q.push(s);
-
-    memset(d, -1, (n + 1) * sizeof(int));
-    d[s] = 0;
-
-    while (!q.empty())
-    {
-        int u = q.front(); q.pop();
-    
-        for (auto &v : adj[u]) if (d[v] == -1)
-        {
-            d[v] = d[u] + 1;
-            q.push(v);
-        }
-    }
-}
+ii a[N];
 
 int main()
 {
@@ -51,21 +30,13 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> m;
+    FOR(i, 1, m) cin >> a[i].F;
+    FOR(i, 1, m) cin >> a[i].S;
+
+    sort(a + 1, a + n + 1);
     FOR(i, 1, m)
     {
-        int u, v;
-        cin >> u >> v;
-        u++, v++;
-
-        adj[u].push_back(v);
-    }
-
-    FOR(u, 1, n) BFS(u, d[u]);
-    FOR(i, 1, n - 1)
-    {
-        int res = d[i][n];
-        FOR(u, 1, n) maxi(res, d[i][u] + d[1][u]);
-        cout << res << ' ';
+        
     }
 
     return 0;
