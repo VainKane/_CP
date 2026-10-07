@@ -19,38 +19,19 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e4 + 5;
+int const N = 5009;
+int const MOD = 1e9 + 7;
+
+void Add(int &x, int const &y)
+{
+    x += y;
+    if (x >= MOD) x -= MOD;
+}
 
 int n, m;
-vector<int> adj[N];
-int d[N], h[N];
 
-void BFSPrepare()
-{
-    memset(h, -1, sizeof h);
-
-    queue<int> q;
-    FOR(u, 1, n) if (d[u] == -1)
-    {
-        h[u] = 0;
-        q.push(u);
-    }
-
-    while (!q.empty())
-    {
-        int u = q.front(); q.pop();
-        for (auto &v : adj[u]) if (h[v] == -1)
-        {
-            h[v] = h[u] + 1;
-            q.push(v);
-        }
-    }
-}
-
-void BFS()
-{
-    queue<int> q;
-}
+int cnt[N];
+int dp[2][N][N];
 
 int main()
 {
@@ -58,17 +39,28 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> m;
-    FOR(i, 1, m)
+    FOR(i, 1, n)
     {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        int x; cin >> x;
+        cnt[x]++;
     }
 
-    FOR(i, 1, n) cin >> d[i];
+    bool cur = 1;
+    for (int x = cnt[1]; x >= 0; x -= 3) dp[cur][x][0] = 1;
 
-    BFSPrepare();
+    FOR(i, 2, m)
+    {
+        cur ^= 1;
+        FOR(a, 0, cnt[i - 1]) FOR(b, 0, cnt[i - 2]) dp[cur][a][b] = 0;
+
+        FOR(a, 0, cnt[i]) FOR(b, 0, cnt[i - 1])
+        {
+            if ((cnt[i] - a) % 3 == 0) dp[cur][a][b] = dp[cur ^ 1][b][0];
+            FOR(x, 1, min({cnt[i] - a, cnt[i - 1] - b, cnt[i - 2]})) Add(dp[cur][a][b], dp[cur ^ 1][b + x][x]);
+        }
+    }
+
+    cout << dp[cur][0][0];
 
     return 0;
 }

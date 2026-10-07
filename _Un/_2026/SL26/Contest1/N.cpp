@@ -19,38 +19,13 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5e4 + 5;
+int const N = 2e5 + 5;
 
 int n, m;
-vector<int> adj[N];
-int d[N], h[N];
+char s[N];
+int a[N];
 
-void BFSPrepare()
-{
-    memset(h, -1, sizeof h);
-
-    queue<int> q;
-    FOR(u, 1, n) if (d[u] == -1)
-    {
-        h[u] = 0;
-        q.push(u);
-    }
-
-    while (!q.empty())
-    {
-        int u = q.front(); q.pop();
-        for (auto &v : adj[u]) if (h[v] == -1)
-        {
-            h[v] = h[u] + 1;
-            q.push(v);
-        }
-    }
-}
-
-void BFS()
-{
-    queue<int> q;
-}
+ll res = 0;
 
 int main()
 {
@@ -58,17 +33,35 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> m;
-    FOR(i, 1, m)
+    REP(i, n) cin >> s[i];
+    REP(i, n) cin >> a[i], res += a[i];
+
+    REP(i, n) if (s[i] == 'R' && s[(i + 1) % n] == 'L')
     {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        int idx = (i - 1 + n) % n;
+
+        ll sum = 0;
+        while (s[idx] == 'R')
+        {
+            sum += a[idx];
+            idx = (idx - 1 + n) % n;
+        }
+
+        res -= min(1LL * m, sum);
+
+        idx = (i + 2) % n;
+        sum = 0;
+
+        while (s[idx] == 'L')
+        {
+            sum += a[idx];
+            idx = (idx + 1) % n;
+        }
+
+        res -= min(1LL * m, sum);
     }
 
-    FOR(i, 1, n) cin >> d[i];
-
-    BFSPrepare();
+    cout << res;
 
     return 0;
 }
