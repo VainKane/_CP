@@ -20,6 +20,7 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 16;
+int const lim = 950;
 
 int m, n;
 ll v;
@@ -31,6 +32,8 @@ ll sMask[N][MK(15) + 5];
 ll tsum = 0, sum = 0;
 ll haha = 0;
 
+ll suf[N];
+
 int maskM, maskN;
 
 void Init()
@@ -40,7 +43,7 @@ void Init()
         sMask[j][mask] += a[__builtin_ctz(tmp)][j];
 }
 
-void PrintYes(int maskM, int maskN)
+void PrintAns(int maskM, int maskN)
 {
     cout << "YES\n" << __builtin_popcount(maskM) + __builtin_popcount(maskN) << '\n';
     
@@ -54,7 +57,7 @@ void Try(int pos)
 {
     if (pos == n)
     {
-        if (tsum - sum - haha == v) PrintYes(maskM, maskN);
+        if (tsum - sum - haha == v) PrintAns(maskM, maskN);
         return;
     }
 
@@ -63,13 +66,8 @@ void Try(int pos)
         maskN ^= MK(pos);
         haha += BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
 
-        if (haha > tsum - sum - v)
-        {
-            haha -= BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
-            continue;
-        }
-
-        Try(pos + 1);
+        ll x = tsum - sum - v;
+        if (haha <= x && haha + suf[pos + 1] >= x) Try(pos + 1);
         haha -= BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
     }
 }
@@ -85,14 +83,18 @@ int main()
 
     Init();
 
+    auto starTime = chrono::high_resolution_clock::now();
     for (maskM = 0; maskM < MK(m); maskM++)
     {
+        if (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - starTime).count() > lim) return !(cout << "NO");
+
         sum = 0;
         for (int tmp = maskM; tmp; tmp ^= tmp & -tmp) sum += s[__builtin_ctz(tmp)];
         if (tsum - sum < v) continue;
 
-        maskN = 0;
-        haha = 0;
+        FORD(i, n - 1, 0) suf[i] = suf[i + 1] + sMask[i][(MK(m) - 1) ^ maskM];
+
+        maskN = haha = 0;
         Try(0);
     }
 

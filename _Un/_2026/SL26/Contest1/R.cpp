@@ -19,10 +19,6 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-#pragma GCC optimize("O3,Ofast,unroll-loops")
-#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,abm,mmx,avx,tune=native")
-
 int const N = 16;
 int const lim = 950;
 
@@ -35,6 +31,8 @@ ll s[N];
 ll sMask[N][MK(15) + 5];
 ll tsum = 0, sum = 0;
 ll haha = 0;
+
+ll suf[N];
 
 int maskM, maskN;
 
@@ -68,13 +66,8 @@ void Try(int pos)
         maskN ^= MK(pos);
         haha += BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
 
-        if (haha > tsum - sum - v)
-        {
-            haha -= BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
-            continue;
-        }
-        
-        Try(pos + 1);
+        ll x = tsum - sum - v;
+        if (haha <= x && haha + suf[pos + 1] >= x) Try(pos + 1);
         haha -= BIT(pos, maskN) * sMask[pos][(MK(m) - 1) ^ maskM];
     }
 }
@@ -90,17 +83,18 @@ int main()
 
     Init();
 
-    auto startTime = chrono::high_resolution_clock::now();
+    auto starTime = chrono::high_resolution_clock::now();
     for (maskM = 0; maskM < MK(m); maskM++)
     {
-        if (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() > lim) return !(cout << -1);
+        if (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - starTime).count() > lim) return !(cout << -1);
 
         sum = 0;
         for (int tmp = maskM; tmp; tmp ^= tmp & -tmp) sum += s[__builtin_ctz(tmp)];
         if (tsum - sum < v) continue;
 
-        maskN = 0;
-        haha = 0;
+        FORD(i, n - 1, 0) suf[i] = suf[i + 1] + sMask[i][(MK(m) - 1) ^ maskM];
+
+        maskN = haha = 0;
         Try(0);
     }
 
