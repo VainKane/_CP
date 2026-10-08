@@ -32,7 +32,6 @@ int n, m;
 
 int cnt[N];
 int dp[2][N][N];
-int suf[2][N][3];
 
 int main()
 {
@@ -47,25 +46,18 @@ int main()
     }
 
     bool cur = 1;
-    for (int x = cnt[1]; x >= 0; x -= 3) suf[cur][x][0] = suf[cur][x + 3][0] + 1;
+    for (int x = cnt[1]; x >= 0; x -= 3) dp[cur][x][0] = 1;
 
     FOR(i, 2, m)
     {
         cur ^= 1;
-        memset(suf[cur], 0, sizeof suf[cur]);
-        FORD(a, cnt[i], 0) FORD(b, cnt[i - 1], 0)
+        FOR(a, 0, cnt[i]) FOR(b, 0, cnt[i - 1]) FOR(x, 0, min({cnt[i] - a, cnt[i - 1] - b, cnt[i - 2]}))
         {
-            int x = min({cnt[i] - a, cnt[i - 1] - b, cnt[i - 2]});
-            int r = (cnt[i] - a) % 3;
-
-            dp[cur][a][b] = (suf[cur ^ 1][b][r] - suf[cur ^ 1][x + 1][r] + MOD) % MOD;
-            suf[cur][a][r] = (suf[cur][a + r + 3][r] + dp[cur][a + r][r]) % MOD;
+            if ((cnt[i] - a - x) % 3) continue;
+            Add(dp[cur][a][b], dp[cur ^ 1][b + x][x]);
         }
 
-        FOR(a, 0, cnt[i - 1])
-        {
-            FOR(b, 0, cnt[i - 2]) dp[cur ^ 1][a][b] = 0;
-        }
+        FOR(a, 0, cnt[i - 1]) FOR(b, 0, cnt[i - 2]) dp[cur ^ 1][a][b] = 0;
     }
 
     cout << dp[cur][0][0];
