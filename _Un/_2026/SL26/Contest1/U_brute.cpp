@@ -51,10 +51,16 @@ int main()
     FOR(i, 2, m)
     {
         cur ^= 1;
-        FOR(a, 0, cnt[i]) FOR(b, 0, cnt[i - 1]) FOR(x, 0, min({cnt[i] - a, cnt[i - 1] - b, cnt[i - 2]}))
+        FORD(a, cnt[i], 0) FORD(b, cnt[i - 1], 0)
         {
-            if ((cnt[i] - a - x) % 3) continue;
-            Add(dp[cur][a][b], dp[cur ^ 1][b + x][x]);
+            int x = min({cnt[i] - a, cnt[i - 1] - b, cnt[i - 2]});
+            int r = (cnt[i] - a) % 3;
+
+            FOR(k, 0, n)
+            {
+                if (3 * k + r > x) break;
+                Add(dp[cur][a][b], dp[cur ^ 1][b + 3 * k + r][3 * k + r]);
+            }
         }
 
         FOR(a, 0, cnt[i - 1]) FOR(b, 0, cnt[i - 2]) dp[cur ^ 1][a][b] = 0;
