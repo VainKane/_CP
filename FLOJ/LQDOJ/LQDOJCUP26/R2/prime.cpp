@@ -41,7 +41,7 @@ int n;
 int a[N];
 
 vector<int> facts[N];
-bool prime[N];
+int primeDiv[N];
 
 int cnt[N];
 int f[25 * N], inv[25 * N];
@@ -50,11 +50,8 @@ int haha = 0;
 
 void Sieve()
 {
-    memset(prime, true, sizeof prime);
-    prime[0] = prime[1] = false;
-
-    FOR(i, 2, sqrt(lim)) if (prime[i]) for (int j = i * i; j <= lim; j += i) prime[j] = false;
-    FOR(i, 2, lim) if (prime[i]) for (int j = i; j <= lim; j += i) facts[j].push_back(i);
+    FOR(i, 2, sqrt(lim)) if (!primeDiv[i]) for (int j = i * i; j <= lim; j += i) primeDiv[j] = i;
+    FOR(i, 2, lim) if (!primeDiv[i]) primeDiv[i] = i;
 }
 
 void Init()
@@ -81,7 +78,11 @@ int main()
     FOR(i, 1, n)
     {
         int x = a[i];
-        for (auto &p : facts[a[i]]) while (x % p == 0) x /= p, cnt[p]++;
+        while (x > 1)
+        {
+            int p = primeDiv[x];
+            cnt[p]++, x /= p;
+        }
     }
 
     FOR(i, 2, lim) haha += cnt[i];
