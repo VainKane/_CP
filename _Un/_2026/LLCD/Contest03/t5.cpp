@@ -27,6 +27,7 @@ int a[N], b[N];
 int preA[N], preB[N];
 
 ll dp[N][N];
+ll f[N][N], g[N][N];
 
 int main()
 {
@@ -34,20 +35,28 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> m;
-    FOR(i, 1, n) cin >> a[i], preA[i] = preA[i - 1] + a[i];
-    FOR(i, 1, m) cin >> b[i], preB[i] = preB[i - 1] + b[i];
+    FOR(i, 1, n) cin >> a[i], a[i]--;
+    FOR(i, 1, m) cin >> b[i], b[i]--;
+
+    FOR(i, 1, n) preA[i] = preA[i - 1] + a[i];
+    FOR(i, 1, m) preB[i] = preB[i - 1] + b[i];
 
     memset(dp, 0x3f, sizeof dp);
-    dp[0][0] = 0;
+    memset(f, 0x3f, sizeof f);
+    memset(g, 0x3f, sizeof g);
 
-    FOR(i, 1, n) FOR(j, 1, m) REP(p, i) REP(q, j)
+    // FOR(i, 1, max(m, n)) dp[0][i] = dp[i][0] = 0;
+    FOR(j, 1, m) dp[1][j] = 1LL * a[1] * preB[j];
+    FOR(i, 1, n) dp[i][1] = 1LL * preA[i] * b[1];
+
+    FOR(i, 1, n) FOR(j, 1, m)
     {
-        int s1 = preA[i] - preA[p];
-        int s2 = preB[j] - preB[q];
-        mini(dp[i][j], dp[p][q] + 1LL * (s1 - i + p) * (s2 - j + q));
+        dp[i][j] = min({dp[i][j], f[i - 1][j] + 1LL * b[j] * preA[i], g[i][j - 1] + 1LL * a[i] * preB[j]});
+        f[i][j] = min(f[i - 1][j], dp[i][j - 1] - 1LL * b[j] * preA[i]);
+        g[i][j] = min(g[i][j - 1], dp[i - 1][j] - 1LL * a[i] * preB[j]);
     }
 
     cout << dp[n][m];
-    
+ 
     return 0;
 }

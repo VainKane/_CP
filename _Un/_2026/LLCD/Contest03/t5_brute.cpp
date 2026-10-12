@@ -20,7 +20,6 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2009;
-ll const oo = 1e18;
 
 int n, m;
 
@@ -35,25 +34,22 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n >> m;
-    FOR(i, 1, n) cin >> a[i], preA[i] = preA[i - 1] + a[i];
-    FOR(i, 1, m) cin >> b[i], preB[i] = preB[i - 1] + b[i];
+    FOR(i, 1, n) cin >> a[i], a[i]--;
+    FOR(i, 1, m) cin >> b[i], b[i]--;
+
+    FOR(i, 1, n) preA[i] = preA[i - 1] + a[i];
+    FOR(i, 1, m) preB[i] = preB[i - 1] + b[i];
 
     memset(dp, 0x3f, sizeof dp);
     dp[0][0] = 0;
 
-    FOR(i, 1, n) REP(p, i)
+    FOR(i, 1, n) FOR(j, 1, m)
     {
-        int k = preA[i] - preA[p] - i + p;
-
-        ll x = oo;
-        FOR(j, 0, m)
-        {
-            mini(dp[i][j], 1LL * k * (preB[j] - j) + x);
-            mini(x, 1LL * k * (j - preB[j]) + dp[p][j]);
-        }
+        REP(t, i) mini(dp[i][j], dp[t][j - 1] + 1LL * b[j] * (preA[i] - preA[t]));
+        REP(t, j) mini(dp[i][j], dp[i - 1][t] + 1LL * a[i] * (preB[j] - preB[t]));
     }
 
     cout << dp[n][m];
-    
+
     return 0;
 }

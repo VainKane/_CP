@@ -20,6 +20,7 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2009;
+ll const oo = 1e18;
 
 int n, m;
 
@@ -40,11 +41,16 @@ int main()
     memset(dp, 0x3f, sizeof dp);
     dp[0][0] = 0;
 
-    FOR(i, 1, n) FOR(j, 1, m) REP(p, i) REP(q, j)
+    FOR(i, 1, n) REP(p, i)
     {
-        int s1 = preA[i] - preA[p];
-        int s2 = preB[j] - preB[q];
-        mini(dp[i][j], dp[p][q] + 1LL * (s1 - i + p) * (s2 - j + q));
+        int k = preA[i] - preA[p] - i + p;
+
+        ll x = oo;
+        FOR(j, 0, m)
+        {
+            mini(dp[i][j], 1LL * k * (preB[j] - j) + x);
+            mini(x, 1LL * k * (j - preB[j]) + dp[p][j]);
+        }
     }
 
     cout << dp[n][m];
