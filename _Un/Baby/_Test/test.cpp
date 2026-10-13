@@ -85,7 +85,7 @@ int main()
     // cout << q[0] << ' ' << q[1] << ' ' << q.front() << ' ';
 
     int res = 0;
-    FOR(i, 2, 1e6) maxi(res, Count(i));
+    FOR(i, 2, 1e5) res += Count(i) >= 20;
     cout << res << '\n';
     // GCD(1e18, 4352345234231234);
     // cout << cnt;

@@ -25,6 +25,8 @@ int const lim = 1e6;
 int primeDiv[N];
 vector<int> facts;
 
+int pMask[MK(7) + 5];
+
 void Sieve()
 {
     FOR(i, 2, sqrt(lim)) if (!primeDiv[i]) for (int j = i * i; j <= lim; j += i) primeDiv[j] = i;
@@ -33,19 +35,14 @@ void Sieve()
 
 int Cal(int mask, int l, int r, int x)
 {
-    int p = 1;
-    for (int tmp = mask; tmp; tmp ^= tmp & -tmp)
-    {
-        int i = __builtin_ctz(tmp);
-        p *= facts[i];
-    }
-
+    int p = pMask[mask];
     return r / p - l / p;
 }
 
 int Get(int l, int r, int x)
 {
     int res = 0;
+    FOR(mask, 1, MK(sz(facts)) - 1) pMask[mask] = pMask[mask ^ mask & -mask] * facts[__builtin_ctz(mask)];
     REP(mask, MK(sz(facts))) res += (__builtin_parity(mask) ? -1 : 1) * Cal(mask, l, r, x);
     return res;
 }
@@ -71,6 +68,7 @@ int main()
     int q, x, p, k;
     cin >> q;
 
+    pMask[0] = 1;
     Sieve();
 
     while (q--)

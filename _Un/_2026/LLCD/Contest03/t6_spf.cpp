@@ -1,0 +1,143 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for (int i = (a), _b = (b); i <= _b; i++)
+#define FORD(i, b, a) for (int i = (b), _a = (a); i >= _a; i--)
+#define REP(i, n) for (int i = 0, _n = (n); i < _n; i++)
+#define BIT(i, x) (((x) >> (i)) & 1)
+#define MK(i) (1LL << (i))
+#define all(v) v.begin(), v.end()
+#define sz(v) ((int)v.size())
+#define F first
+#define S second
+#define name ""
+
+using ll = long long;
+using ii = pair<int, int>;
+
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
+
+int const N = 1e5 + 5;
+
+int n, m;
+int a[N], b[N];
+int cnt[N];
+
+int primeDiv[N];
+int facts[N][6];
+int cp[N];
+
+int pMask[N][MK(6)];
+
+vector<int> idA, idB;
+int divIdA[N], divIdB[N];
+
+bool cmpA(int i, int j) { return a[i] < a[j]; }
+bool cmpB(int i, int j) { return b[i] < b[j]; }
+
+void Factor(int x)
+{
+    int i = x;
+    while (x > 1)
+    {
+        int p = primeDiv[x];
+        facts[i][cp[i]++] = p;
+        while (x % p == 0) x /= p;
+    }
+
+    if (x > 1) facts[i][cp[i]++] = x;
+}
+
+void Init()
+{
+    FOR(i, 2, n) primeDiv[i] = i;
+    FOR(i, 2, sqrt(n)) if (primeDiv[i] == i) for (int j = i * i; j <= n; j += i) primeDiv[j] = i;
+
+    FOR(i, 1, n)
+    {
+        Factor(i);
+        pMask[i][0] = 1;
+        FOR(mask, 1, MK(cp[i]) - 1) pMask[i][mask] = pMask[i][mask ^ mask & -mask] * facts[i][__builtin_ctz(mask)];
+    }
+}
+
+inline void Update(int i, int delta) { REP(mask, MK(cp[i])) cnt[pMask[i][mask]] += delta; }
+
+inline int Get(int i)
+{
+    int res = 0;
+    REP(mask, MK(cp[i])) res += __builtin_parity(mask) ? -cnt[pMask[i][mask]] : cnt[pMask[i][mask]];
+    return res;
+}
+
+bool Check(int k, int x)
+{
+    int l = -1, r = 0;
+    REP(i, m) Update(divIdB[i], 1);
+
+    REP(i, m)
+    {
+        while (r < m && b[idB[r]] < a[idA[i]] + x) Update(divIdB[r++], -1);
+        while (l + 1 < r && b[idB[l + 1]] <= a[idA[i]] - x) Update(divIdB[++l], 1);
+
+        if (Get(divIdA[i]) > 0)
+        {
+            FOR(i, 0, l) Update(divIdB[i], -1);
+            FOR(i, r, m - 1) Update(divIdB[i], -1);
+            return true;
+        }
+    }
+
+    FOR(i, 0, l) Update(divIdB[i], -1);
+    FOR(i, r, m - 1) Update(divIdB[i], -1);
+
+    return false;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i];
+    FOR(i, 1, n) cin >> b[i];
+
+    Init();
+
+    FOR(k, 1, n)
+    {
+        idA.clear(); idB.clear();
+        int mx = 0;
+
+        for (int i = k; i <= n; i += k) idA.push_back(i);
+        idB = idA;
+        m = sz(idA);
+
+        sort(all(idA), cmpA);
+        sort(all(idB), cmpB);
+
+        REP(i, m)
+        {
+            maxi(mx, max(a[idA[i]], b[idB[i]]));
+            divIdA[i] = idA[i] / k;
+            divIdB[i] = idB[i] / k;
+        }
+
+        int l = 0, r = mx;
+        int res = l;
+
+        while (l <= r)
+        {
+            int mid = l + r >> 1;
+            if (Check(k, mid)) res = mid, l = mid + 1;
+            else r = mid - 1;
+        }
+
+        cout << res << ' ';
+    }
+
+    return 0;
+}
