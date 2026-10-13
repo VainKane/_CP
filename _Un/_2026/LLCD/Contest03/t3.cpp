@@ -19,58 +19,25 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 5009;
-ll const oo = 1e18;
+int const N = 1e6 + 5;
 
-int n, k;
-int a[N];
-
-ll dp[2][N];
-ll pre[N][N], c[N][N];
-
-bool cur = 1;
-
-void Init()
-{
-    FOR(l, 1, n) FOR(r, l + 1, n) pre[l][r] = pre[l][r - 1] + (a[l] ^ a[r]);
-    FOR(r, 1, n) FORD(l, r - 1, 1) c[r][l] = c[r][l + 1] + pre[l][r] - pre[l][l - 1];
-}
-
-void Solve(int l, int r, int lb, int rb)
-{
-    if (l > r) return;
-
-    int mid = l + r >> 1;
-    pair<ll, int> res = {oo, 0};
-
-    FOR(i, lb, min(rb, mid - 1)) mini(res, {dp[cur ^ 1][i] + c[mid][i + 1], i});
-
-    dp[cur][mid] = res.F;
-    Solve(l, mid - 1, lb, res.S);
-    Solve(mid + 1, r, res.S, rb);
-}
+int n;
+int cnt[N];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> k; k++;
-    FOR(i, 1, n) cin >> a[i];
-
-    Init();
-
-    memset(dp, 0x3f, sizeof dp);
-    dp[cur][0] = 0;
-
-    REP(haha, k)
+    cin >> n;
+    FOR(i, 1, n)
     {
-        cur ^= 1;
-        memset(dp[cur], 0x3f, (n + 1) * sizeof(ll));
-        Solve(1, n, 0, n - 1);
+        int x; cin >> x;
+        cnt[x]++;
     }
 
-    cout << dp[cur][n];
+    FOR(i, 1, 1e6) for (int j = 2 * i; j <= 1e6; j += i) cnt[i] += cnt[j];
+    FORD(i, 1e6, 1) if (cnt[i] > 1) return !(cout << i);
 
     return 0;
 }

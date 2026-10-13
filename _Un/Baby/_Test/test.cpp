@@ -66,13 +66,13 @@ int CountPrimes(int x)
 
 int main()
 {
-    vector<int> v;
-    FOR(i, 1, 1e6) v.push_back(Count(i));
-    sort(all(v), greater<int>());
+    // vector<int> v;
+    // FOR(i, 1, 1e6) v.push_back(Count(i));
+    // sort(all(v), greater<int>());
 
-    int sum = 0;
-    REP(i, 2e5) sum += v[i];
-    cout << sum;
+    // int sum = 0;
+    // REP(i, 2e5) sum += v[i];
+    // cout << sum;
 
     // cout << MaxDivs(1e6);
     // cout << CountPrimes(1e6);
@@ -84,9 +84,9 @@ int main()
     // deque<int> q = {1, 2, 3, 4};
     // cout << q[0] << ' ' << q[1] << ' ' << q.front() << ' ';
 
-    // int res = 0;
-    // FOR(i, 2, 1e5) maxi(res, Count(i));
-    // cout << res << '\n';
+    int res = 0;
+    FOR(i, 2, 1e6) maxi(res, Count(i));
+    cout << res << '\n';
     // GCD(1e18, 4352345234231234);
     // cout << cnt;
 

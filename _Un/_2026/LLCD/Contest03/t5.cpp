@@ -19,44 +19,50 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 2009;
+int const N = 2e5 + 5;
+int const M = 1e6 + 5;
+int const lim = 1e6;
+int const MOD = 998244353;
 
-int n, m;
+int PowMod(int a, int b)
+{
+    int res = 1;
 
-int a[N], b[N];
-int preA[N], preB[N];
+    while (b)
+    {
+        if (b & 1) res = 1LL * res * a % MOD;
+        a = 1LL * a * a % MOD;
+        b >>= 1;
+    }
 
-ll dp[N][N];
-ll f[N][N], g[N][N];
+    return res;
+}
+
+int n;
+int a[N];
+
+ll sum[M];
+int f[M];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> m;
-    FOR(i, 1, n) cin >> a[i], a[i]--;
-    FOR(i, 1, m) cin >> b[i], b[i]--;
+    cin >> n;
+    FOR(i, 1, n) cin >> a[i], sum[a[i]] += a[i];
 
-    FOR(i, 1, n) preA[i] = preA[i - 1] + a[i];
-    FOR(i, 1, m) preB[i] = preB[i - 1] + b[i];
-
-    memset(dp, 0x3f, sizeof dp);
-    memset(f, 0x3f, sizeof f);
-    memset(g, 0x3f, sizeof g);
-
-    // FOR(i, 1, max(m, n)) dp[0][i] = dp[i][0] = 0;
-    FOR(j, 1, m) dp[1][j] = 1LL * a[1] * preB[j];
-    FOR(i, 1, n) dp[i][1] = 1LL * preA[i] * b[1];
-
-    FOR(i, 1, n) FOR(j, 1, m)
+    FOR(i, 1, lim)
     {
-        dp[i][j] = min({dp[i][j], f[i - 1][j] + 1LL * b[j] * preA[i], g[i][j - 1] + 1LL * a[i] * preB[j]});
-        f[i][j] = min(f[i - 1][j], dp[i][j - 1] - 1LL * b[j] * preA[i]);
-        g[i][j] = min(g[i][j - 1], dp[i - 1][j] - 1LL * a[i] * preB[j]);
+        for (int j = 2 * i; j <= lim; j += i) sum[i] += sum[j];
+        for (int j = i; j <= lim; j += i) f[j] += (f[j] + (sum[i] - j) / i) % MOD;
     }
 
-    cout << dp[n][m];
- 
+    // int res = 0;
+    // FOR(i, 1, n) res = (res + 1LL * a[i] * f[a[i]]) % MOD;
+    // cout << res * PowMod(2, MOD - 2);
+
+    // cout << f[2];
+
     return 0;
 }

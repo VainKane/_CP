@@ -19,63 +19,24 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 1e5 + 5;
-int const oo = 1e9 + 9;
+int const K = 36;
 
-ll Ceil(ll a, ll b) { return (a ^ b) < 0 ? a / b : (a + b - 1) / b; }
+ll n;
+int k;
 
-struct Segment
+ll a[K];
+
+ll Cal(int mask)
 {
-    int a, x;
-    ll b;
-
-    Segment(int _a = 0, ll _b = 0, int _x = 0) { a = _a, b = _b, x = _x; }
-    ll operator ()(int pos) { return 1LL * pos * a + b; }
-};
-
-struct ConvexHullTrick
-{
-    vector<Segment> seg;
-    int idx = 0;
-
-    void Reset() { seg.clear(); idx = 0; }
-
-    void Add(int a, ll b)
+    ll p = 1;
+    for (int tmp = mask; tmp; tmp ^= tmp & -tmp)
     {
-        while (!seg.empty() && seg.back()(seg.back().x) >= 1LL * seg.back().x * a + b) seg.pop_back();
-        if (seg.empty()) seg.push_back({a, b, 0});
-        else if (seg.back().a != a)
-        {
-            ll x = Ceil(b - seg.back().b, seg.back().a - a);
-            mini(x, 1LL * oo); maxi(x, 0LL);
-            seg.push_back({a, b, x});
-        }
+        int i = __builtin_ctz(tmp);
+        if (p > n / a[i]) return 0;
+        p *= a[i];
     }
 
-    ll Get(int x)
-    {
-        mini(idx, sz(seg) - 1);
-        while (idx + 1 < sz(seg) && seg[idx + 1].x <= x) idx++;
-        return seg[idx](x);
-    }
-} cht;
-
-int n;
-int w[N], d[N];
-
-int preD[N], preW[N];
-ll preWD[N];
-
-ll dp[4][N];
-
-void Init()
-{
-    FOR(i, 1, n + 1)
-    {
-        preD[i] = preD[i - 1] + d[i];
-        preW[i] = preW[i - 1] + w[i];
-        preWD[i] = preWD[i - 1] + 1LL * w[i] * preD[i - 1];
-    }
+    return n / p;
 }
 
 int main()
@@ -83,25 +44,12 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> w[i] >> d[i];
+    cin >> n >> k;
+    REP(i, k) cin >> a[i];
 
-    Init();
-
-    memset(dp, 0x3f, sizeof dp);
-    dp[0][0] = 0;
-
-    FOR(i, 1, 3)
-    {
-        cht.Reset();
-        FOR(r, 1, n + 1)
-        {
-            cht.Add(-preW[r - 1], preWD[r - 1] + dp[i - 1][r - 1]);
-            dp[i][r] = 1LL * preW[r] * preD[r - 1] - preWD[r] + cht.Get(preD[r - 1]);
-        }
-    }
-
-    cout << dp[3][n + 1];
+    ll res = 0;
+    FOR(mask, 1, MK(k) - 1) res += (__builtin_parity(mask) ? 1 : -1) * Cal(mask);
+    cout << res;
 
     return 0;
 }

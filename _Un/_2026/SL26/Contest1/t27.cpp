@@ -24,55 +24,54 @@ int const N = 2e5 + 5;
 int n;
 int a[N], b[N];
 
-int cnt[2 * N];
+set<ii> s;
+int mx;
 
-vector<int> vals;
+void Add(int l, int r);
 
-void Compress()
+void AddLeft(int l, int r)
 {
-    vals.clear();
-
-    FOR(i, 1, n)
+    auto it = s.upper_bound({l, 0});
+    if (it == s.begin())
     {
-        vals.push_back(a[i]);
-        vals.push_back(b[i]);
+        s.insert({l, r});
+        return;
     }
 
-    sort(all(vals));
-    vals.erase(unique(all(vals)), vals.end());
-
-    FOR(i, 1, n)
+    it--;
+    if (it->S < l)
     {
-        a[i] = lower_bound(all(vals), a[i]) - vals.begin() + 1;
-        b[i] = lower_bound(all(vals), b[i]) - vals.begin() + 1;
+        s.insert({l, r});
+        return;
     }
+
+    mini(l, it->F), maxi(r, it->S);
+    s.erase(it);
+    Add(l, r);
 }
 
-ll Cal(int idx)
+void AddRight(int l, int r)
 {
-    FOR(i, 1, idx) cnt[b[i]]++;
-
-    vector<int> va, vb;
-    FOR(i, 1, idx)
+    auto it = s.upper_bound({r, 0});
+    if (it == s.begin())
     {
-        if (cnt[a[i]]) cnt[a[i]]--;
-        else va.push_back(a[i]);
+        s.insert({l, r});
+        return;
     }
 
-    FOR(i, 1, idx) if (cnt[b[i]]) vb.push_back(b[i]);
-    sort(all(va));
+    it--;
+    if (it->F <= l) return;
 
-    ll res = 0;
-    int mx = 0;
-    REP(i, sz(vals))
-    {
-        int cost = vals[va[i] - 1] - vals[vb[i] - 1];
-        maxi(mx, cost);
-        res += cost;
-    }
+    mini(l, it->F), maxi(r, it->S);
+    s.erase(it);
+    Add(l, r);
+}
 
-    FOR(i, 1, idx) cnt[b[i]] = 0;
-    return res - mx;
+void Add(int l, int r)
+{
+    maxi(mx, r - l);
+    if (s.empty()) s.insert({l, r});
+    else AddLeft(l, r), AddRight(l, r);
 }
 
 int main()
@@ -87,8 +86,17 @@ int main()
         FOR(i, 1, n) cin >> a[i];
         FOR(i, 1, n) cin >> b[i];
 
-        Compress();
-        FOR(i, 1, n) cout << Cal(i) << ' ';
+        ll res = mx = 0;
+        s.clear();
+
+        FOR(i, 1, n)
+        {
+            res += a[i] - b[i];
+            Add(b[i], a[i]);
+
+            cout << res - mx << ' ';
+        }
+
         cout << '\n';
     }
 

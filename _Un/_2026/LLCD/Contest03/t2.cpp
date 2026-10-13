@@ -12,6 +12,7 @@ using namespace std;
 #define F first
 #define S second
 #define name ""
+#define y1 dsfhjksdfksdf
 
 using ll = long long;
 using ii = pair<int, int>;
@@ -19,30 +20,26 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 8008;
-ll const oo = 1e18;
+int const N = 36;
+int const oo = 3e4 + 9;
 
-int n, k;
+int n;
+int x1[N], x2[N], y1[N], y2[N];
 
-int a[N];
-
-ll pre[N];
-ll dp[2][N];
-
-bool cur = 1;
-
-void Solve(int l, int r, int lb, int rb)
+int Cal(int mask)
 {
-    if (l > r) return;
+    int t = -1, b = oo;
+    int l = -1, r = oo;
 
-    int mid = l + r >> 1;
+    for (int tmp = mask; tmp; tmp ^= tmp & -tmp)
+    {
+        int i = __builtin_ctz(tmp);
+        maxi(t, y1[i]), mini(b, y2[i]);
+        maxi(l, x1[i]), mini(r, x2[i]);
+    }
 
-    pair<ll, int> res = {oo, 0};
-    FOR(i, lb, min(rb, mid - 1)) mini(res, {dp[cur ^ 1][i] + 1LL * (pre[mid] - pre[i]) * (mid - i), i});
-
-    dp[cur][mid] = res.F;
-    Solve(l, mid - 1, lb, res.S);
-    Solve(mid + 1, r, res.S, rb);
+    if (t > b || l > r) return 0;
+    return (b - t) * (r - l);
 }
 
 int main()
@@ -50,20 +47,12 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n >> k;
-    FOR(i, 1, n) cin >> a[i], pre[i] = pre[i - 1] + a[i];
+    cin >> n;
+    REP(i, n) cin >> x1[i] >> y1[i] >> x2[i] >> y2[i];
 
-    memset(dp, 0x3f, sizeof dp);
-    dp[cur][0] = 0;
-
-    REP(haha, k)
-    {
-        cur ^= 1;
-        memset(dp[cur], 0x3f, sizeof dp[cur]);
-        Solve(1, n, 0, n - 1);
-    }
-
-    cout << dp[cur][n];
+    int res = 0;
+    FOR(mask, 1, MK(n) - 1) res += (__builtin_parity(mask) ? 1 : -1) * Cal(mask);
+    cout << res;
 
     return 0;
 }
