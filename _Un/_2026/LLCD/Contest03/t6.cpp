@@ -19,34 +19,33 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
+#pragma GCC optimize("O3,Ofast,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,abm,mmx,avx,tune=native")
+
 int const N = 1e5 + 5;
 
 int n, m;
 int a[N], b[N];
 int cnt[N];
 
-bool prime[N];
 int facts[N][6];
 int cp[N];
 
 int pMask[N][MK(6)];
 
 int idA[N], idB[N];
-int divIdA[N], divIdB[N];
+int valA[N], valB[N];
 
-bool cmpA(int i, int j) { return a[i] < a[j]; }
-bool cmpB(int i, int j) { return b[i] < b[j]; }
+bool cmpA(int i, int j) { return valA[i] < valA[j]; }
+bool cmpB(int i, int j) { return valB[i] < valB[j]; }
 
 void Init()
 {
-    memset(prime, true, sizeof prime);
-    prime[0] = prime[1] = false;
-
-    FOR(i, 2, sqrt(n)) if (prime[i]) for (int j = i * i; j <= n; j += i) prime[j] = false;
-
-    FOR(i, 1, n)
+    pMask[1][0] = 1;
+    FOR(i, 2, n)
     {
-        if (prime[i]) for (int j = i; j <= n; j += i) facts[j][cp[j]++] = i;
+        if (!cp[i]) for (int j = i; j <= n; j += i) facts[j][cp[j]++] = i;
         pMask[i][0] = 1;
         FOR(mask, 1, MK(cp[i]) - 1) pMask[i][mask] = pMask[i][mask ^ mask & -mask] * facts[i][__builtin_ctz(mask)];
     }
@@ -55,7 +54,7 @@ void Init()
 inline void Update(int i, int delta) { REP(mask, MK(cp[i])) cnt[pMask[i][mask]] += delta; }
 
 inline int Get(int i)
-{ 
+{
     int res = 0;
     REP(mask, MK(cp[i])) res += __builtin_parity(mask) ? -cnt[pMask[i][mask]] : cnt[pMask[i][mask]];
     return res;
@@ -63,24 +62,17 @@ inline int Get(int i)
 
 bool Check(int k, int x)
 {
-    int l = -1, r = 0;
-    REP(i, m) Update(divIdB[i], 1);
+    memset(cnt, 0, (m + 1) * sizeof(int));
+    FOR(i, 1, m) Update(idB[i], 1);
 
-    REP(i, m)
+    int l = 0, r = 1;
+    FOR(i, 1, m)
     {
-        while (r < m && b[idB[r]] < a[idA[i]] + x) Update(divIdB[r++], -1);
-        while (l + 1 < r && b[idB[l + 1]] <= a[idA[i]] - x) Update(divIdB[++l], 1);
+        while (r <= m && valB[idB[r]] < valA[idA[i]] + x) Update(idB[r++], -1);
+        while (l + 1 < r && valB[idB[l + 1]] <= valA[idA[i]] - x) Update(idB[++l], 1);
 
-        if (Get(divIdA[i]) > 0)
-        {
-            FOR(j, 0, l) Update(divIdB[j], -1);
-            FOR(j, r, m - 1) Update(divIdB[j], -1);
-            return true;
-        }
+        if (Get(idA[i])) return true;
     }
-
-    FOR(i, 0, l) Update(divIdB[i], -1);
-    FOR(i, r, m - 1) Update(divIdB[i], -1);
 
     return false;
 }
@@ -96,25 +88,22 @@ int main()
 
     Init();
 
-    int mx, l, r, res;
-
+    int l, r, res;
     FOR(k, 1, n)
     {
-        mx = m = 0;
-
-        for (int i = k; i <= n; i += k) idA[m++] = idB[m] = i;
-
-        sort(idA, idA + m, cmpA);
-        sort(idB, idB + m, cmpB);
-
-        REP(i, m)
+        l = r = m = 0;
+        for (int i = k; i <= n; i += k)
         {
-            maxi(mx, max(a[idA[i]], b[idB[i]]));
-            divIdA[i] = idA[i] / k;
-            divIdB[i] = idB[i] / k;
+            maxi(r, max(a[i], b[i]));
+            ++m;
+
+            idA[m] = idB[m] = m;
+            valA[m] = a[i], valB[m] = b[i];
         }
 
-        l = 0, r = mx;
+        sort(idA + 1, idA + m + 1, cmpA);
+        sort(idB + 1, idB + m + 1, cmpB);
+
         while (l <= r)
         {
             int mid = l + r >> 1;

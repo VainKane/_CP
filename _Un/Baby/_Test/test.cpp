@@ -84,9 +84,11 @@ int main()
     // deque<int> q = {1, 2, 3, 4};
     // cout << q[0] << ' ' << q[1] << ' ' << q.front() << ' ';
 
-    int res = 0;
-    FOR(i, 2, 1e5) res += Count(i) >= 20;
-    cout << res << '\n';
+
+
+    // int res = 0;
+    // FOR(i, 2, 1e5) res += Count(i) >= 20;
+    // cout << res << '\n';
     // GCD(1e18, 4352345234231234);
     // cout << cnt;
 
@@ -119,6 +121,10 @@ int main()
 
     // int a = (1 << 0) - 1;
     // cout << a;
+    int x = 67;
+    vector<int> v = {33, 23, 36, 67};
+
+    [&]() { for (auto &i : v) cout << i + x << ' '; }();
 
     // cout << -123 % 5;
 

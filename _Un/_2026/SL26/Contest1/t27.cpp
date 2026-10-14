@@ -27,13 +27,27 @@ int a[N], b[N];
 set<ii> s;
 int mx;
 
-void Add(int l, int r);
-
-void AddLeft(int l, int r)
+void Add(int l, int r)
 {
-    auto it = s.upper_bound({l, 0});
+    if (s.empty())
+    {
+        maxi(mx, r - l);
+        s.insert({l, r});
+        return;
+    }
+
+    auto it = s.lower_bound({l, 0});
+    while (it != s.end() && it->F <= r)
+    {
+        maxi(r, it->S);
+        s.erase(it);
+        it = s.lower_bound({l, 0});
+    }
+
+    it = s.upper_bound({l, 0});
     if (it == s.begin())
     {
+        maxi(mx, r - l);
         s.insert({l, r});
         return;
     }
@@ -41,37 +55,14 @@ void AddLeft(int l, int r)
     it--;
     if (it->S < l)
     {
+        maxi(mx, r - l);
         s.insert({l, r});
         return;
     }
 
-    mini(l, it->F), maxi(r, it->S);
-    s.erase(it);
-    Add(l, r);
-}
-
-void AddRight(int l, int r)
-{
-    auto it = s.upper_bound({r, 0});
-    if (it == s.begin())
-    {
-        s.insert({l, r});
-        return;
-    }
-
-    it--;
-    if (it->F <= l) return;
-
-    mini(l, it->F), maxi(r, it->S);
-    s.erase(it);
-    Add(l, r);
-}
-
-void Add(int l, int r)
-{
+    l = it->F;
     maxi(mx, r - l);
-    if (s.empty()) s.insert({l, r});
-    else AddLeft(l, r), AddRight(l, r);
+    s.insert({l, r});
 }
 
 int main()

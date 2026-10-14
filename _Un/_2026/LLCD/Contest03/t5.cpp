@@ -19,10 +19,21 @@ using ii = pair<int, int>;
 template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
-int const N = 2e5 + 5;
-int const M = 1e6 + 5;
+int const N = 1e6 + 5;
 int const lim = 1e6;
 int const MOD = 998244353;
+
+void Add(int &x, int const &y)
+{
+    x += y;
+    if (x >= MOD) x -= MOD;
+}
+
+void Sub(int &x, int const &y)
+{
+    x -= y;
+    if (x < 0) x += MOD;
+}
 
 int PowMod(int a, int b)
 {
@@ -38,31 +49,50 @@ int PowMod(int a, int b)
     return res;
 }
 
-int n;
-int a[N];
+int const inv2 = PowMod(2, MOD - 2);
 
-ll sum[M];
-int f[M];
+int sum[N], sqSum[N];
+int f[N], inv[N];
+
+void Init()
+{
+    inv[1] = 1;
+    FOR(i, 2, lim) inv[i] = MOD - 1LL * (MOD / i) * inv[MOD % i] % MOD;
+}
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
 
-    cin >> n;
-    FOR(i, 1, n) cin >> a[i], sum[a[i]] += a[i];
+    Init();
 
-    FOR(i, 1, lim)
+    int n; cin >> n;
+    while (n--)
     {
-        for (int j = 2 * i; j <= lim; j += i) sum[i] += sum[j];
-        for (int j = i; j <= lim; j += i) f[j] += (f[j] + (sum[i] - j) / i) % MOD;
+        int x; cin >> x;
+        Add(sum[x], x);
+        sqSum[x] = (sqSum[x] + 1LL * x * x) % MOD;
     }
 
-    // int res = 0;
-    // FOR(i, 1, n) res = (res + 1LL * a[i] * f[a[i]]) % MOD;
-    // cout << res * PowMod(2, MOD - 2);
+    FOR(i, 1, lim) for (int j = 2 * i; j <= lim; j += i)
+    {
+        Add(sum[i], sum[j]);
+        Add(sqSum[i], sqSum[j]);
+    }
+   
+    int res = 0;
+    FORD(i, lim, 1)
+    {
+        f[i] = (1LL * sum[i] * sum[i] - sqSum[i]) % MOD;
+        if (f[i] < 0) f[i] += MOD;
+        f[i] = 1LL * f[i] * inv[2] % MOD;
 
-    // cout << f[2];
+        for (int j = 2 * i; j <= lim; j += i) Sub(f[i], f[j]);
+        res = (res + 1LL * f[i] * inv[i]) % MOD;
+    }
+
+    cout << res;
 
     return 0;
 }
