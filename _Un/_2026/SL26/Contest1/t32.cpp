@@ -94,7 +94,7 @@ vector<Query> queries[N];
 
 SegmentTree it;
 
-int res[N];
+ll res[N];
 
 int main()
 {

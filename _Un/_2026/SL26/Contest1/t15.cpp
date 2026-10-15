@@ -23,33 +23,70 @@ int const N = 5e4 + 5;
 
 int n, m;
 vector<int> adj[N];
-int d[N], h[N];
 
-void BFSPrepare()
+vector<int> s[N];
+
+int d[N], dist[N];
+bitset<N> bs[N];
+
+bool visited[N];
+
+void PrintAll()
 {
-    memset(h, -1, sizeof h);
+    FOR(u, 1, n) if (dist[u] != -1) return;
+    
+    cout << n << '\n';
+    FOR(u, 1, n) cout << u << ' ';
+    exit(0);
+}
 
+void BFS()
+{
     queue<int> q;
-    FOR(u, 1, n) if (d[u] == -1)
+
+    memset(d, -1, sizeof d);
+    for (auto &u : s[*max_element(dist + 1, dist + n + 1)])
     {
-        h[u] = 0;
+        d[u] = dist[u];
+        bs[u][u] = 1;
+
+        visited[u] = 1;
         q.push(u);
     }
 
     while (!q.empty())
     {
         int u = q.front(); q.pop();
-        for (auto &v : adj[u]) if (h[v] == -1)
+        if (d[u] == 0) continue;
+
+        for (auto &v : s[d[u] - 1])
         {
-            h[v] = h[u] + 1;
+            if (visited[v]) continue;
+            if (d[v] != -1 && d[v] != d[u] - 1)
+            {
+                cout << "0";
+                exit(0);
+            }
+
+            d[v] = d[u] - 1;
+            bs[v][v] = 1;
+
+            visited[v] = true;
+            q.push(v);
+        }
+
+        for (auto &v : adj[u])
+        {
+            if (d[v] != -1 && d[v] != d[u] - 1) continue;
+            bs[v] |= bs[u];
+
+            if (visited[v]) continue;
+
+            visited[v] = true;
+            d[v] = d[u] - 1;
             q.push(v);
         }
     }
-}
-
-void BFS()
-{
-    queue<int> q;
 }
 
 int main()
@@ -66,9 +103,22 @@ int main()
         adj[v].push_back(u);
     }
 
-    FOR(i, 1, n) cin >> d[i];
+    int cnt = 0;
+    FOR(u, 1, n)
+    {
+        cin >> dist[u];
+        if (dist[u] != -1) s[dist[u]].push_back(u), cnt++;
+    }
 
-    BFSPrepare();
+    PrintAll();
+
+    BFS();
+
+    vector<int> res;
+    FOR(u, 1, n) if (d[u] == 0 && bs[u].count() == cnt) res.push_back(u);
+
+    cout << sz(res) << '\n';
+    for (auto &u : res) cout << u << ' ';
 
     return 0;
 }
