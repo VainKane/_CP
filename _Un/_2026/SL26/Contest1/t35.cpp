@@ -26,22 +26,12 @@ int GCD(int a, int b)
 {
     while (true)
     {
-        if (a == b || b == 0 || a == b) return a | b;
+        if (a == 0 || b == 0 || a == b) return a | b;
         if (a > b) a %= b; else b %= a;
     }
 }
 
 int n;
-int a[N];
-
-void up[LOG][N];
-
-void Init()
-{
-    FOR(i, 1, n) up[0][i] = a[i];
-    FOR(j, 1, 31 - __builtin_clz(n)) FOR(i, 1, n - MK(j) + 1)
-        up[j][i] = GCD(up[j - 1][i], up[j - 1][i + MK(j - 1)]);
-}
 
 int main()
 {
@@ -49,13 +39,28 @@ int main()
     cin.tie(0); cout.tie(0);
 
     cin >> n;
-    FOR(i, 1, n) cin >> a[i];
 
-    Init();
-
-    FOR(len, 1, n)
+    vector<ii> v;
+    ll res = 0;
+    
+    FOR(i, 1, n)
     {
+        int x; cin >> x;
+
+        vector<ii> nxt;
+        for (auto &p : v)
+        {
+            int d = GCD(p.F, x);
+            if (nxt.empty() || nxt.back().F != d) nxt.push_back({d, p.S});
+        }
+
+        v = nxt;
+        if (v.empty() || v.back().F != x) v.push_back({x, i});
+
+        for (auto &p : v) maxi(res, (i - p.S + 1LL) * p.F);
     }
+
+    cout << res;
 
     return 0;
 }
