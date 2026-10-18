@@ -22,8 +22,8 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 mt19937_64 rd(time(0));
 ll Rand(ll l, ll r) { return l + rd() * 1LL * rd() % (r - l + 1); }
 
-int const N = 1.5e6;
-int const lim = 290;
+int const N = 1.5e6 + 5;
+int const lim = 970;
 
 int k, t;
 ll n;
@@ -43,10 +43,11 @@ void Init()
     val = 0;
     FOR(i, 1, bd[k])
     {
+        if (val > n - d[i & 1] * pw[i]) break;
+
+        m = i;
         s[i] = i & 1;
         val += d[s[i]] * pw[i];
-        m = i;
-        if (val >= n) break;
     }
 }
 
@@ -110,7 +111,7 @@ int main()
             if (abs(val - n) < abs(resVal - n)) Set();
             if (!opt)
             {
-                m += Rand(max(-5, -m + 1), 5);
+                m += Rand(max(-5, -m + 1), min(5, bd[k] - m));
                 REP(i, m / 10) s[Rand(1, m)] ^= 1;
                 val = Eval(s, m);
             }
