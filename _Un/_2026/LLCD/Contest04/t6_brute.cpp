@@ -32,7 +32,7 @@ struct Data
 int n, m;
 Data a[N];
 
-int dp[N];
+ii dp[N];
 
 int main()
 {
@@ -47,18 +47,17 @@ int main()
     int res = oo;
     FOR(i, 1, n)
     {
-        dp[i] = oo;
-        FORD(j, i - 1, 0)
+        dp[i] = {oo, 0};
+        for (int j = i - 1; j >= 0 && a[j].r >= a[i].l - 1; j--)
         {
-            if (a[j].r < a[i].l - 1) break;
-            mini(dp[i], max(dp[j], a[i].p + (a[j].r >= a[i].l) * dp[j]));
+            if (a[j].r == a[i].l - 1) mini(dp[i], {max(dp[j].F, a[i].p), a[j].r});
+            else if (dp[j].S < a[i].l) mini(dp[i], {max(dp[j].F, a[j].p + a[i].p), a[j].r});
         }
 
-        if (a[i].r == m) mini(res, dp[i]);
-        cout << dp[i] << ' ';
+        if (a[i].r == m) mini(res, dp[i].F);
     }
 
-    // cout << (res != oo ? res : -1);
+    cout << (res != oo ? res : -1);
 
     return 0;
 }
