@@ -43,11 +43,14 @@ void DFS(int u, int p)
         maxi(f[u], f[v] + w);
     }
 
+    bool lol = false;
     for (auto &e : adj[u])
     {
         int v = e.F, w = e.S;
         if (v == p) continue;
-        if (f[v] && f[v] + w != f[u]) d.push_back(f[v] + w);
+
+        if (f[v] + w != f[u] || lol) d.push_back(f[v] + w);
+        if (f[v] + w == f[u]) lol = true;
     }
 }
 
