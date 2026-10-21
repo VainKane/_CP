@@ -11,44 +11,37 @@ using namespace std;
 #define sz(v) ((int)v.size())
 #define F first
 #define S second
+#define name ""
 
-template <class t> bool maxi(t &x, t const &y)
-{
-    return x < y ? x = y, 1 : 0;
-}
+using ll = long long;
+using ii = pair<int, int>;
 
-template <class t> bool mini(t &x, t const &y)
-{
-    return x > y ? x = y, 1 : 0;
-}
+template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
+template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 1e5 + 5;
 
 int n, A, B;
 int a[N];
 
-long long b[N];
+ll b[N];
 
 bool Check1(int k)
 {
-    FOR(i, 1, n) b[i] = a[i] - 1LL * B * k;
-
-    long long cnt = 0;
+    ll cnt = 0;
     FOR(i, 1, n) if (b[i] > 0)
     {
         cnt += (b[i] + (A - B) - 1) / (A - B);
         if (cnt > k) return false;
     }
 
-    return cnt <= k;
+    return true;
 }
 
 bool Check2(int k)
 {
-    FOR(i, 1, n) b[i] = a[i] - 1LL * B * k;
-
-    long long cnt = 0;
-    FOR(i, 1, n) if (b[i] > 0) return false;
+    ll cnt = 0;
+    if (*max_element(b + 1, b + n + 1) > 0) return false;
     FOR(i, 1, n) if (b[i] < 0)
     {
         cnt += -b[i] / (B - A);
@@ -58,16 +51,13 @@ bool Check2(int k)
     return false;
 }
 
-bool Check3(int k)
-{
-    FOR(i, 1, n) if (a[i] - 1LL * B * k > 0) return false;
-    return true;
-}
+bool Check3(int k) { return *max_element(b + 1, b + n + 1) <= 0; }
 
 bool Check(int k)
 {
+    FOR(i, 1, n) b[i] = a[i] - 1LL * B * k;
     if (A > B) return Check1(k);
-    else if (B > A) return Check2(k);
+    if (B > A) return Check2(k);
     return Check3(k);
 }
 

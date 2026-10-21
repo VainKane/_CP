@@ -23,9 +23,12 @@ int const N = 3e5 + 5;
 
 int n, m;
 vector<pair<int, char>> adj[N];
+vector<pair<int, char>> dagAdj[N];
 
 int d[N];
-char res[N];
+
+bool visited[N];
+string res[N];
 
 void BFSPrepare()
 {
@@ -54,31 +57,79 @@ void BFS()
     queue<int> q;
     q.push(1);
 
-    string res = "";
-
     while (!q.empty())
     {
         int u = q.front(); q.pop();
-        if (d[u] == 0) continue;
 
-        int ch = 'z';
+        char mn = 'z';
         for (auto &e : adj[u])
         {
-            int v = e.F, c = e.S;
-            if (d[v] == d[u] - 1) mini(ch, c);
+            int v = e.F;
+            if (visited[v] || d[v] != d[u] - 1) continue;
+
+            mini(mn, e.S);
         }
 
         for (auto &e : adj[u])
         {
-            int v = e.F, c = e.S;
-            if (d[v] == d[u] - 1 && c == ch) q.push(v);
-        }
+            int v = e.F;
+            char c = e.S;
 
-        cout << d[1] - d[u] << ' ' << (char)ch << '\n';
-        // res[d[1] - d[u]] = ch;
+            if (d[v] != d[u] - 1 || c != mn) continue;
+            dagAdj[u].push_back(e);
+            
+            if (visited[v]) continue;
+            visited[v] = true;
+            q.push(v);
+        }
     }
+}
 
-    cout << res;
+bool Opt(string &a, string &b, char c)
+{
+    b += c;
+    auto RT = [&]()
+    {
+        a = b; b.pop_back();
+        return true;
+    };
+
+    auto RF = [&]()
+    {
+        b.pop_back();
+        return false;
+    };
+
+    REP(i, min(sz(a), sz(b))) if (a[i] != b[i]) return a[i] > b[i] ? RT() : RF();
+    return sz(a) > sz(b) ? RT() : RF();
+}
+
+void Dijkstra()
+{
+    FOR(u, 1, n) res[u] += 'z' + 1;
+    res[1] = "";
+
+    priority_queue<pair<string, int>, vector<pair<string, int>>, greater<pair<string, int>>> pq;
+    pq.push({"", 1});
+
+    while (!pq.empty())
+    {
+        int u = pq.top().S;
+        string du = pq.top().F;
+        pq.pop();
+
+        if (du != res[u]) continue;
+
+        for (auto &e : dagAdj[u])
+        {
+            int v = e.F;
+            char c = e.S;
+
+            if (mini(res[v], res[u] + c)) pq.push({res[v], v});
+        }
+
+        if (u != n) res[u].clear();
+    }
 }
 
 int main()
@@ -97,12 +148,19 @@ int main()
         adj[v].push_back({u, c});
     }
 
-    // memset(res, 'z', sizeof res);
-
     BFSPrepare();
     BFS();
 
-    REP(i, d[1]) cout << res[i];
+    Dijkstra();
+    cout << res[n];
+
+    // cout << d[3] << ' ' << d[4];
+    // FOR(u, 1, n)
+    // {
+    //     cout << "adj of " << u << ":\n";
+    //     for (auto &e : dagAdj[u]) cout << e.F << ' ';
+    //     cout << '\n';
+    // }
 
     return 0;
 }
