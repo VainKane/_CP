@@ -45,18 +45,10 @@ struct FenwickTree
 int n;
 ll a[N];
 
+int f[N], cnt[N];
+
 FenwickTree bit;
-vector<ll> vals;
-
-void Compress()
-{
-    FOR(i, 1, n) vals.push_back(a[i]);
-    sort(all(vals));
-    vals.erase(unique(all(vals)), vals.end());
-
-    FOR(i, 1, n) a[i] = lower_bound(all(vals), a[i]) - vals.begin() + 1;
-    bit = FenwickTree(sz(vals));
-}
+vector<int> divs[N];
 
 int main()
 {
@@ -66,27 +58,26 @@ int main()
     cin >> n;
     FOR(i, 1, n) cin >> a[i];
 
-    Compress();
+    int lim = *max_element(a + 1, a + n + 1);
+    FOR(i, 1, lim) for (int j = 2 * i; j <= lim; j += i) divs[j].push_back(i);
 
-    set<pair<ll, int>> s;
-    FOR(i, 1, n) s.insert({a[i], i});
+    bit = FenwickTree(lim);
 
     ll res = 0;
-    FORD(i, n, 1) res += bit.Get(a[i] - 1), bit.Update(a[i], 1);
-
-    FOR(i, 1, n)
+    FORD(i, n, 1)
     {
-        auto val = *s.begin();
-        FORD(j, val.S, i + 1)
-        {
-            if (vals[a[j - 1] - 1] % vals[a[j] - 1]) return !(cout << -1);
-            
-            s.erase({a[j], j}), s.erase({a[j - 1], j - 1});
-            s.insert({a[j], j - 1}), s.insert({a[j - 1], j});
-            swap(a[j - 1], a[j]);
-        }
+        bit.Update(a[i], 1);
+        f[i] = bit.Get(a[i] - 1);
+        res += f[i];
+    }
 
-        s.erase({a[i], i});
+    FORD(i, n, 1)
+    {
+        cnt[a[i]]++;
+    
+        int haha = 0;
+        for (auto &x : divs[a[i]]) haha += cnt[x];
+        if (haha != f[i]) return !(cout << -1);
     }
 
     cout << res;
