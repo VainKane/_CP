@@ -21,114 +21,74 @@ template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 3e5 + 5;
 
-int n, m;
-vector<pair<int, char>> adj[N];
-vector<pair<int, char>> dagAdj[N];
+struct Data
+{
+    int u, v, id, c;
 
+    bool operator < (Data const other) const
+    {
+        if (id != other.id) return id < other.id;
+        return c < other.c;
+    }
+
+    bool operator == (Data const other) const { return id == other.id && c == other.c; }
+};
+
+int n, m;
+
+vector<pair<int, char>> adj[N];
 int d[N];
 
+int id[N];
 bool visited[N];
-string res[N];
+bool used[N];
 
-void BFSPrepare()
+ii trace[N];
+
+void BFS()
 {
-    queue<int> q;
-    q.push(n);
-
     memset(d, -1, sizeof d);
-    d[n] = 0;
+    d[1] = 0;
+    visited[0] = 1;
+
+    queue<int> q;
+    q.push(1);
+
+    vector<Data> nodes;
 
     while (!q.empty())
     {
         int u = q.front(); q.pop();
 
+        if (!visited[d[u]])
+        {
+            sort(all(nodes));
+
+            int j = 0;
+            for (int i = 0; i < sz(nodes); i = j) for (j = i; j < sz(nodes) && nodes[j] == nodes[i]; j++)
+            {
+                int &v = nodes[j].v;
+                if (used[v]) continue;
+
+                id[v] = i, trace[v] = {nodes[j].u, nodes[j].c};
+                used[v] = true;
+            }
+
+            nodes.clear();
+        }
+
+        visited[d[u]] = true;
+
         for (auto &e : adj[u])
         {
-            int v = e.F;
+            int v = e.F, c = e.S;
+            if (d[v] != -1 && visited[d[v]]) continue;
+            nodes.push_back({u, v, id[u], c});
+
             if (d[v] != -1) continue;
             d[v] = d[u] + 1;
             q.push(v);
         }
-    }
-}
-
-void BFS()
-{
-    queue<int> q;
-    q.push(1);
-
-    while (!q.empty())
-    {
-        int u = q.front(); q.pop();
-
-        char mn = 'z';
-        for (auto &e : adj[u])
-        {
-            int v = e.F;
-            if (visited[v] || d[v] != d[u] - 1) continue;
-
-            mini(mn, e.S);
-        }
-
-        for (auto &e : adj[u])
-        {
-            int v = e.F;
-            char c = e.S;
-
-            if (d[v] != d[u] - 1 || c != mn) continue;
-            dagAdj[u].push_back(e);
-            
-            if (visited[v]) continue;
-            visited[v] = true;
-            q.push(v);
-        }
-    }
-}
-
-bool Opt(string &a, string &b, char c)
-{
-    b += c;
-    auto RT = [&]()
-    {
-        a = b; b.pop_back();
-        return true;
-    };
-
-    auto RF = [&]()
-    {
-        b.pop_back();
-        return false;
-    };
-
-    REP(i, min(sz(a), sz(b))) if (a[i] != b[i]) return a[i] > b[i] ? RT() : RF();
-    return sz(a) > sz(b) ? RT() : RF();
-}
-
-void Dijkstra()
-{
-    FOR(u, 1, n) res[u] += 'z' + 1;
-    res[1] = "";
-
-    priority_queue<pair<string, int>, vector<pair<string, int>>, greater<pair<string, int>>> pq;
-    pq.push({"", 1});
-
-    while (!pq.empty())
-    {
-        int u = pq.top().S;
-        string du = pq.top().F;
-        pq.pop();
-
-        if (du != res[u]) continue;
-
-        for (auto &e : dagAdj[u])
-        {
-            int v = e.F;
-            char c = e.S;
-
-            if (mini(res[v], res[u] + c)) pq.push({res[v], v});
-        }
-
-        if (u != n) res[u].clear();
     }
 }
 
@@ -148,19 +108,14 @@ int main()
         adj[v].push_back({u, c});
     }
 
-    BFSPrepare();
     BFS();
-
-    Dijkstra();
-    cout << res[n];
-
-    // cout << d[3] << ' ' << d[4];
-    // FOR(u, 1, n)
-    // {
-    //     cout << "adj of " << u << ":\n";
-    //     for (auto &e : dagAdj[u]) cout << e.F << ' ';
-    //     cout << '\n';
-    // }
+    
+    string res = "";
+    int u = n;
+    
+    while (u != 1) res += trace[u].S, u = trace[u].F;
+    reverse(all(res));
+    cout << res;
 
     return 0;
 }
