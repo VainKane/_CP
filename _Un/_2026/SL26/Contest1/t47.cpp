@@ -20,102 +20,9 @@ template <class T> bool maxi(T &x, T const &y) { return x < y ? x = y, 1 : 0; }
 template <class T> bool mini(T &x, T const &y) { return x > y ? x = y, 1 : 0; }
 
 int const N = 2e5 + 5;
-int const M = 1e6 + 5;
-
-struct FenwickTree
-{
-    vector<int> bit;
-    int n;
-
-    FenwickTree(int _n = 0)
-    {
-        n = _n;
-        bit.assign(n + 5, 0);
-    }
-
-    void Update(int idx, int val) { for (; idx; idx ^= idx & -idx) bit[idx] += val; }
-
-    int Get(int idx)
-    {
-        int res = 0;
-        for (; idx <= n; idx += idx & -idx) res += bit[idx];
-        return res;
-    }
-};
 
 int n;
 ll a[N];
-
-FenwickTree bit;
-
-bool prime[M];
-vector<int> primes;
-
-vector<pair<ll, int>> pf[N];
-
-multiset<int> s[11 * N];
-int cnt[N];
-
-void Compress()
-{
-    vector<ll> vals;
-
-    FOR(i, 1, n) vals.push_back(a[i]);
-    sort(all(vals));
-    vals.erase(unique(all(vals)), vals.end());
-
-    FOR(i, 1, n) a[i] = lower_bound(all(vals), a[i]) - vals.begin() + 1;
-    bit = FenwickTree(sz(vals));
-}
-
-void Sieve()
-{
-    memset(prime, true, sizeof prime);
-    prime[0] = prime[1] = false;
-
-    FOR(i, 2, sqrt(1e6)) if (prime[i]) for (int j = i * i; j <= 1e6; j += i) prime[j] = false;
-    FOR(i, 2, 1e6) if (prime[i]) primes.push_back(i);
-}
-
-vector<pair<ll, int>> Factor(ll x)
-{
-    vector<pair<ll, int>> f;
-    int sq = sqrt(x);
-
-    for (auto &p : primes)
-    {
-        if (p > sq) break;
-        
-        if (x % p == 0)
-        {
-            f.push_back({p, 0});
-            while (x % p == 0) x /= p, f.back().S++;
-        }
-    }
-
-    if (x > 1) f.push_back({x, 1});
-    return f;
-}
-
-void Init()
-{
-    vector<ll> vals;
-
-    FOR(i, 1, n)
-    {
-        pf[i] = Factor(a[i]);
-        for (auto &p : pf[i]) vals.push_back(p.F);
-    }
-
-    sort(all(vals));
-    vals.erase(unique(all(vals)), vals.end());
-
-    FOR(i, 1, n) for (auto &p : pf[i]) p.F = lower_bound(all(vals), p.F) - vals.begin() + 1;
-}
-
-int Cal(int mask)
-{
-}
 
 int main()
 {
@@ -125,20 +32,19 @@ int main()
     cin >> n;
     FOR(i, 1, n) cin >> a[i];
 
-    Sieve();
-    Init();
-    Compress();
-
+    map<ll, int> mp;
     ll res = 0;
-    FOR(i, 1, n)
-    {
-        bit.Update(a[i], 1);
-        int inv = bit.Get(a[i] + 1);
-    
-        for (auto &p : pf[i]) s[p.F].insert(p.S);
-        cnt[a[i]]++;
 
-        res += inv;
+    FORD(i, n, 1)
+    {
+        for (auto &p : mp)
+        {
+            if (p.F >= a[i]) break;
+            if (a[i] % p.F) return !(cout << -1);
+            res += mp[p.F];
+        }
+
+        mp[a[i]]++;
     }
 
     cout << res;
